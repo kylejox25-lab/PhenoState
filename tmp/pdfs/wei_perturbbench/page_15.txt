@@ -1,0 +1,130 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+Methods
+Settings of benchmark methods
+In this study, we selected a range of advanced modeling approaches 
+to systematically compare their ability to predict single-cell perturba-
+tion effects. The models include diverse theoretical frameworks and 
+algorithmic structures, ranging from linear models to foundation 
+models, and other deep learning-based approaches. In this study, we 
+evaluated the methods in two key scenarios: cellular context gener -
+alization and perturbation generalization. In the cellular context gen-
+eralization scenario, we selected 14 methods, including 10 published 
+methods, namely, biolord16, CellOT14, inVAE17, scDisInFact18, scGen4, 
+scPRAM15, scPreGAN19, SCREEN20, scVIDR21 and trVAE22 and 4 baseline 
+models. In the perturbation generalization scenario, we examined 18 
+methods: AttentionPert 23, biolord16, CPA24, GEARS5, GenePert25, lin-
+earModel12, scFoundation6, scGPT7, chemCPA26, scouter27, scELMo28, 
+GeneCompass29, PRnet30, cycleCDR31 and 4 baseline models. For each 
+method, the parameters were set according to official guidelines 
+and tailored to align with our benchmarking datasets. Please refer 
+to Supplementary Note 1 for detailed descriptions and settings of all 
+benchmark methods.
+Datasets used in our benchmark
+For the cellular generalization scenario, we collected 12 datasets. These 
+datasets include various cell types, species nd individuals, making 
+them suitable for studying predictions at multiple cellular levels. The 
+datasets were all downloaded from public repositories and the NCBI 
+Gene Expression Omnibus (GEO). Specifically, the kangCrossCell, 
+kangCrossPatient, and Haber datasets use preprocessed data from Lot-
+follahi et al., which can be downloaded directly from Google Drive via 
+https://drive.google.com/drive/folders/1n1SLbXha4OH7j7zZ0zZAxrj_-
+2kczgl8/. kangCrossCell and kangCrossPatient consist of data from 
+human peripheral blood mononuclear cells from eight donors stimu-
+lated with interferon-beta and the corresponding control groups 33. 
+The original data can be obtained from the GEO under the identifier 
+GSE96583. The Haber dataset includes data of intestinal epithelial 
+cells infected with bacterial and helminth infections, and the original 
+dataset is available from the GEO under the identifier GSE92332 (ref. 
+37). The Parekh, CrossPatient and sciPlex3 datasets were obtained 
+from the PerturBase database 46 (http://www.perturbase.cn/). The 
+Parekh perturbation dataset contains overexpression data for eight 
+transcription factors across three cell lines58. The CrossPatient dataset 
+includes single-cell perturbation data for six patients in response to 
+two chemicals, Panobinostat and Etoposide 35. The sciPlex3 dataset 
+comprises measurements from three human cancer cell lines (A549, 
+MCF7 and K562) subjected to perturbations with 188 chemicals at 
+four different dosages1. As suggested in a previous study, only data 
+for the nine most effective chemicals were used for testing 16. The  
+KaggleCrossPatient and KaggleCrossCell datasets were derived from 
+the Open Problems competition. The organizers provided peripheral 
+blood mononuclear cell data from three donors, including data from 
+five cell types exposed to 144 chemicals. These datasets can be down-
+loaded from the Kaggle competition webpage via https://www.kaggle.
+com/competitions/open-problems-single-cell-perturbations/data/. 
+The McFarland 32 dataset contains measurements from six human 
+cancer cell lines exposed to perturbations with 11 chemicals and  
+was downloaded from the scPerturb database 13 (version 1.3), which 
+is available at Zenodo via https://doi.org/10.5281/zenodo.10044268  
+(ref. 59). The CrossSpecies 34 dataset contains expression data from  
+four species (mouse, rat, rabbit and pig). The processed dataset is  
+available at https://github.com/theislab/scgen-reproducibility/
+blob/master/code/DataDownloader.py/. The Afriat perturbation 
+dataset60 was downloaded from the biolord GitHub tutorial site via 
+https://biolord.readthedocs.io/en/latest/tutorials/biolord_pipe -
+line.html. The detailed information of these datasets is given in 
+Supplementary Table 3.
+For the perturbation generalization scenario, we curated 17 
+datasets that broadly cover two perturbation types. These include 13 
+genetic perturbation datasets, of which 9 focus on single perturba -
+tions and 4 focus on combined perturbations, and 4 chemical per-
+turbation datasets, including 3 single-perturbation datasets and one 
+combined-perturbation dataset. The numbers of perturbations in these 
+datasets range from 25 to 1,618, ensuring broad applicability and robust 
+evaluation of the methods. The sciPlex3-comb dataset was downloaded 
+from the CPA tutorial website and can be accessed at https://drive.
+google.com/uc?export=download&id=1RRV0_qYKGTvD3oCklKfoZQ-
+FYqKJy4l6t. The remaining 16 datasets—Adamson 3, Frangieh45, Tian-
+Activation44, TianInhibition44, Replogle-exp6 (ref. 43), Replogle-exp7 
+(ref. 43), Replogle-exp8 (ref. 43), Papalexi42, Replogle-RPE1essential41, 
+Replogle-K562essential41, Norman40, Wessels39, Schmidt38, sciPlex-A549 
+(ref. 1), sciPlex3-K562 (ref. 1) and sciPlex3-MCF7 (ref. 1)—were down -
+loaded from the PerturBase database ( http://www.perturbase.cn/). 
+The TianActivation and TianInhibition datasets correspond to the 
+CRISPR activation and inhibition experiments from the study by Tian 
+et al. The Replogle-exp6, Replogle-exp7 and Replogle-exp8 datasets 
+represent single-cell perturbation data from different experiments 
+conducted in the study by Replogle et al. The Replogle-RPE1essen -
+tial and Replogle-K562essential datasets consist of single-cell per -
+turbation data for the RPE1 and K562 cell lines from Replogle et al. ’s 
+study. The sciPlex-A549, sciPlex3-K562 and sciPlex3-MCF7 datasets 
+include measurements from three human cancer cell lines (A549, K562  
+and MCF7) subjected to perturbations with 188 chemicals at four  
+different dosages. The detailed information of these datasets is  
+given in Supplementary Table 3.
+Data preprocessing
+All single-cell perturbation datasets used in our study were subjected 
+to the following quality-control procedures. (1) Cell filtering. Cells 
+were excluded if they expressed fewer than 200 genes, or exhibited a 
+high mitochondrial gene fraction exceeding 10%. Furthermore, in the 
+context of benchmarking models for the perturbation generalization 
+scenario, cells subjected to perturbations in Schmidt dataset by at 
+most two genes were retained, given the predominance of two-gene 
+combinatorial perturbation data in the currently available datasets, 
+resulting in the exclusion of 5,942 cells. We excluded any perturba -
+tions, other than the control, which affected fewer than 30 cells from 
+our analysis. Additionally, to address the issue of computational effi-
+ciency, the perturbations with a large number of cells need further to 
+be processed. Specifically, for perturbations affecting more than 2,000 
+cells, we used a random selection method to include only 2,000 cells 
+in our downstream analysis. This data preprocessing strategy allows 
+us to balance computational resources and time without substantially 
+compromising model accuracy (Supplementary Note 15). (2) Gene 
+filtering. Genes that were expressed in fewer than three cells were 
+removed. In the context of benchmarking models for perturbation 
+generalization scenario, genes that did not have embeddings from 
+scGPT and scFoundation were excluded for each dataset. T o balance the 
+need for managing computational complexity and preserving maximal 
+information, we constrained each dataset to the 5,000 genes exhibit-
+ing the highest variability. This decision aligns with the preprocessing 
+protocol established by the majority methods. During the selection 
+of highly variable genes, we first split the entire dataset into training 
+and testing sets. The highly variable genes are selected using only the 
+training set, and these selected genes are then used to evaluate model 
+performance on the testing set. This procedure helps to minimize 
+the risk of information leakage. Additionally, we ensured the inclu -
+sion of any genes that were specifically targeted by perturbations but 
+not already represented among these highly variable genes, thereby 
+maintaining the integrity of our dataset for analyses involving these 
+perturbed genes. (3) Data normalization. We used the global scaling 
+normalization technique provided by Scanpy, which standardizes 

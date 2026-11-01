@@ -1,0 +1,9 @@
+experiment_name,gallery_well_ids_used,gene,median_similarity,n_distinct_null_labels,n_gallery_available,n_gallery_used,n_pairs,n_query_available,n_query_used,n_replicates_available,n_replicates_used,perturbation_label,query_well_ids_used,reason
+gene-A,['gene-A_2_G_1'],G,0.7106510996818542,1,1,1,1,1,1,2,2,guide:G_guide_1,['gene-A_1_G_1'],insufficient_matched_distinct_null_labels
+gene-B,['gene-B_3_G_1'],G,0.7106510996818542,1,1,1,1,1,1,2,2,guide:G_guide_1,['gene-B_1_G_1'],insufficient_matched_distinct_null_labels
+gene-A,['gene-A_2_G_2'],G,0.7106510996818542,1,1,1,1,1,1,2,2,guide:G_guide_2,['gene-A_1_G_2'],insufficient_matched_distinct_null_labels
+gene-B,['gene-B_3_G_2'],G,0.7106510996818542,1,1,1,1,1,1,2,2,guide:G_guide_2,['gene-B_1_G_2'],insufficient_matched_distinct_null_labels
+gene-A,['gene-A_2_H_1'],H,0.7106510996818542,1,1,1,1,1,1,2,2,guide:H_guide_1,['gene-A_1_H_1'],insufficient_matched_distinct_null_labels
+gene-B,['gene-B_3_H_1'],H,0.7106510996818542,1,1,1,1,1,1,2,2,guide:H_guide_1,['gene-B_1_H_1'],insufficient_matched_distinct_null_labels
+gene-A,['gene-A_2_H_2'],H,0.7106510996818542,1,1,1,1,1,1,2,2,guide:H_guide_2,['gene-A_1_H_2'],insufficient_matched_distinct_null_labels
+gene-B,['gene-B_3_H_2'],H,0.7106510996818542,1,1,1,1,1,1,2,2,guide:H_guide_2,['gene-B_1_H_2'],insufficient_matched_distinct_null_labels

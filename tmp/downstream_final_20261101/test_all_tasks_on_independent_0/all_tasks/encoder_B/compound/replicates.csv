@@ -1,0 +1,7 @@
+experiment_name,gallery_well_ids_used,gene,median_similarity,n_distinct_null_labels,n_gallery_available,n_gallery_used,n_null,n_pairs,n_query_available,n_query_used,n_replicates_available,n_replicates_used,null_q95,p_value,perturbation_label,query_well_ids_used,reason,replicating
+gene-A,['gene-A_2_drug0'],,1.0,2,1,1,20,1,1,1,2,2,0.0,0.047619047619047616,compound:drug0|dose:1,['gene-A_1_drug0'],,True
+gene-B,['gene-B_3_drug0'],,1.0,2,1,1,20,1,1,1,2,2,0.0,0.047619047619047616,compound:drug0|dose:1,['gene-B_1_drug0'],,True
+gene-A,['gene-A_2_drug1'],,0.9999999403953552,2,1,1,20,1,1,1,2,2,0.7071067690849304,0.047619047619047616,compound:drug1|dose:1,['gene-A_1_drug1'],,True
+gene-B,['gene-B_3_drug1'],,0.9999999403953552,2,1,1,20,1,1,1,2,2,0.7071067690849304,0.047619047619047616,compound:drug1|dose:1,['gene-B_1_drug1'],,True
+gene-A,['gene-A_2_drug2'],,0.9999999403953552,2,1,1,20,1,1,1,2,2,0.7071067690849304,0.047619047619047616,compound:drug2|dose:1,['gene-A_1_drug2'],,True
+gene-B,['gene-B_3_drug2'],,0.9999999403953552,2,1,1,20,1,1,1,2,2,0.7071067690849304,0.047619047619047616,compound:drug2|dose:1,['gene-B_1_drug2'],,True

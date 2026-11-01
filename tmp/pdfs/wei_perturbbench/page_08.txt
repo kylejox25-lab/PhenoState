@@ -1,0 +1,127 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+As shown in Fig. 3a,b , the performance of each method in the i.i.d. 
+setting is better than that in the o.o.d. setting, which is expected. (2) 
+We calculated the similarity between the test context and each con -
+text in the training dataset via the E-distance, and the minimum value 
+was used to assess the degree of similarity between the test context 
+and the training context (inter-heterogeneity). As shown in Fig. 3c, 
+when the inter-heterogeneity between the test context and training 
+context was low, the methods generally performed well. In contrast, 
+when the inter-heterogeneity between the test context and training 
+context was high, the performance of the methods was poor. This 
+result indicated that it is still challenging for the current methods to 
+be generalized to a new cellular context that is dissimilar to the train-
+ing cellular context (Extended Data Fig. 4). (3) We conducted holdout 
+experiments on kangCrossCell and Haber datasets to simulate a test 
+to mimic different degrees of inter-heterogeneity (Supplementary 
+Note 9). We first selected several cell lines as the test contexts and then 
+sequentially added contexts that were either similar or dissimilar to the 
+test contexts from the training dataset to observe the performance of 
+each method (Fig. 3d ). When contexts with greater similarity to the 
+test context were added to the training dataset, the prediction per -
+formance generally improved considerably. However, when contexts 
+with low similarity to the test context were added, the performance 
+either showed little improvement or remained unchanged (Fig. 3e,f  
+and Supplementary Fig. 9).
+In summary, the analysis of the benchmark results in the cellular 
+context generalization scenarios shows that the performance of the 
+evaluated methods is highly dependent on the inter-heterogeneity. 
+When predicting perturbation effects in a new cellular context that 
+differs substantially from the training datasets, all methods likely 
+performed unsatisfactorily, highlighting their limited generalizability. 
+We believe that accounting for intercellular heterogeneity is crucial for 
+enhancing the generalizability of current models across diverse cellular 
+contexts. Finally, user guidance is provided regarding the benchmark 
+analysis of the cellular context generalization scenario (Fig. 3g).
+Benchmarking analysis of the perturbation generalization 
+scenario
+In the perturbation generalization scenario, we assess the ability of 
+models to predict the effects of previously unobserved perturbations 
+within a specific cellular context. Depending on the type of pertur -
+bation, this scenario can be further divided into two categories: genetic 
+perturbation effect prediction and chemical perturbation effect  
+prediction. (1) Genetic perturbation effect prediction. In this scenario, 
+we evaluated the performance of 11 existing algorithms, including  
+the foundation models—AttentionPert 23, biolord16, CPA24, GEARS5,  
+GenePert25, linearModel12, scouter27, scFoundation6, scGPT7, scELMo28 
+and GeneCompass29—as well as 4 baseline models, on 13 datasets of 
+varying sizes, including between 25 and 1,618 perturbations. In addi-
+tion, recent studies suggest that for predicting gene expression profiles 
+under combined perturbations, the simplest additive model—which 
+predicts the effects of combined perturbations as the sum of the effects 
+of two single perturbations—often outperforms complex deep learn-
+ing models or foundation models such as scGPT 12. However, these 
+conclusions were derived from a single dataset. T o address this limi-
+tation in the previous evaluations, we included 4 datasets focused  
+on combined perturbations (two-gene combinations) in our evaluation. 
+(2) Chemical perturbation effect prediction. Similarly, in chemical 
+perturbation effect prediction scenarios, datasets are categorized  
+into single-perturbation datasets and combined-perturbation datasets. 
+Among the methods tested, biolord16, chemCPA26 and cycleCDR31 are 
+limited to single-perturbation datasets.
+Genetic perturbation setting.  Across the 9 single-perturbation 
+datasets, GenePert, scGPT and scouter demonstrated the best 
+overall performance (Fig. 4a). Both GenePert and scouter leverage 
+ChatGPT-derived textual descriptions as embeddings. It is surprising 
+that models relying on unaligned natural language embeddings out-
+perform those leveraging transcriptome-informed embeddings. T o 
+investigate the underlying source of performance gain, we conducted 
+an ablation study designed to isolate the contribution of different 
+embedding types. Specifically, we replaced the original embeddings 
+in GenePert and scouter with five alternative embeddings: Gene -
+Compass29, geneformer9, scBERT8, scELMo28 and scGPT7, while keeping 
+all other model parameters and training procedures identical. Among 
+these, scELMo and ChatGPT-based embeddings are derived from  
+large language models (LLMs) trained on biomedical corpora, whereas 
+GeneCompass, geneformer, scBERT and scGPT are derived from  
+foundation models trained on large-scale single-cell transcriptomic 
+datasets. We evaluated model performance using MSE and PCC-delta, 
+as these metrics more accurately reflect model performance and  
+are more computationally efficient 50. As shown, across nine single-  
+gene perturbation datasets, GenePert and scouter consistently 
+achieved top performance when using embeddings from scELMo and 
+ChatGPT (Supplementary Fig. 45). In contrast, performance dropped 
+markedly when transcriptome-informed embeddings (for example, 
+from scGPT and geneformer) were used. Notably, GenePert uses  
+a linear regression model, and scouter uses a simple multilayer per -
+ceptron—yet both outperform more complex models such as GEARS 
+and biolord under certain settings. This suggests that the performance 
+advantage likely stems from the rich biological priors embedded  
+Fig. 4 | Benchmarking results for genetic perturbation in the perturbation 
+generalization scenario. a, Performance overview of the 15 evaluated methods, 
+including accuracy, robustness and scalability. Data are presented as mean  
+values with error bars indicating standard errors of the mean. N = 9 datasets.  
+b, Performance of the 14 methods on MSE and PCC-delta metrics in the Replogel-
+RPE1essential and Replogel-K562essential datasets. The scFoundation method 
+encountered an ‘out-of-memory’ error on these two datasets, so results were 
+not available. Box plots show the median (center line) and the 25th and 75th 
+percentiles (bounds of the box), and whiskers extend to 1.5 times the IQR; N = 798, 
+969 predictions for Replogel-RPE1essential and Replogel-K562essential datasets. 
+c, The relationship between performance differences and the similarities 
+between testing and training perturbations (inter-heterogeneity). The x axis 
+represents inter-heterogeneity, with larger values indicating that a testing 
+perturbation is less similar to the training perturbations (Methods). The y axis 
+represents the performance difference in MSE between the CPA model and 
+trainMean, with lower values indicating that CPA achieves better performance. 
+Each point corresponds to a testing perturbation. A linear regression line 
+with 95% confidence interval is shown. PCCs were calculated, and statistical 
+significance was assessed using two-sided t-tests. Adjustments were not  
+made for multiple comparisons. d, Performance overview of the 15 evaluated 
+methods across the four genetic combination perturbation datasets. Box plots 
+show the median (center line) and the 25th and 75th percentiles (bounds of the 
+box), and whiskers extend to 1.5 times the IQR; N = 4 datasets. e, Performance 
+overview of the 15 evaluated methods on PCC-delta and MSE metrics for the 
+additive gene interaction subtype. Data are presented as mean values with error 
+bars indicating standard errors of the mean. f, Performance overview of the  
+15 evaluated methods on PCC-delta and MSE metrics for potentiation, epistasis 
+and redundant gene interaction subtypes. Data are presented as mean values 
+with error bars indicating standard errors of the mean. g, Average performance 
+of the 15 methods on PCC-delta and MSE metrics across the comb-seen0, combo-
+seen1 and combo-seen2 perturbation categories. h, Performance of the scGPT 
+and trainMean baseline models on MSE and PCC-delta metrics across the comb-
+seen0, combo-seen1 and combo-seen2 perturbation categories in the Schmidt 
+dataset. i, Runtime and CPU memory usage of the 15 methods on simulated 
+datasets with varying cell counts. j, MSE and PCC-delta results for the 15 methods 
+on simulated datasets with varying levels of noise and sparsity. Due to the long 
+runtime of scFoundation, we did not evaluate its robustness.

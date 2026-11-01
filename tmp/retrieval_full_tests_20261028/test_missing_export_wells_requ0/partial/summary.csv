@@ -1,0 +1,5 @@
+model,task,primary_metric,score,ci95_lower,ci95_upper,mrr,map,hit@1,hit@5,recall@1,recall@5,recall@10,random_ap,random_mrr,random_recall@1,random_recall@5,n_groups,n_queries,n_evaluable_queries,n_evaluable_tasks,coverage,overall_query_coverage,candidate_count_range,excluded_reasons
+mae,cross-guide,mrr,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.75,0.75,0.5,1.0,2,7,7,7,1.0,0.875,"[2, 2]",{}
+mae,same-guide,map,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.611111111111111,,0.3333333333333333,1.0,2,7,7,7,1.0,0.875,"[3, 3]",{}
+diffmae,cross-guide,mrr,0.5,0.5,0.5,0.5,0.5,0.0,1.0,0.0,1.0,1.0,0.75,0.75,0.5,1.0,2,7,7,7,1.0,0.875,"[2, 2]",{}
+diffmae,same-guide,map,0.3333333333333333,0.3333333333333333,0.3333333333333333,0.3333333333333333,0.3333333333333333,0.0,1.0,0.0,1.0,1.0,0.611111111111111,,0.3333333333333333,1.0,2,7,7,7,1.0,0.875,"[3, 3]",{}

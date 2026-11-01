@@ -1,0 +1,97 @@
+{
+  "format": "cellvit-well-evaluation-v2",
+  "query_split": "val",
+  "gallery_split": "train",
+  "query_unit": "single well",
+  "tasks": [
+    "cross-guide",
+    "same-guide"
+  ],
+  "metric": "cosine",
+  "preprocessing": "raw",
+  "ks": [
+    1,
+    5,
+    10
+  ],
+  "seed": 2026,
+  "n_bootstrap": 20,
+  "n_null": 500,
+  "n_permutations": 1000,
+  "max_controls_per_plate": 16,
+  "max_replicates": 20,
+  "control_rules": null,
+  "encoder_input": "image only; perturbation metadata is used for evaluation",
+  "metadata_sha256": "d56957b083395254f8143a517a34c2e80ac5cc1a4fedf94e02b18ccb2d90f175",
+  "manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+  "split_source": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_legacy_checkpoint_paths_n0\\mds",
+  "models": {
+    "seed1": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_legacy_checkpoint_paths_n0\\mae_train.parquet",
+          "sha256": "1d3625be1424073cc5262cd93f0c5f114f167bb5dea3b8474f61f0281e8e7903",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "mae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "train",
+            "cellvit_checkpoint": "/old-server/mae.pt"
+          }
+        },
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_legacy_checkpoint_paths_n0\\mae_val.parquet",
+          "sha256": "a4b84120ded4061d32f112ee7f30c5024c1e2152e89c29f1cf2d212a18bc6a22",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "mae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "val",
+            "cellvit_checkpoint": "/old-server/mae.pt"
+          }
+        }
+      ],
+      "checkpoint_verification": "legacy_path_only; checkpoint contents unverified"
+    },
+    "seed2": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_legacy_checkpoint_paths_n0\\mae_train.parquet",
+          "sha256": "1d3625be1424073cc5262cd93f0c5f114f167bb5dea3b8474f61f0281e8e7903",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "mae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "train",
+            "cellvit_checkpoint": "/old-server/mae.pt"
+          }
+        },
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_legacy_checkpoint_paths_n0\\mae_val.parquet",
+          "sha256": "a4b84120ded4061d32f112ee7f30c5024c1e2152e89c29f1cf2d212a18bc6a22",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "mae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "val",
+            "cellvit_checkpoint": "/old-server/mae.pt"
+          }
+        }
+      ],
+      "checkpoint_verification": "legacy_path_only; checkpoint contents unverified"
+    }
+  },
+  "allow_partial": false,
+  "drop_nonfinite": false,
+  "uncertainty": "perturbation bootstrap conditional on supplied embeddings; not training-seed uncertainty",
+  "external_functional_truth": "not used",
+  "software": {
+    "python": "3.11.15",
+    "numpy": "2.4.3",
+    "pyarrow": "25.0.1"
+  }
+}

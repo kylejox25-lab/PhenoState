@@ -22,6 +22,7 @@ outputs/
 !/configs/ca_mae.json
 !/configs/diffmae.json
 !/configs/cnn_mae.json
+!/configs/negative_controls.example.json
 *.parquet
 *.jp2
 *.mds

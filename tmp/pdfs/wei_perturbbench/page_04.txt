@@ -1,0 +1,146 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+For the perturbation generalization scenario, we curated 17 
+datasets that broadly cover 2 perturbation types (Fig. 1c ), includ -
+ing (1) 13 genetic perturbation datasets, of which 9 focus on single 
+pertur b ations and 4 on combined perturbations, and (2) 4 chemical  
+perturbation datasets, including 3 single-perturbation datasets and 
+one combined-perturbation dataset 3,38– 46. In total, the numbers of 
+perturbations in these datasets range from 25 to 1,618, ensuring their 
+broad applicability to evaluate the methods.
+Evaluation metrics and assessment of methods.  T o evaluate the 
+current tools for single-cell perturbation prediction comprehensively, 
+we focused on three key metrics, that is, accuracy, robustness and 
+scalability.
+ (1
+)
+ A
+ccuracy evaluation presents a particular challenge because of 
+the lack of consensus on the most suitable evaluation metrics in 
+the field. A variety of metrics have been proposed for evaluat-
+ing single-cell perturbation effect prediction performance, but 
+their reliability and informativeness are still debated. T o ensure a 
+fair, interpretable and representative evaluation of perturbation  
+prediction models, we conducted an extensive literature survey 
+covering 28 existing tools and benchmarking studies in the field, 
+with a particular focus on a study by Ji et al., to guide our selection 
+of evaluation metrics
+47. From these sources, we identified 19 evalu-
+ation metrics and selected three population-average metrics and 
+three population-distribution metrics (Supplementary Table 1, 
+Methods and Extended Data Fig. 1): (a) Population-average met-
+rics. MSE is among the most stable and widely used metrics in 
+single-cell RNA-sequencing (RNA-seq) evaluation
+47; E-distance, 
+selected as another top-performing metric, provides a robust 
+and informative assessment by primarily capturing the difference 
+in average effects between predicted and actual gene expression 
+profiles
+13; PCC-delta, introduced by GEARS and scGPT, has an ad-
+vantage over the traditional PCC in that it better captures the direc-
+tional consistency of predictions
+5,7; (b) Population-distribution 
+metrics. Wasserstein distance and KL-divergence were selected 
+as the most widely used metrics for evaluating distribution-level 
+prediction performance. They quantify the discrepancy between 
+predicted and actual distributions of single-cell profiles, which is 
+essential for capturing heterogeneity and higher-order statistical 
+properties. The Common-DEGs metric measures the accuracy of 
+the predicted most differentially expressed genes, which is criti-
+cal for downstream functional analyses and biological interpre-
+tation
+15. In our analysis, we prio  ritiz ed using MSE and PCC-delta 
+as the representative metric for model performance47. PCC-delta 
+was particularly empha
+ siz
+ed due to its bounded range from −1 
+to 1, which allows for intuitive and interpretable assessment of  
+model effectiveness. More
+ o
+ver, both metrics are computationally 
+efficient, making them well-suited for large-scale benchmarking.
+ We calculated the metrics in two ways: for all genes and for the 
+top 100 most differentially expressed genes ranked by abso -
+lute effect sizes. It should be noted that, for clarity, we use the 
+term ‘DEGs’ in a broader sense than its conventional statistical 
+definition (Supplementary Note 2). Metrics calculated for this 
+smaller, meaningful set of genes are generally preferred in the 
+field, as genes with modest expression change do not contrib -
+ute substantially to understanding perturbation effects 48. 
+Therefore, for conciseness, we present the results based on the  
+top 100 most differentially expressed genes in the main text,  
+and the analysis results of all genes are provided at https:/ /
+bm2-lab.github.io/scPerturBench-reproducibility/. Moreover,  
+we demonstrate that the number of most differentially  
+expressed genes selected does not affect our main conclusions 
+(Supplementary Note 2). We use a ranking-based method to fur-
+ther compare the performance of the selected methods on the 
+basis of the six metrics (Methods)49.
+ (
+2)
+ T
+o evaluate robustness to technical variation, we generated sim-
+ulated datasets based on real data by introducing controlled lev-
+els of noise and sparsity, allowing us to assess how such artifacts 
+impact method performance
+50. In the main text, we focus on 
+population-average metrics—specifically MSE and PCC-delta—to 
+evaluate model robustness under these challenging conditions, 
+as these metrics more accurately reflect model performance 
+and are computationally efficient
+47. Importantly, this analysis is 
+intended to assess robustness to technical artifacts rather than 
+biological variability in perturbation responses.
+ (
+3)
+ T
+o evaluate scalability, an essential consideration for practical 
+application, we systematically varied the sizes of the datasets. 
+We measured computational performance in terms of runtime 
+and CPU utilization to provide a detailed analysis of resource ef-
+ficiency across tools. This multifaceted evaluation framework 
+ensures a thorough and balanced assessment of single-cell per-
+turbation prediction tools, addressing both methodological 
+rigor and practical applicability.
+Benchmarking analysis for the cellular context generalization 
+scenario
+In the cellular context generalization scenario, we evaluated the predic-
+tion of known perturbations in previously unobserved cellular contexts. 
+The cellular context generalization scenario was further divided into 
+two distinct test settings by partitioning the training and test datasets 
+into independent and identically distributed or in-distribution (i.i.d.) 
+and out-of-distribution (o.o.d.) settings (Fig. 2a)14,18. In the o.o.d. set-
+ting, we used leave-one-out cross-validation, where one context was 
+held out as the test set, while the remaining contexts served as the 
+training set (Supplementary Note 3). In the i.i.d. scenario, the model 
+was trained using the same training data as in the o.o.d. scenario but 
+with access to some of the cells from the held-out context. These extra 
+training cells and the test cells were assumed to be independent and 
+identically distributed14. In practical applications, the o.o.d. scenario 
+is more commonly encountered, as we often aim to predict the effects 
+of perturbations in a new, previously unseen context. Furthermore, 
+the i.i.d. setting can be considered a special case of the o.o.d. scenario, 
+where the test context has a highly similar counterpart in the training 
+data. Therefore, in the following benchmark analysis, we focus primar-
+ily on the o.o.d. setting scenario, and the results of the i.i.d. setting 
+scenario can be found in Supplementary Fig. 1.
+Fig. 2 | Benchmarking results for the o.o.d. setting in the cellular context 
+generalization scenario. a, A schematic diagram illustrating the splitting of 
+training and testing data in the i.i.d. and o.o.d. settings. Different colors represent 
+different cellular contexts. b, Performance overview of the 14 evaluated methods, 
+including accuracy, robustness and scalability. Data are presented as mean 
+values with error bars indicating standard errors of the mean. N = 12 datasets. 
+CV, coefficient of variation. c, Overview of PCC-delta for the 14 methods across 
+the 12 datasets. d, Silhouette scores calculated using three different clustering 
+labels from the Afriat and TCDD datasets. e, Performance overview of biolord 
+and the biolord baseline (without considering covariates) across multi-condition 
+datasets. Data are presented as mean values with error bars indicating standard 
+errors of the mean. N = 4, 4, 42, 6 and 27 predictions for CrossSpecies, Afriat, 
+McFarland, TCDD and sciPlex3 datasets. f, Performance overview of scDisInFact 
+and scDisInFact baseline (without considering covariates) across multi-condition 
+datasets. Data are presented as mean values with error bars indicating standard 
+errors of the mean. N = 4, 4, 42, 6 and 27 predictions for CrossSpecies, Afriat, 
+McFarland, TCDD and sciPlex3 datasets. g, MSE and PCC-delta results for the  
+14 methods on simulated datasets with varying levels of noise and sparsity.  
+h, Runtime and CPU memory usage of the 14 methods on simulated datasets  
+with varying sizes.

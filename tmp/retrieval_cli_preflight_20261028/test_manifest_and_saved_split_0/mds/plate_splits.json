@@ -1,0 +1,1 @@
+[{"experiment_name": "gene-A", "plate": 1, "split": "test"}, {"experiment_name": "gene-A", "plate": 2, "split": "train"}, {"experiment_name": "gene-A", "plate": 3, "split": "test"}, {"experiment_name": "gene-B", "plate": 1, "split": "val"}, {"experiment_name": "gene-B", "plate": 2, "split": "test"}, {"experiment_name": "gene-B", "plate": 3, "split": "train"}]

@@ -1,0 +1,127 @@
+well_id,experiment_name,plate,gene,treatment,perturbation_type,well_type_label,concentration,cell_type,split
+gene-A_1_G_1,gene-A,1,G,G_guide_1,CRISPR,Query guides,,HUVEC,val
+gene-A_1_G_2,gene-A,1,G,G_guide_2,CRISPR,Query guides,,HUVEC,val
+gene-A_1_H_1,gene-A,1,H,H_guide_1,CRISPR,Query guides,,HUVEC,val
+gene-A_1_H_2,gene-A,1,H,H_guide_2,CRISPR,Query guides,,HUVEC,val
+gene-A_2_G_1,gene-A,2,G,G_guide_1,CRISPR,Query guides,,HUVEC,train
+gene-A_2_G_2,gene-A,2,G,G_guide_2,CRISPR,Query guides,,HUVEC,train
+gene-A_2_H_1,gene-A,2,H,H_guide_1,CRISPR,Query guides,,HUVEC,train
+gene-A_2_H_2,gene-A,2,H,H_guide_2,CRISPR,Query guides,,HUVEC,train
+gene-A_3_G_1,gene-A,3,G,G_guide_1,CRISPR,Query guides,,HUVEC,test
+gene-A_3_G_2,gene-A,3,G,G_guide_2,CRISPR,Query guides,,HUVEC,test
+gene-A_3_H_1,gene-A,3,H,H_guide_1,CRISPR,Query guides,,HUVEC,test
+gene-A_3_H_2,gene-A,3,H,H_guide_2,CRISPR,Query guides,,HUVEC,test
+gene-B_1_G_1,gene-B,1,G,G_guide_1,CRISPR,Query guides,,HUVEC,val
+gene-B_1_G_2,gene-B,1,G,G_guide_2,CRISPR,Query guides,,HUVEC,val
+gene-B_1_H_1,gene-B,1,H,H_guide_1,CRISPR,Query guides,,HUVEC,val
+gene-B_1_H_2,gene-B,1,H,H_guide_2,CRISPR,Query guides,,HUVEC,val
+gene-B_2_G_1,gene-B,2,G,G_guide_1,CRISPR,Query guides,,HUVEC,test
+gene-B_2_G_2,gene-B,2,G,G_guide_2,CRISPR,Query guides,,HUVEC,test
+gene-B_2_H_1,gene-B,2,H,H_guide_1,CRISPR,Query guides,,HUVEC,test
+gene-B_2_H_2,gene-B,2,H,H_guide_2,CRISPR,Query guides,,HUVEC,test
+gene-B_3_G_1,gene-B,3,G,G_guide_1,CRISPR,Query guides,,HUVEC,train
+gene-B_3_G_2,gene-B,3,G,G_guide_2,CRISPR,Query guides,,HUVEC,train
+gene-B_3_H_1,gene-B,3,H,H_guide_1,CRISPR,Query guides,,HUVEC,train
+gene-B_3_H_2,gene-B,3,H,H_guide_2,CRISPR,Query guides,,HUVEC,train
+gene-A_1_drug0,gene-A,1,,drug0,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,val
+gene-A_1_drug1,gene-A,1,,drug1,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,val
+gene-A_1_drug2,gene-A,1,,drug2,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,val
+gene-A_1_CRISPR_control0,gene-A,1,,intron0,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_CRISPR_control1,gene-A,1,,intron1,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_CRISPR_control2,gene-A,1,,intron2,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_CRISPR_control3,gene-A,1,,intron3,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_CRISPR_control4,gene-A,1,,intron4,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_CRISPR_control5,gene-A,1,,intron5,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_CRISPR_control6,gene-A,1,,intron6,CRISPR,Intron controls,,HUVEC,val
+gene-A_1_COMPOUND_control0,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_1_COMPOUND_control1,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_1_COMPOUND_control2,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_1_COMPOUND_control3,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_1_COMPOUND_control4,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_1_COMPOUND_control5,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_1_COMPOUND_control6,gene-A,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-A_2_drug0,gene-A,2,,drug0,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,train
+gene-A_2_drug1,gene-A,2,,drug1,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,train
+gene-A_2_drug2,gene-A,2,,drug2,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,train
+gene-A_2_CRISPR_control0,gene-A,2,,intron0,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_CRISPR_control1,gene-A,2,,intron1,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_CRISPR_control2,gene-A,2,,intron2,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_CRISPR_control3,gene-A,2,,intron3,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_CRISPR_control4,gene-A,2,,intron4,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_CRISPR_control5,gene-A,2,,intron5,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_CRISPR_control6,gene-A,2,,intron6,CRISPR,Intron controls,,HUVEC,train
+gene-A_2_COMPOUND_control0,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_2_COMPOUND_control1,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_2_COMPOUND_control2,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_2_COMPOUND_control3,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_2_COMPOUND_control4,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_2_COMPOUND_control5,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_2_COMPOUND_control6,gene-A,2,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-A_3_drug0,gene-A,3,,drug0,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,test
+gene-A_3_drug1,gene-A,3,,drug1,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,test
+gene-A_3_drug2,gene-A,3,,drug2,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,test
+gene-A_3_CRISPR_control0,gene-A,3,,intron0,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_CRISPR_control1,gene-A,3,,intron1,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_CRISPR_control2,gene-A,3,,intron2,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_CRISPR_control3,gene-A,3,,intron3,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_CRISPR_control4,gene-A,3,,intron4,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_CRISPR_control5,gene-A,3,,intron5,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_CRISPR_control6,gene-A,3,,intron6,CRISPR,Intron controls,,HUVEC,test
+gene-A_3_COMPOUND_control0,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-A_3_COMPOUND_control1,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-A_3_COMPOUND_control2,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-A_3_COMPOUND_control3,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-A_3_COMPOUND_control4,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-A_3_COMPOUND_control5,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-A_3_COMPOUND_control6,gene-A,3,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_1_drug0,gene-B,1,,drug0,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,val
+gene-B_1_drug1,gene-B,1,,drug1,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,val
+gene-B_1_drug2,gene-B,1,,drug2,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,val
+gene-B_1_CRISPR_control0,gene-B,1,,intron0,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_CRISPR_control1,gene-B,1,,intron1,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_CRISPR_control2,gene-B,1,,intron2,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_CRISPR_control3,gene-B,1,,intron3,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_CRISPR_control4,gene-B,1,,intron4,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_CRISPR_control5,gene-B,1,,intron5,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_CRISPR_control6,gene-B,1,,intron6,CRISPR,Intron controls,,HUVEC,val
+gene-B_1_COMPOUND_control0,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_1_COMPOUND_control1,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_1_COMPOUND_control2,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_1_COMPOUND_control3,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_1_COMPOUND_control4,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_1_COMPOUND_control5,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_1_COMPOUND_control6,gene-B,1,,EMPTY_control,COMPOUND,,,HUVEC,val
+gene-B_2_drug0,gene-B,2,,drug0,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,test
+gene-B_2_drug1,gene-B,2,,drug1,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,test
+gene-B_2_drug2,gene-B,2,,drug2,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,test
+gene-B_2_CRISPR_control0,gene-B,2,,intron0,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_CRISPR_control1,gene-B,2,,intron1,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_CRISPR_control2,gene-B,2,,intron2,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_CRISPR_control3,gene-B,2,,intron3,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_CRISPR_control4,gene-B,2,,intron4,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_CRISPR_control5,gene-B,2,,intron5,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_CRISPR_control6,gene-B,2,,intron6,CRISPR,Intron controls,,HUVEC,test
+gene-B_2_COMPOUND_control0,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_2_COMPOUND_control1,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_2_COMPOUND_control2,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_2_COMPOUND_control3,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_2_COMPOUND_control4,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_2_COMPOUND_control5,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_2_COMPOUND_control6,gene-B,2,,EMPTY_control,COMPOUND,,,HUVEC,test
+gene-B_3_drug0,gene-B,3,,drug0,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,train
+gene-B_3_drug1,gene-B,3,,drug1,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,train
+gene-B_3_drug2,gene-B,3,,drug2,COMPOUND,Query Compounds + Intron control,1.0,HUVEC,train
+gene-B_3_CRISPR_control0,gene-B,3,,intron0,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_CRISPR_control1,gene-B,3,,intron1,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_CRISPR_control2,gene-B,3,,intron2,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_CRISPR_control3,gene-B,3,,intron3,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_CRISPR_control4,gene-B,3,,intron4,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_CRISPR_control5,gene-B,3,,intron5,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_CRISPR_control6,gene-B,3,,intron6,CRISPR,Intron controls,,HUVEC,train
+gene-B_3_COMPOUND_control0,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-B_3_COMPOUND_control1,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-B_3_COMPOUND_control2,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-B_3_COMPOUND_control3,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-B_3_COMPOUND_control4,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-B_3_COMPOUND_control5,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train
+gene-B_3_COMPOUND_control6,gene-B,3,,EMPTY_control,COMPOUND,,,HUVEC,train

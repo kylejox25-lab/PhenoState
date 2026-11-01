@@ -1,0 +1,5 @@
+task,metric,model_a,model_b,n_groups,delta_b_minus_a,ci95_lower,ci95_upper,n_bootstrap,seed
+activity,map,encoder_A,encoder_B,7,0.0,0.0,0.0,10,2026
+compound,map,encoder_A,encoder_B,3,0.0,0.0,0.0,10,2026
+cross-guide,mrr,encoder_A,encoder_B,2,0.0,0.0,0.0,10,2026
+same-guide,map,encoder_A,encoder_B,2,0.0,0.0,0.0,10,2026

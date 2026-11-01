@@ -1,0 +1,131 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+learning models, including CPA, scGPT, scouter and GEARS, across 
+13 genetic perturbation benchmark datasets with varying size. As 
+shown in our results, increasing the number of cells or perturbations 
+in the training data did not lead to performance gains across all evalu-
+ation metrics (Supplementary Note 11 and Supplementary Figs. 13 and 
+14). Further analysis revealed that model performance declined on 
+perturbations with high inter-heterogeneity, suggesting that gener-
+alization is more strongly influenced by data quality—particularly the 
+similarity between training and testing perturbations—than by dataset 
+size (Supplementary Fig. 29). Additionally, we used the E-distance to 
+measure the degree of perturbation effects in each dataset. In gen-
+eral, accurately predicting the perturbation expression profile for 
+strong perturbations requires models with greater generalizability. As 
+shown in Fig. 5e, strong perturbations were associated with increased 
+MSE, E-distance and Wasserstein values, suggesting greater difficulty 
+in accurately capturing their expression responses (Supplementary 
+Note 11 and Supplementary Figs. 15–17). Collectively, these findings 
+highlight the current limitations in the generalizability of deep learn-
+ing models for perturbation effect prediction, especially in the pres-
+ence of strong perturbations and heterogeneous perturbations; (3) 
+Poor performance on population-distribution metrics. We observed 
+that all methods likely performed poorly on population-distribution 
+metrics especially on the Common-DEGs metric in genetic perturba-
+tion scenarios. For instance, in genetic single-perturbation datasets, 
+even the best-performing model, baseMLP, identified fewer than 10 of  
+100 true most differentially expressed genes (Fig. 5f). This also aligns 
+with findings from the cellular context generalization scenario.
+Finally, user guidance is provided regarding the benchmark  
+analysis of the perturbation generalization scenario (Fig. 5g).
+Discussion
+In this study, we provide a comprehensive benchmark of single-cell 
+perturbation prediction methods across two key scenarios: cellular 
+context generalization and perturbation generalization. We assessed 
+27 methods with a total of 29 datasets using 6 evaluation metrics—
+MSE, PCC-delta, E-distance, Wasserstein distance, KL-divergence and 
+Common-DEGs—with a focus on evaluating the methods’ generaliz -
+ability. Simulated data were also used to assess the impact of noise 
+and sparsity on performance. Our findings revealed that no single 
+method performs well across all datasets, highlighting the need for 
+user-specific guidance in selecting methods on the basis of dataset 
+characteristics. These results are as follows: (1) In the cellular context 
+generalization scenario, trVAE, CellOT and inVAE demonstrated the 
+best overall performance on single-condition datasets. For the accurate 
+prediction of the top most differentially expressed genes, scPRAM is the 
+optimal choice. Additionally, when the dataset includes perturbation 
+dosage information, scVIDR is the best method. (2) In the perturbation 
+generalization scenario, for predicting genetic single-perturbation 
+effects, GenePert is the optimal choice when the training dataset is 
+small. When the fine-tuning dataset is sufficiently large, CPA and scGPT 
+are preferable. For predicting genetic combined-perturbation effects, 
+the linearModel and scouter method perform the best. In chemical 
+single-perturbation effect prediction, chemCPA is the preferred choice, 
+whereas the baseReg baseline model achieves the highest accuracy in 
+chemical combined-perturbation effect prediction (Fig. 5g).
+For designing future algorithms, the following limitations of exist-
+ing methods and insights should be considered: (1) In the cellular 
+context generalization scenario, most existing tools do not incorporate 
+time-point/dosage covariates, and those that do are still far from suf-
+ficiently accurate. Given the increasing availability of multi-condition 
+data in the single-cell perturbation field, there is a pressing need to 
+develop high-performing models tailored for such data. (2) In both 
+test scenarios, despite accounting for intra-heterogeneity, the models 
+exhibited weaker performance on population-distribution metrics 
+compared to population-average metrics. Typically, deep learning 
+models in the perturbation effect prediction field are optimized using 
+loss functions that focus more on population-average metrics. This may 
+account for the strong performance of these methods on such metrics 
+and their poorer results regarding population-distribution metrics. 
+However, understanding the heterogeneity within cellular subpopula-
+tions in response to perturbations is vital for revealing gene functions 
+and regulatory networks. T o increase prediction accuracy, future mod-
+els for perturbation effect prediction may consider incorporating both 
+population-average and population-distribution metrics into their 
+loss function design; (3) One limitation of current methods emerges 
+in the perturbation generalization setting, where advanced models 
+tend to underperform relative to simpler approaches, particularly on 
+small-scale datasets. This finding suggests that complex models may 
+struggle to generalize effectively in low-data regimes. Enhancing the 
+robustness and generalizability of advanced models under data-limited 
+conditions represents an important direction for future research.  
+(4) All current methods likely exhibited poor generalizability, espe -
+cially when predicting perturbation effects in novel cellular contexts. 
+T o alleviate this, we propose incorporating prior knowledge through 
+cell-line embeddings, which can improve model generalizability (Sup-
+plementary Notes 12 and 13 and Supplementary Figs. 27, 28 and 38). 
+As a proof-of-concept study, we present an initial attempt to inte -
+grate such prior knowledge and formulate an applicable framework  
+with validations. We encourage researchers to explore and develop 
+alternative approaches on the basis of their own deeper understanding 
+and hope that our approach will inspire future work and drive innova-
+tion in this area.
+There are several limitations of our current research. (1) In 
+certain test scenarios, the available datasets are currently insuffi -
+cient, which may lead to bias in the conclusions drawn; (2) Our pro -
+posed cellular context embedding strategy is currently applicable 
+only to cell-line-derived contexts and cannot be directly applied to 
+patient-derived contexts (Supplementary Note 12); (3) While the pro-
+posed cellular context embedding strategy represents a conceptu -
+ally promising direction, its current performance demonstrates only 
+limited improvements—mainly in the PCC-delta and Common-DEGs 
+metrics—and does not consistently surpass baseline methods across 
+evaluation metrics on all the evaluated datasets. As a preliminary 
+attempt, this method remains an early exploration, and we acknowl-
+edge that further methodological refinements will be necessary to 
+improve its performance and enhance its practical applicability;  
+(4) Our current work does not address the challenge of poor perfor -
+mance on population-distribution metrics, which reflect a model’s 
+ability to capture intracellular heterogeneity. Addressing this limitation 
+remains an important direction for future research; (5) One limitation 
+of our current robustness evaluation framework is that it primarily 
+focuses on the effects of technical artifacts, such as noise and sparsity. 
+While this allows us to systematically assess the sensitivity of predic-
+tive models to common experimental distortions, it does not capture 
+biological variability in perturbation responses across different cellular 
+contexts or genetic backgrounds. Evaluating robustness to biological 
+variation with simulator tools such as scDesign3 (ref. 54 ) remains an 
+important and complementary direction for future work.
+Looking ahead, several important directions could further 
+advance the field of single-cell perturbation outcome prediction.  
+(1) There is an urgent need to establish more diverse and compre -
+hensive single-cell perturbation atlases. Similarly to how large-scale 
+single-cell atlases have accelerated algorithmic development in the 
+broader single-cell field, systematically building perturbation-focused 
+cell atlases could catalyze progress in perturbation effect prediction. 
+Notably, Rood et al. have proposed the concept of a ‘perturbation 
+cell atlas’ , highlighting the value of such systematic efforts for the 
+community55. Large-scale resources such as Tahoe-100M and X-Atlas 
+have begun to fill this gap by providing comprehensive perturbation 
+datasets, which lay a strong foundation for future benchmarking 

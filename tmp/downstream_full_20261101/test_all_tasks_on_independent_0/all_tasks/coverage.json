@@ -1,0 +1,35 @@
+{
+  "n_metadata": 126,
+  "n_requested": 84,
+  "n_common_before_finite": 84,
+  "n_common": 84,
+  "coverage": 1.0,
+  "dropped_nonfinite_well_ids": [],
+  "models": {
+    "encoder_A": {
+      "n_loaded": 84,
+      "n_selected_present": 84,
+      "n_selected_missing": 0,
+      "dimension": 3,
+      "n_nonfinite_common": 0
+    },
+    "encoder_B": {
+      "n_loaded": 84,
+      "n_selected_present": 84,
+      "n_selected_missing": 0,
+      "dimension": 5,
+      "n_nonfinite_common": 0
+    }
+  },
+  "invalid_metric_vectors_by_model": {
+    "encoder_A": 0,
+    "encoder_B": 0
+  },
+  "dropped_invalid_metric_well_ids": [],
+  "n_requested_query_wells": 42,
+  "n_requested_gallery_wells": 42,
+  "n_common_valid_query_wells": 42,
+  "n_common_valid_gallery_wells": 42,
+  "query_embedding_coverage": 1.0,
+  "gallery_embedding_coverage": 1.0
+}

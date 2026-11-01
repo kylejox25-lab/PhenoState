@@ -1,0 +1,103 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+39. W essels, H. H. et al. Efficient combinatorial targeting of RNA 
+transcripts in single cells with Cas13 RNA Perturb-seq. Nat. 
+Methods 20, 86–94 (2023).
+40.
+ Norman, T
+. M. et al. Exploring genetic interaction manifolds 
+constructed from rich single-cell phenotypes. Science 365, 
+786–793 (2019).
+41.
+ R
+eplogle, J. M. et al. Mapping information-rich genotype- 
+phenotype landscapes with genome-scale Perturb-seq. Cell 185, 
+2559–2575 (2022).
+42.
+ P
+apalexi, E. et al. Characterizing the molecular regulation of 
+inhibitory immune checkpoints with multimodal single-cell 
+screens. Nat. Genet. 53, 322–331 (2021).
+43.
+ R
+eplogle, J. M. et al. Combinatorial single-cell CRISPR screens 
+by direct guide RNA capture and targeted sequencing. Nat. 
+Biotechnol. 38, 954–961 (2020).
+44.
+ T
+ian, R. et al. Genome-wide CRISPRi/a screens in human neurons 
+link lysosomal failure to ferroptosis. Nat. Neurosci. 24, 1020–1034 
+(2021).
+45.
+ F
+rangieh, C. J. et al. Multimodal pooled Perturb-CITE-seq screens 
+in patient models define mechanisms of cancer immune evasion. 
+Nat. Genet. 53, 332–341 (2021).
+46.
+ W
+ei, Z. et al. PerturBase: a comprehensive database for single-cell 
+perturbation data analysis and visualization. Nucleic Acids Res. 
+53, D1099–D1111 (2025).
+47.
+ Ji, Y
+. et al. Optimal distance metrics for single-cell RNA-seq  
+populations. Preprint at bioRxiv https://doi.org/10.1101/ 
+2023.12.26.572833 (2023).
+48.
+ Gaudelet, T
+. et al. Season combinatorial intervention predictions 
+with Salt & Peper. Preprint at https://arxiv.org/html/2404.16907v1 
+(2024).
+49.
+ L
+uecken, M. D. et al. Benchmarking atlas-level data integration in 
+single-cell genomics. Nat. Methods 19, 41–50 (2022).
+50.
+ Y
+uan, Z. et al. Benchmarking spatial clustering methods with 
+spatially resolved transcriptomics data. Nat. Methods 21, 712–722 
+(2024).
+51.  Shahapur e, K. R. & Nicholas, C. Cluster quality analysis using 
+silhouette score. in 2020 IEEE 7th International Conference on 
+Data Science and Advanced Analytics (DSAA) 747-748 (IEEE, 2020).
+52.
+ Gao
+, Y. et al. Toward subtask-decomposition-based learning and 
+benchmarking for predicting genetic perturbation outcomes and 
+beyond. Nat. Comput Sci. 4, 773–785 (2024).
+53.
+ S
+ubramanian, A. et al. A next generation connectivity map: L1000 
+platform and the first 1,000,000 profiles. Cell 171, 1437–1452 
+(2017).
+54.
+ Song, D
+. et al. scDesign3 generates realistic in silico data for 
+multimodal single-cell and spatial omics. Nat. Biotechnol. 42, 
+247–252 (2024).
+55.
+ R
+ood, J. E., Hupalowska, A. & Regev, A. Toward a foundation 
+model of causal cell and tissue biology with a perturbation cell 
+and tissue atlas. Cell 187, 4520–4545 (2024).
+56.
+ Zhang, J
+. et al. Tahoe-100M: a giga-scale single-cell perturbation 
+atlas for context-dependent gene function and cellular modeling. 
+Preprint at bioRxiv https://doi.org/10.1101/2025.02.20.639398 
+(2025).
+57.
+ Huang, A
+. C. et al. X-Atlas/Orion: genome-wide Perturb-seq 
+datasets via a scalable fix-cryopreserve platform for training 
+dose-dependent biological foundation models. Preprint at bioRxiv 
+https://doi.org/10.1101/2025.06.11.659105 (2025).
+Publisher’s note Springer Nature remains neutral with regard to 
+jurisdictional claims in published maps and institutional affiliations.
+Springer Nature or its licensor (e.g. a society or other partner) holds 
+exclusive rights to this article under a publishing agreement with 
+the author(s) or other rightsholder(s); author self-archiving of the 
+accepted manuscript version of this article is solely governed by the 
+terms of such publishing agreement and applicable law.
+© The Author(s), under exclusive licence to Springer Nature America, 
+Inc. 2025

@@ -1,0 +1,490 @@
+{
+  "summary": {
+    "n_queries": 6,
+    "n_evaluable_queries": 6,
+    "n_query_tasks": 6,
+    "n_evaluable_tasks": 6,
+    "n_groups": 3,
+    "coverage": 1.0,
+    "n_requested_groups": 3,
+    "n_requested_guides": 0,
+    "n_evaluable_guides": 0,
+    "group_coverage": 1.0,
+    "guide_coverage": 0.0,
+    "task_coverage": 1.0,
+    "excluded_reasons": {},
+    "aggregation": "macro mean across perturbation labels; tasks averaged within label",
+    "recall_definition": "fraction of all relevant candidates in the first K ranks",
+    "tie_break": "ascending candidate well_id (gene name for gene prototypes)",
+    "bootstrap_unit": "perturbation_label",
+    "seed": 2026,
+    "map": 1.0,
+    "mrr": 1.0,
+    "random_ap": 0.611111111111111,
+    "recall@1": 1.0,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "hit@1": 1.0,
+    "hit@5": 1.0,
+    "hit@10": 1.0,
+    "random_recall@1": 0.3333333333333333,
+    "random_recall@5": 1.0,
+    "random_recall@10": 1.0,
+    "candidate_count_range": [
+      3,
+      3
+    ],
+    "ci95": {
+      "map": [
+        1.0,
+        1.0
+      ],
+      "mrr": [
+        1.0,
+        1.0
+      ],
+      "random_ap": [
+        0.611111111111111,
+        0.611111111111111
+      ],
+      "recall@1": [
+        1.0,
+        1.0
+      ],
+      "recall@5": [
+        1.0,
+        1.0
+      ],
+      "recall@10": [
+        1.0,
+        1.0
+      ],
+      "hit@1": [
+        1.0,
+        1.0
+      ],
+      "hit@5": [
+        1.0,
+        1.0
+      ],
+      "hit@10": [
+        1.0,
+        1.0
+      ],
+      "random_recall@1": [
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "random_recall@5": [
+        1.0,
+        1.0
+      ],
+      "random_recall@10": [
+        1.0,
+        1.0
+      ],
+      "percent_replicating": [
+        100.0,
+        100.0
+      ]
+    },
+    "protocol": "compound",
+    "metric": "cosine",
+    "block_size": 64,
+    "n_invalid_vectors": 0,
+    "percent_replicating": 100.0,
+    "replication_coverage": 1.0,
+    "overall_query_coverage": 1.0
+  },
+  "queries": [
+    {
+      "well_id": "gene-A_1_drug0",
+      "perturbation_label": "compound:drug0|dose:1",
+      "guide": "",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 1,
+      "recall@1": 1.0,
+      "hit@1": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-A_1_drug1",
+      "perturbation_label": "compound:drug1|dose:1",
+      "guide": "",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 1,
+      "recall@1": 1.0,
+      "hit@1": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-A_1_drug2",
+      "perturbation_label": "compound:drug2|dose:1",
+      "guide": "",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 1,
+      "recall@1": 1.0,
+      "hit@1": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_drug0",
+      "perturbation_label": "compound:drug0|dose:1",
+      "guide": "",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 1,
+      "recall@1": 1.0,
+      "hit@1": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_drug1",
+      "perturbation_label": "compound:drug1|dose:1",
+      "guide": "",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 1,
+      "recall@1": 1.0,
+      "hit@1": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_drug2",
+      "perturbation_label": "compound:drug2|dose:1",
+      "guide": "",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 1,
+      "recall@1": 1.0,
+      "hit@1": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    }
+  ],
+  "groups": [
+    {
+      "perturbation_label": "compound:drug0|dose:1",
+      "n_query_tasks": 2,
+      "n_query_wells": 2,
+      "n_query_guides": 0,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "random_ap": 0.611111111111111,
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@1": 1.0,
+      "hit@5": 1.0,
+      "hit@10": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "random_recall@5": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "perturbation_label": "compound:drug1|dose:1",
+      "n_query_tasks": 2,
+      "n_query_wells": 2,
+      "n_query_guides": 0,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "random_ap": 0.611111111111111,
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@1": 1.0,
+      "hit@5": 1.0,
+      "hit@10": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "random_recall@5": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "perturbation_label": "compound:drug2|dose:1",
+      "n_query_tasks": 2,
+      "n_query_wells": 2,
+      "n_query_guides": 0,
+      "ap": 1.0,
+      "mrr": 1.0,
+      "random_ap": 0.611111111111111,
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@1": 1.0,
+      "hit@5": 1.0,
+      "hit@10": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "random_recall@5": 1.0,
+      "random_recall@10": 1.0
+    }
+  ],
+  "replication": {
+    "summary": {
+      "protocol": "query_gallery_compound_percent_replicating",
+      "metric": "cosine",
+      "percent_replicating": 100.0,
+      "ci95": {
+        "percent_replicating": [
+          100.0,
+          100.0
+        ]
+      },
+      "n_groups_available": 6,
+      "n_evaluable_groups": 6,
+      "n_evaluable_perturbations": 3,
+      "coverage": 1.0,
+      "excluded_reasons": {},
+      "n_invalid_vectors": 0,
+      "n_null": 20,
+      "n_bootstrap": 10,
+      "seed": 2026,
+      "max_replicates": 20,
+      "null_quantile": 0.95,
+      "bootstrap_unit": "perturbation_label",
+      "aggregation": "experiments within label, then macro label mean",
+      "pair_selection": "cross-plate query-gallery pairs only",
+      "null_matching": "exact query/gallery role + plate/type/dose; distinct other genes or compounds",
+      "null_sampling": "uniform null label, then uniform well within label; matching never relaxed"
+    },
+    "groups": [
+      {
+        "perturbation_label": "compound:drug0|dose:1",
+        "gene": "",
+        "n_experiments": 2,
+        "replicating_fraction": 1.0
+      },
+      {
+        "perturbation_label": "compound:drug1|dose:1",
+        "gene": "",
+        "n_experiments": 2,
+        "replicating_fraction": 1.0
+      },
+      {
+        "perturbation_label": "compound:drug2|dose:1",
+        "gene": "",
+        "n_experiments": 2,
+        "replicating_fraction": 1.0
+      }
+    ],
+    "replicates": [
+      {
+        "perturbation_label": "compound:drug0|dose:1",
+        "experiment_name": "gene-A",
+        "gene": "",
+        "reason": null,
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_drug0"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_drug0"
+        ],
+        "median_similarity": 1.0,
+        "n_distinct_null_labels": 2,
+        "null_q95": 0.0,
+        "n_null": 20,
+        "replicating": true,
+        "p_value": 0.047619047619047616
+      },
+      {
+        "perturbation_label": "compound:drug0|dose:1",
+        "experiment_name": "gene-B",
+        "gene": "",
+        "reason": null,
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_drug0"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_drug0"
+        ],
+        "median_similarity": 1.0,
+        "n_distinct_null_labels": 2,
+        "null_q95": 0.0,
+        "n_null": 20,
+        "replicating": true,
+        "p_value": 0.047619047619047616
+      },
+      {
+        "perturbation_label": "compound:drug1|dose:1",
+        "experiment_name": "gene-A",
+        "gene": "",
+        "reason": null,
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_drug1"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_drug1"
+        ],
+        "median_similarity": 0.9999999403953552,
+        "n_distinct_null_labels": 2,
+        "null_q95": 0.7071067690849304,
+        "n_null": 20,
+        "replicating": true,
+        "p_value": 0.047619047619047616
+      },
+      {
+        "perturbation_label": "compound:drug1|dose:1",
+        "experiment_name": "gene-B",
+        "gene": "",
+        "reason": null,
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_drug1"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_drug1"
+        ],
+        "median_similarity": 0.9999999403953552,
+        "n_distinct_null_labels": 2,
+        "null_q95": 0.7071067690849304,
+        "n_null": 20,
+        "replicating": true,
+        "p_value": 0.047619047619047616
+      },
+      {
+        "perturbation_label": "compound:drug2|dose:1",
+        "experiment_name": "gene-A",
+        "gene": "",
+        "reason": null,
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_drug2"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_drug2"
+        ],
+        "median_similarity": 0.9999999403953552,
+        "n_distinct_null_labels": 2,
+        "null_q95": 0.7071067690849304,
+        "n_null": 20,
+        "replicating": true,
+        "p_value": 0.047619047619047616
+      },
+      {
+        "perturbation_label": "compound:drug2|dose:1",
+        "experiment_name": "gene-B",
+        "gene": "",
+        "reason": null,
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_drug2"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_drug2"
+        ],
+        "median_similarity": 0.9999999403953552,
+        "n_distinct_null_labels": 2,
+        "null_q95": 0.7071067690849304,
+        "n_null": 20,
+        "replicating": true,
+        "p_value": 0.047619047619047616
+      }
+    ]
+  }
+}

@@ -1,0 +1,1096 @@
+{
+  "summary": {
+    "n_groups": 7,
+    "ci95": {
+      "map": [
+        1.0,
+        1.0
+      ],
+      "energy_distance": [
+        2.828427111693732,
+        2.8284271239682295
+      ],
+      "percent_active": [
+        100.0,
+        100.0
+      ],
+      "percent_energy_active": [
+        100.0,
+        100.0
+      ]
+    },
+    "map": 1.0,
+    "energy_distance": 2.8284271178309806,
+    "percent_active": 100.0,
+    "percent_energy_active": 100.0,
+    "n_queries": 14,
+    "n_evaluable_queries": 14,
+    "coverage": 1.0,
+    "n_groups_available": 7,
+    "n_evaluable_groups": 7,
+    "group_coverage": 1.0,
+    "excluded_reasons": {},
+    "block_excluded_reasons": {},
+    "by_kind": {
+      "COMPOUND": {
+        "n_groups": 3,
+        "ci95": {
+          "map": [
+            1.0,
+            1.0
+          ],
+          "energy_distance": [
+            2.828427100542956,
+            2.8284271166784456
+          ],
+          "percent_active": [
+            100.0,
+            100.0
+          ],
+          "percent_energy_active": [
+            100.0,
+            100.0
+          ]
+        },
+        "map": 1.0,
+        "energy_distance": 2.828427108610701,
+        "percent_active": 100.0,
+        "percent_energy_active": 100.0,
+        "n_tests": 3
+      },
+      "CRISPR": {
+        "n_groups": 4,
+        "ci95": {
+          "map": [
+            1.0,
+            1.0
+          ],
+          "energy_distance": [
+            2.8284271247461903,
+            2.8284271247461903
+          ],
+          "percent_active": [
+            100.0,
+            100.0
+          ],
+          "percent_energy_active": [
+            100.0,
+            100.0
+          ]
+        },
+        "map": 1.0,
+        "energy_distance": 2.8284271247461903,
+        "percent_active": 100.0,
+        "percent_energy_active": 100.0,
+        "n_tests": 4
+      }
+    },
+    "metric": "cosine",
+    "seed": 2026,
+    "n_permutations": 29,
+    "minimum_p_value": 0.03333333333333333,
+    "n_bootstrap": 10,
+    "q_threshold": 0.05,
+    "max_controls_per_plate": 4,
+    "control_rules": {
+      "CRISPR": {
+        "where": {
+          "well_type_label": [
+            "Intron controls"
+          ]
+        },
+        "match_fields": [
+          "cell_type"
+        ]
+      },
+      "COMPOUND": {
+        "where": {
+          "treatment": [
+            "EMPTY_control"
+          ],
+          "well_type_label": [
+            ""
+          ]
+        },
+        "match_fields": [
+          "cell_type"
+        ]
+      }
+    },
+    "n_invalid_vectors": 0,
+    "ap_tie_policy": "expected AP under uniform ordering within exact similarity ties",
+    "energy_geometry": "cosine-normalized vectors; mean biased empirical energy distance across plates",
+    "activity_significance": "one-sided plate-blocked AP permutation test; BH within perturbation type",
+    "energy_significance": "separate one-sided plate-blocked energy permutation test; BH within perturbation type",
+    "aggregation": "equal experiment/matched-context means per unique guide or compound+dose; macro perturbation mean",
+    "bootstrap_unit": "unique perturbation; fixed observed BH decisions",
+    "overall_query_coverage": 1.0,
+    "n_requested_groups_total": 7,
+    "overall_group_coverage": 1.0
+  },
+  "queries": [
+    {
+      "well_id": "gene-A_1_G_1",
+      "perturbation_label": "guide:G_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-A_1_G_2",
+      "perturbation_label": "guide:G_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-A_1_H_1",
+      "perturbation_label": "guide:H_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-A_1_H_2",
+      "perturbation_label": "guide:H_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-A_1_drug0",
+      "perturbation_label": "compound:drug0|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-A_1_drug1",
+      "perturbation_label": "compound:drug1|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-A_1_drug2",
+      "perturbation_label": "compound:drug2|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_G_1",
+      "perturbation_label": "guide:G_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_G_2",
+      "perturbation_label": "guide:G_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_H_1",
+      "perturbation_label": "guide:H_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_H_2",
+      "perturbation_label": "guide:H_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_drug0",
+      "perturbation_label": "compound:drug0|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_drug1",
+      "perturbation_label": "compound:drug1|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    },
+    {
+      "well_id": "gene-B_1_drug2",
+      "perturbation_label": "compound:drug2|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "random_ap": 0.45666666666666667,
+      "n_candidates": 5,
+      "n_positives": 1,
+      "ap": 1.0
+    }
+  ],
+  "groups": [
+    {
+      "perturbation_label": "compound:drug0|dose:1",
+      "perturbation_type": "COMPOUND",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    },
+    {
+      "perturbation_label": "compound:drug1|dose:1",
+      "perturbation_type": "COMPOUND",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.828427100542956,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    },
+    {
+      "perturbation_label": "compound:drug2|dose:1",
+      "perturbation_type": "COMPOUND",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.828427100542956,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    },
+    {
+      "perturbation_label": "guide:G_guide_1",
+      "perturbation_type": "CRISPR",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    },
+    {
+      "perturbation_label": "guide:G_guide_2",
+      "perturbation_type": "CRISPR",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    },
+    {
+      "perturbation_label": "guide:H_guide_1",
+      "perturbation_type": "CRISPR",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    },
+    {
+      "perturbation_label": "guide:H_guide_2",
+      "perturbation_type": "CRISPR",
+      "reason": null,
+      "ap": 1.0,
+      "map": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_blocks": 2,
+      "n_blocks_requested": 2,
+      "n_query_wells": 2,
+      "q_value": 0.03333333333333333,
+      "energy_q_value": 0.03333333333333333,
+      "active": true,
+      "energy_active": true,
+      "active_fraction": 1.0,
+      "energy_active_fraction": 1.0
+    }
+  ],
+  "blocks": [
+    {
+      "perturbation_label": "compound:drug0|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_drug0"
+          ],
+          "control_well_ids": [
+            "gene-A_1_COMPOUND_control1",
+            "gene-A_1_COMPOUND_control3",
+            "gene-A_1_COMPOUND_control4",
+            "gene-A_1_COMPOUND_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_drug0"
+          ],
+          "control_well_ids": [
+            "gene-A_2_COMPOUND_control0",
+            "gene-A_2_COMPOUND_control2",
+            "gene-A_2_COMPOUND_control3",
+            "gene-A_2_COMPOUND_control4"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "compound:drug0|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_drug0"
+          ],
+          "control_well_ids": [
+            "gene-B_1_COMPOUND_control1",
+            "gene-B_1_COMPOUND_control2",
+            "gene-B_1_COMPOUND_control4",
+            "gene-B_1_COMPOUND_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_drug0"
+          ],
+          "control_well_ids": [
+            "gene-B_3_COMPOUND_control0",
+            "gene-B_3_COMPOUND_control2",
+            "gene-B_3_COMPOUND_control3",
+            "gene-B_3_COMPOUND_control4"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.1,
+      "energy_p_value": 0.1,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "compound:drug1|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_drug1"
+          ],
+          "control_well_ids": [
+            "gene-A_1_COMPOUND_control0",
+            "gene-A_1_COMPOUND_control3",
+            "gene-A_1_COMPOUND_control5",
+            "gene-A_1_COMPOUND_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_drug1"
+          ],
+          "control_well_ids": [
+            "gene-A_2_COMPOUND_control0",
+            "gene-A_2_COMPOUND_control2",
+            "gene-A_2_COMPOUND_control3",
+            "gene-A_2_COMPOUND_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.828427100542956,
+      "p_value": 0.1,
+      "energy_p_value": 0.1,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "compound:drug1|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_drug1"
+          ],
+          "control_well_ids": [
+            "gene-B_1_COMPOUND_control1",
+            "gene-B_1_COMPOUND_control2",
+            "gene-B_1_COMPOUND_control3",
+            "gene-B_1_COMPOUND_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_drug1"
+          ],
+          "control_well_ids": [
+            "gene-B_3_COMPOUND_control0",
+            "gene-B_3_COMPOUND_control1",
+            "gene-B_3_COMPOUND_control4",
+            "gene-B_3_COMPOUND_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.828427100542956,
+      "p_value": 0.1,
+      "energy_p_value": 0.1,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "compound:drug2|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_drug2"
+          ],
+          "control_well_ids": [
+            "gene-A_1_COMPOUND_control0",
+            "gene-A_1_COMPOUND_control1",
+            "gene-A_1_COMPOUND_control3",
+            "gene-A_1_COMPOUND_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_drug2"
+          ],
+          "control_well_ids": [
+            "gene-A_2_COMPOUND_control0",
+            "gene-A_2_COMPOUND_control1",
+            "gene-A_2_COMPOUND_control3",
+            "gene-A_2_COMPOUND_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.828427100542956,
+      "p_value": 0.06666666666666667,
+      "energy_p_value": 0.06666666666666667,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "compound:drug2|dose:1",
+      "perturbation_type": "COMPOUND",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_drug2"
+          ],
+          "control_well_ids": [
+            "gene-B_1_COMPOUND_control2",
+            "gene-B_1_COMPOUND_control3",
+            "gene-B_1_COMPOUND_control4",
+            "gene-B_1_COMPOUND_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_drug2"
+          ],
+          "control_well_ids": [
+            "gene-B_3_COMPOUND_control1",
+            "gene-B_3_COMPOUND_control3",
+            "gene-B_3_COMPOUND_control4",
+            "gene-B_3_COMPOUND_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.828427100542956,
+      "p_value": 0.13333333333333333,
+      "energy_p_value": 0.13333333333333333,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:G_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_G_1"
+          ],
+          "control_well_ids": [
+            "gene-A_1_CRISPR_control1",
+            "gene-A_1_CRISPR_control2",
+            "gene-A_1_CRISPR_control3",
+            "gene-A_1_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_G_1"
+          ],
+          "control_well_ids": [
+            "gene-A_2_CRISPR_control0",
+            "gene-A_2_CRISPR_control2",
+            "gene-A_2_CRISPR_control3",
+            "gene-A_2_CRISPR_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.06666666666666667,
+      "energy_p_value": 0.06666666666666667,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:G_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_G_1"
+          ],
+          "control_well_ids": [
+            "gene-B_1_CRISPR_control1",
+            "gene-B_1_CRISPR_control2",
+            "gene-B_1_CRISPR_control4",
+            "gene-B_1_CRISPR_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_G_1"
+          ],
+          "control_well_ids": [
+            "gene-B_3_CRISPR_control0",
+            "gene-B_3_CRISPR_control2",
+            "gene-B_3_CRISPR_control3",
+            "gene-B_3_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.06666666666666667,
+      "energy_p_value": 0.06666666666666667,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:G_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_G_2"
+          ],
+          "control_well_ids": [
+            "gene-A_1_CRISPR_control0",
+            "gene-A_1_CRISPR_control2",
+            "gene-A_1_CRISPR_control3",
+            "gene-A_1_CRISPR_control4"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_G_2"
+          ],
+          "control_well_ids": [
+            "gene-A_2_CRISPR_control0",
+            "gene-A_2_CRISPR_control1",
+            "gene-A_2_CRISPR_control4",
+            "gene-A_2_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.16666666666666666,
+      "energy_p_value": 0.16666666666666666,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:G_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_G_2"
+          ],
+          "control_well_ids": [
+            "gene-B_1_CRISPR_control1",
+            "gene-B_1_CRISPR_control2",
+            "gene-B_1_CRISPR_control4",
+            "gene-B_1_CRISPR_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_G_2"
+          ],
+          "control_well_ids": [
+            "gene-B_3_CRISPR_control1",
+            "gene-B_3_CRISPR_control2",
+            "gene-B_3_CRISPR_control5",
+            "gene-B_3_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:H_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_H_1"
+          ],
+          "control_well_ids": [
+            "gene-A_1_CRISPR_control0",
+            "gene-A_1_CRISPR_control1",
+            "gene-A_1_CRISPR_control4",
+            "gene-A_1_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_H_1"
+          ],
+          "control_well_ids": [
+            "gene-A_2_CRISPR_control2",
+            "gene-A_2_CRISPR_control3",
+            "gene-A_2_CRISPR_control4",
+            "gene-A_2_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.1,
+      "energy_p_value": 0.1,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:H_guide_1",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_H_1"
+          ],
+          "control_well_ids": [
+            "gene-B_1_CRISPR_control0",
+            "gene-B_1_CRISPR_control1",
+            "gene-B_1_CRISPR_control4",
+            "gene-B_1_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_H_1"
+          ],
+          "control_well_ids": [
+            "gene-B_3_CRISPR_control0",
+            "gene-B_3_CRISPR_control1",
+            "gene-B_3_CRISPR_control3",
+            "gene-B_3_CRISPR_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.1,
+      "energy_p_value": 0.1,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:H_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-A",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-A/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-A_1_H_2"
+          ],
+          "control_well_ids": [
+            "gene-A_1_CRISPR_control0",
+            "gene-A_1_CRISPR_control1",
+            "gene-A_1_CRISPR_control2",
+            "gene-A_1_CRISPR_control3"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-A/2",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-A_2_H_2"
+          ],
+          "control_well_ids": [
+            "gene-A_2_CRISPR_control1",
+            "gene-A_2_CRISPR_control4",
+            "gene-A_2_CRISPR_control5",
+            "gene-A_2_CRISPR_control6"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.03333333333333333,
+      "energy_p_value": 0.03333333333333333,
+      "n_queries": 1
+    },
+    {
+      "perturbation_label": "guide:H_guide_2",
+      "perturbation_type": "CRISPR",
+      "experiment_name": "gene-B",
+      "match_context": {
+        "cell_type": "HUVEC"
+      },
+      "reason": null,
+      "plates": [
+        {
+          "batch_id": "gene-B/1",
+          "role": "query",
+          "treated_well_ids": [
+            "gene-B_1_H_2"
+          ],
+          "control_well_ids": [
+            "gene-B_1_CRISPR_control0",
+            "gene-B_1_CRISPR_control1",
+            "gene-B_1_CRISPR_control2",
+            "gene-B_1_CRISPR_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        },
+        {
+          "batch_id": "gene-B/3",
+          "role": "gallery",
+          "treated_well_ids": [
+            "gene-B_3_H_2"
+          ],
+          "control_well_ids": [
+            "gene-B_3_CRISPR_control0",
+            "gene-B_3_CRISPR_control1",
+            "gene-B_3_CRISPR_control4",
+            "gene-B_3_CRISPR_control5"
+          ],
+          "n_treated": 1,
+          "n_controls_used": 4,
+          "n_controls_available": 7
+        }
+      ],
+      "ap": 1.0,
+      "energy_distance": 2.8284271247461903,
+      "p_value": 0.06666666666666667,
+      "energy_p_value": 0.06666666666666667,
+      "n_queries": 1
+    }
+  ]
+}

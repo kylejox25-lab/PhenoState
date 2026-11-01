@@ -1,0 +1,15 @@
+{
+  "CRISPR": {
+    "where": {
+      "well_type_label": ["Intron controls"]
+    },
+    "match_fields": ["cell_type"]
+  },
+  "COMPOUND": {
+    "where": {
+      "treatment": ["EMPTY_control"],
+      "well_type_label": [""]
+    },
+    "match_fields": ["cell_type"]
+  }
+}

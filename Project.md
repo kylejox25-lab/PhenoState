@@ -2,6 +2,12 @@
 
 > 状态：研究设计 v0.4。训练资源为服务器单张 RTX 3090（24 GB）；服务器已可读取 RxRx3-core，连续训练时间暂不设上限。本地数据目录 `E:\CellPainting\rxrx3_core` 只读；服务器上的数据同样按只读使用。代码、索引、缓存、检查点和结果写在项目目录或服务器另设的可写目录。
 
+当前下游任务更新：对既有方案取并集，实施表型活性、同 guide 重复、化合物＋浓度重复、跨 guide 基因检索四个计分项。补充严格匹配的阴性对照、分层置换＋BH 活性检验和 query-gallery percent replicating。独立入口支持任意来源 embedding，不限定算法或 MDS；不引入扰动条件编码或外部数据。以 [最新评测说明](docs/representation_evaluation.md) 为当前执行协议；以下带日期的范围记录作为历史保留。
+
+2026-10-29 论文精读补充：已完整核对 *Masked Autoencoders for Microscopy are Scalable Learners of Cellular Biology*（CVPR 2024）及作者公开实现，详见 [归一化、下游任务与研究设计补充](docs/mae_cell_reading.md)。论文采用 crop 逐通道输入自标准化、编码器 LayerNorm/QK-Norm，以及下游 TVN；当前项目的 `/255` 输入加逐 patch、逐通道重建目标标准化与其不同，不能称为完整复现。后续应分开检验输入标准化、QK-Norm、目标标准化和表征后处理的收益，避免同时修改多个因素。近期仍先完成三个已有模型的 T1/T2 与 raw/train-only standardize 比较；TVN、新板对照适配、CP 线性回归和外部关系召回均为待验证扩展，不自动改变本阶段范围。论文主要下游是冻结编码器后的关系检索；重建 MSE 不能代替表征指标，TVN 后的成绩也不能全部归因于编码器。
+
+2026-10-28 范围确认：MAE、CA-MAE、DiffMAE 已训练，CNN 未训练；本轮先比较三个已有模型。编码器只输入图像，不编码扰动条件，不接入外部数据或额外统计基线。正式任务固定为跨 experiment、跨 guide 单 well→基因原型检索（主指标 MRR）和同 guide、同 experiment 跨板单 well→well 检索（辅助 mAP）；保留已有划分，train gallery、val/test query。批次差异作为诊断，基因功能关系评价暂缓。具体协议、分层汇总、消融计划与服务器入口见 [representation_evaluation.md](docs/representation_evaluation.md)。以下早期设计中的化合物任务、公开特征比较与更多扩展保留为后续计划；本阶段执行以上述确认方案为准。
+
 2026-10-20 实验更新：按确认方案新增通道无关 CA-MAE、DiffMAE 与 CNN 掩码自编码器，普通 MAE 作为参考。新的对照配置为六通道 512×512 完整输入、8×8 patch、0.75 掩码率、512/256 编码/解码维度、Transformer 两端各 8 heads、50 epochs；其它训练参数沿用现有实现。原 16×16 基线配置保留供旧检查点使用。评价实现与原理见 [03 表征比较 Notebook](notebooks/03_representation_comparison.ipynb)，训练入口见 [README](README.md)。以下早期研究设计中的 16×16/ViT-S 配置为历史起点；不同模型预算与掩码任务差异须分别报告。新增模型的真实训练效果需在服务器运行后测定。
 
 实施进度：已实现 Parquet→孔位级 MDS 转换、Streaming 读取、多种掩码模型训练和 embedding 导出。训练包含 AMP 溢出恢复、遮挡重建指标及 `best_reconstruction.pt` 保存；[02 重建评估 Notebook](notebooks/02_mae_training_and_reconstruction.ipynb) 负责原基线曲线和六通道重建可视化。[03 表征比较 Notebook](notebooks/03_representation_comparison.ipynb) 与 `embedding_metrics.py` 新增跨 guide 基因、跨板化合物检索及重复一致性评价。重建检查点按各自的重建目标选择，不表示生物学表征最佳。真实模型训练与显存测试仍需在服务器执行。使用方法见 [README.md](README.md)。

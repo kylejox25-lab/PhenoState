@@ -1,0 +1,15 @@
+ap,experiment_name,n_candidates,n_positives,perturbation_label,perturbation_type,random_ap,reason,well_id
+1.0,gene-A,5,1,guide:G_guide_1,CRISPR,0.45666666666666667,,gene-A_1_G_1
+1.0,gene-A,5,1,guide:G_guide_2,CRISPR,0.45666666666666667,,gene-A_1_G_2
+1.0,gene-A,5,1,guide:H_guide_1,CRISPR,0.45666666666666667,,gene-A_1_H_1
+1.0,gene-A,5,1,guide:H_guide_2,CRISPR,0.45666666666666667,,gene-A_1_H_2
+1.0,gene-A,5,1,compound:drug0|dose:1,COMPOUND,0.45666666666666667,,gene-A_1_drug0
+1.0,gene-A,5,1,compound:drug1|dose:1,COMPOUND,0.45666666666666667,,gene-A_1_drug1
+1.0,gene-A,5,1,compound:drug2|dose:1,COMPOUND,0.45666666666666667,,gene-A_1_drug2
+1.0,gene-B,5,1,guide:G_guide_1,CRISPR,0.45666666666666667,,gene-B_1_G_1
+1.0,gene-B,5,1,guide:G_guide_2,CRISPR,0.45666666666666667,,gene-B_1_G_2
+1.0,gene-B,5,1,guide:H_guide_1,CRISPR,0.45666666666666667,,gene-B_1_H_1
+1.0,gene-B,5,1,guide:H_guide_2,CRISPR,0.45666666666666667,,gene-B_1_H_2
+1.0,gene-B,5,1,compound:drug0|dose:1,COMPOUND,0.45666666666666667,,gene-B_1_drug0
+1.0,gene-B,5,1,compound:drug1|dose:1,COMPOUND,0.45666666666666667,,gene-B_1_drug1
+1.0,gene-B,5,1,compound:drug2|dose:1,COMPOUND,0.45666666666666667,,gene-B_1_drug2

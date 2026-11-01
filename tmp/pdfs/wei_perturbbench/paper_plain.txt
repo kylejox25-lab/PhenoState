@@ -1,0 +1,3257 @@
+
+
+===== PDF PAGE 1 =====
+Nature Methods
+nature methods
+https://doi.org/10.1038/s41592-025-02980-0
+Analysis
+Benchmarking algorithms for generalizable 
+single-cell perturbation response prediction
+ 
+Zhiting Wei    1,2,3,4,6, Yiheng Wang1,2,5,6, Yicheng Gao1,2,6, Shuguang Wang    1,2,6, 
+Ping Li1, Duanmiao Si1,2, Yuli Gao1,2, Siqi Wu1,2, Danlu Li1,2, Kejing Dong    1,2, 
+Xingbo Yang1,2, Chen Tang1,2, Shaliu Fu    1,2, Xiaohan Chen1,2, Wannian Li1,2, 
+Yuzhou You1,2, Chen Zhang1,2, Aibin Liang    1 , Guohui Chuai    1,2,3  & 
+Qi Liu    1,2,3 
+Single-cell perturbation technologies enable systematic investigation 
+of gene functions and regulatory networks with single-cell resolution. 
+However, performing large-scale and combinatorial perturbation screens 
+poses notable challenges due to their exponentially increased complexity. 
+Computational methods, including foundation models, have been 
+developed to predict perturbation effects. Yet despite claims of promising 
+performance, concerns remain about their true efficacy, particularly when 
+evaluated across diverse and previously unseen cellular contexts and 
+perturbation scenarios. Here, we present a comprehensive benchmark of 
+27 methods for single-cell perturbation response prediction, evaluated 
+across 29 datasets using 6 complementary performance metrics. By 
+evaluating them under multiple scenarios, we systematically assess their 
+generalizability, including that of emerging foundation models. Our results 
+provide practical guidance for method selection and underscore the need 
+for cellular context embedding approaches to enhance the generalizability 
+of perturbation effect prediction in single-cell research.
+Single-cell perturbation technology (for example, Perturb-seq and 
+sciPlex) provides an innovative platform for integrating single-cell 
+sequencing technologies with targeted perturbations, such as gene 
+knockouts, knockdowns and chemical treatments, to reveal gene func-
+tions, regulatory networks and mechanisms driving cell states at a 
+single-cell resolution1– 3. Despite its immense potential, the application 
+of single-cell perturbation sequencing at large scales faces substantial 
+practical and economic barriers. Conducting large-scale perturbation 
+screens, particularly for combined perturbations, is infeasible because 
+of the exponential growth in complexity.
+T o address the challenges associated with large-scale perturbation 
+screens, various computational methods have been developed to pre-
+dict perturbation effects. These computational methods can generally 
+be classified into two major categories on the basis of their application 
+scenarios. The first category, defined as the ‘cellular context generali-
+zation scenario’ , involves training a model on data measured in a set 
+Received: 20 January 2025
+Accepted: 5 November 2025
+Published online: xx xx xxxx
+ Check for updates
+1Department of Hematology, Tongji Hospital, Frontier Science Center for Stem Cell Research, Bioinformatics Department, School of Life Sciences and 
+Technology, Tongji University, Shanghai, China. 2Shanghai Key Laboratory of Anesthesiology and Brain Functional Modulation, Clinical Research Center 
+for Anesthesiology and Perioperative Medicine, Translational Research Institute of Brain and Brain-Like Intelligence, Shanghai Fourth People’s Hospital, 
+Frontier Science Center for Stem Cell Research, Bioinformatics Department, School of Life Sciences and Technology, Tongji University, Shanghai, 
+China. 
+3State Key Laboratory of Autonomous Intelligent Unmanned Systems, Frontiers Science Center for Intelligent Autonomous Systems, Ministry of 
+Education, Shanghai Research Institute for Intelligent Autonomous Systems, Shanghai, China. 4Institute for Data-Driven Tumor Immunology, Chongqing 
+Medical University, Chongqing, China. 5Institute of Biophysics, Chinese Academy of Sciences; College of Life Sciences, University of Chinese Academy of 
+Sciences, Beijing, China. 6These authors contributed equally: Zhiting Wei, Yiheng Wang, Yicheng Gao, Shuguang Wang.  e-mail: lab7182@tongji.edu.cn; 
+18alexanderm117@tongji.edu.cn; qiliu@tongji.edu.cn
+
+===== PDF PAGE 2 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+of the performance of foundation models compared with baseline 
+models is performed. By analyzing datasets of varying sizes, it is found 
+that baseline models tend to perform better on smaller training data-
+sets. In contrast, foundation models tend to perform better in terms 
+of both prediction accuracy and generalizability, when the fine-tuning 
+datasets are sufficiently large. Based on our findings, we have devel-
+oped a tool selection guidance tailored to dataset characteristics, 
+enabling researchers to quickly select the most suitable methods;  
+(3) For challenging cases where perturbation effect prediction needs 
+to be generalized to a new cellular context that is substantially differ-
+ent from the model’s training contexts, we explored a cellular context 
+embedding strategy as a potential approach to enhance generaliza-
+tion. This strategy was found to improve perturbation effect predic-
+tion in our evaluation.
+Overall, our study underscores the importance of tailoring per -
+turbation prediction methods to specific data characteristics and 
+highlights the need for further improvements in model design to 
+increase generalizability. We anticipate that the insights gained from 
+this benchmark will facilitate the development of methods with greater 
+effectiveness and generalizability for diverse single-cell perturbation 
+prediction tasks.
+Results
+A comprehensive framework for benchmarking single-cell 
+perturbation effect prediction
+Methods. T o thoroughly assess the performance of prediction meth-
+ods in this field, we developed a comprehensive benchmark framework, 
+including state-of-the-art methods, diverse datasets and rigorous 
+evaluation metrics (Fig. 1a). In this study, we evaluated the methods 
+across two key scenarios: cellular context generalization and pertur-
+bation generalization (Fig. 1a). While we aimed to include a diverse set 
+of methods in our evaluation, several tools were excluded for specific 
+reasons (Supplementary Note 1). As a result, in the cellular context 
+generalization scenario, we examined 10 methods from published 
+studies: biolord16, CellOT14, inVAE17, scDisInFact18, scGen4, scPRAM15, 
+scPreGAN19, SCREEN20, scVIDR21 and trVAE22. In the perturbation gener-
+alization scenario, we examined another 14 methods: AttentionPert23, 
+biolord16, CPA24, GEARS5, GenePert25, linearModel12, scFoundation6, 
+scGPT7, chemCPA26, scouter27, scELMo28, GeneCompass29, PRnet30 and 
+cycleCDR31. Given the growing concerns raised in recent literature 
+regarding the effectiveness of advanced machine learning models, 
+particularly foundation models, we also included 4 baseline models 
+named baseReg, baseMLP, baseControl and trainMean (Methods). 
+These baseline models serve as benchmarks to determine whether 
+more complex methods learn additional meaningful information 
+from the data. In total, our evaluation includes 23 published methods 
+and 4 baseline models, covering a broad spectrum of methodological 
+approaches in single-cell perturbation effect prediction.
+Datasets. The systematic benchmark relies on a collection of diverse 
+datasets designed to reflect real-world biological challenges. For 
+the cellular context generalization scenario, we curated 12 datasets 
+categorized on the basis of the cellular context 1,32– 37 (Fig. 1b). These 
+datasets include 8 that are focused on cross-cell-line predictions  
+(predicting perturbation effects in a new cell type), 3 that are focused 
+on cross-patient predictions (predicting perturbation effects in  
+a new patient) and one that is focused on cross-species predictions  
+(predicting perturbation effects in a new species). Each dataset  
+challenges the ability of the models to generalize perturbation  
+effects across contexts. Additionally, the datasets can be further 
+gr
+ouped on the basis of the presence of perturbation metadata.  
+Of the 12 datasets, 7 contain only perturbation data (single-condition 
+datasets), and the remaining 5 include additional perturbation  
+metadata, that is, time-point/dosage information (multi-condition 
+datasets).
+of cellular contexts (such as cell lines) for a specific perturbation and 
+then using the model to predict the effects of that perturbation in a dif-
+ferent, unobserved cellular context. A prominent tool in this category 
+is scGen, which is based on variational autoencoders and enables pre-
+dictions to be generated across diverse cellular contexts4. The second 
+category, defined as the ‘perturbation generalization scenario’ , involves  
+training a model on the effects of a set of perturbations, which are 
+usually measured in a specific cellular context, and then using the 
+model to predict the effects of unseen perturbations. Notable methods  
+in this category include GEARS, which is based on knowledge graphs 
+of gene–gene relationships that can be generalized to unseen 
+perturbed genes5.
+In recent years, numerous methods have been presented in  
+the field of single-cell perturbation effect prediction for both of 
+the aforementioned scenarios. In addition, single-cell foundation  
+models have established a paradigm for in silico perturbation predic-
+tion through pretraining and fine-tuning strategies6– 9. Models such as 
+scGPT and scFoundation, which utilize large-scale pretrained archi -
+tectures, have demonstrated the potential to predict perturbation 
+effects across diverse cellular and perturbation contexts6,7. However, 
+recent studies have continued to raise concerns regarding the true 
+effectiveness of these models10– 12. Specifically, many of these methods 
+do not outperform baseline models or linear models on the basis of 
+straightforward assumptions when they are evaluated across multiple 
+datasets. This has led to a growing call for more comprehensive and 
+rigorous assessments of these methods. T o address this, researchers 
+should carefully examine several key aspects of single-cell perturba-
+tion effective modeling methods, including the comprehensiveness 
+of the test scenarios they are designed for, the diversity of the datasets 
+used and the thoroughness of the evaluation metrics. Only by properly 
+and thoroughly addressing these factors can we obtain a reliable and 
+clear understanding of the strengths and limitations of these methods. 
+Furthermore, it is crucial for an evaluation framework to go beyond 
+performance tests and present applicable guidance and solutions 
+for the development of more reliable and generalizable models in 
+this domain.
+In this study, we provide a comprehensive evaluation of single-cell 
+perturbation prediction methods, where the main procedure is as fol-
+lows: (1) In the cellular context generalization scenario, we compare 14 
+methods across 12 datasets that cover a wide range of cellular contexts 
+from different cell lines, participant samples, and even different spe-
+cies to investigate the generalizability of the methods across different 
+cellular contexts; (2) in the perturbation generalization scenario, we 
+compare 18 methods across 17 datasets to investigate generalizability 
+to unseen perturbations; (3) in both scenarios, we use 6 evaluation 
+metrics to comprehensively assess prediction accuracy, including 
+the mean squared error (MSE), Pearson correlation coefficient delta 
+(PCC-delta) 5, E-distance 13, Wasserstein distance 14, Kullback–Leibler 
+divergence (KL-divergence) and common differentially expressed 
+genes (Common-DEGs) 15; and (4) we utilize simulated data in both 
+scenarios to assess the scalability of the evaluated methods and to 
+investigate impacts of noise and sparsity on the performance of those 
+methods. Analysis results obtained from the comprehensive bench-
+mark are presented, including the following: (1) Our study indicated 
+that there is no ‘one-size-fits-all’ method that works well across all 
+datasets. Some limitations of current methods, including foundation 
+models for both test scenarios, were identified. In the cellular context 
+generalization scenario, owing to limitations in algorithm design, that 
+is, neglecting the specificity of perturbation responses across differ-
+ent cellular contexts (intercellular heterogeneity, or for simplicity 
+inter-heterogeneity), all methods likely exhibit poor generalizability. 
+Specifically, when predicting the effects of perturbations in a new 
+cellular context that is quite different from the training datasets, all 
+methods performed poorly, even worse than the baseline models; (2) 
+In the perturbation generalization scenario, an objective evaluation 
+
+===== PDF PAGE 3 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+Cellular context generalization Perturbation generalization
+Foundation model
+GRN model
+Deep learning model
+Cell Gene
+Perturbation
+Cell Gene
+Perturbation
+?
+Train
+Generate
+Predict
+Cell Gene
+Perturbation
+Cell Gene
+Perturbation
+Train
+Generate
+Predict
+17 datasets
+13 genetic
+4 combo
+4 chemical
+12 datasets
+7 single-condition 5 multi-conditions
+(genetic, chemical,
+environmental factors)
+3 Perturb 2 Perturb, dosage
+Linear model
+(Genetic, chemical)
+AI
+3 Perturb, time
+Ground truth Prediction
+Accuracy
+MSE
+PCC-delta
+Wasserstein
+Common-DEGs
+Overall rank
+Method 1
+Method 2
+Method 3
+Limitation and insights
+Robustness Scalability
+Level of noise Accuracy
+Level of sparsityAccuracy
+Time 
+Number of
+perturbations/cellsMemory
+Number of
+perturbations/cells
+...Out of memory
+Population-distribution
+ metrics
+Population-average
+metrics
+MSE,
+PCC-delta,
+E-distance
+Wasserstein,
+KL-divergence,
+Common-DEGs
+ GB
+scGen, CellOT, trVAE,
+inVAE, scPreGAN, SCREEN, 
+scPRAM, baseMLP,
+ baseControl, trainMean,
+baseReg
+14 methods
+scELMo, scFoundation,
+scGPT, GeneCompass, 
+AttentionPert,
+scouter, GEARS,
+GenePert, linearModel
+CPA, biolord,
+baseMLP,
+baseControl,
+trainMean,
+baseReg
+chemCPA,
+PRnet, 
+cycleCDR
+18 methods
+Scenarios
+Datasets
+Methods
+Evaluation
+Kang et al.
+Haber et al.
+Norman et al.
+Replogle et al.
+...
+9 single 1 combo3 single
+scDisInFact,
+biolord,
+scVIDR
+a
+b
+E-distance
+KL-divergence
+KangCrossCell
+Parekh
+KangCrossPatient
+Haber
+KaggleCrossPatient
+CrossPatient
+KaggleCrossCell
+Contexts Context counts
+Cell lines
+Cell lines
+Patients
+Cell lines
+Patients
+Patients
+Cell lines
+Conditions
+Single
+Single
+Single
+Single
+Single
+Single
+Single
+8
+8
+3
+8
+6
+3
+5
+2
+2
+11
+4
+3
+11
+11
+Dataset ID/name
+Perturbation counts
+CrossSpecies
+Afriat
+McFarland
+TCDD
+Sciplex3
+Contexts Context counts
+Species
+Cell lines
+Cell lines
+Cell lines
+Cell lines
+Conditions
+Multi
+Multi
+Multi
+Multi
+Multi
+2
+12
+3
+2
+10
+Dataset ID/name
+Perturbation counts
+4
+5
+2
+6
+3
+c
+Dataset ID/name Perturbation
+type
+ Is 
+combination
+Perturbation
+counts
+Genetic
+Adamson
+Frangieh
+TianActivation
+TianInhibition
+Replogle-exp7
+Replogle-exp8
+Papalexi
+Replogle-RPE1essential
+Replogle-K562-essential
+No
+No
+No
+No
+No
+No
+No
+No
+No
+77
+212
+93
+181
+105
+62
+26
+1,331
+1,618
+Dataset ID/name Perturbation
+type
+ Is 
+combination
+Perturbation
+counts
+Chemical
+Norman
+Wessels
+Schmidt
+Reploge-exp6
+Sciplex3-A549
+Sciplex3-MCF7
+Sciplex3-K562
+Sciplex3-comb
+Yes
+Yes
+Yes
+Yes
+No
+No
+No
+Yes
+227
+128
+148
+70
+188
+188
+188
+32
+Genetic
+?
+Fig. 1 | Workflow and datasets for benchmarking the single-cell perturbation 
+effect prediction. a, We classified the single-cell perturbation effects 
+prediction tasks into ‘cellular context generalization scenario’ and ‘perturbation 
+generalization scenario’ . In the cellular context generalization scenario, we 
+benchmarked 14 methods across 12 datasets. In the perturbation generalization 
+scenario, we benchmarked 18 methods across 17 datasets. We adopted 6 metrics 
+to evaluate the performance of these algorithms, and we also assessed their 
+robustness, scalability and consumed computational resources. b, Detailed 
+information of the 12 single-cell perturbation datasets used in cellular context 
+generalization scenario. c, Detailed information of the 17 single-cell perturbation 
+datasets used in perturbation generalization scenario.
+
+===== PDF PAGE 4 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+For the perturbation generalization scenario, we curated 17 
+datasets that broadly cover 2 perturbation types (Fig. 1c ), includ -
+ing (1) 13 genetic perturbation datasets, of which 9 focus on single 
+pertur b ations and 4 on combined perturbations, and (2) 4 chemical  
+perturbation datasets, including 3 single-perturbation datasets and 
+one combined-perturbation dataset 3,38– 46. In total, the numbers of 
+perturbations in these datasets range from 25 to 1,618, ensuring their 
+broad applicability to evaluate the methods.
+Evaluation metrics and assessment of methods.  T o evaluate the 
+current tools for single-cell perturbation prediction comprehensively, 
+we focused on three key metrics, that is, accuracy, robustness and 
+scalability.
+ (1
+)
+ A
+ccuracy evaluation presents a particular challenge because of 
+the lack of consensus on the most suitable evaluation metrics in 
+the field. A variety of metrics have been proposed for evaluat-
+ing single-cell perturbation effect prediction performance, but 
+their reliability and informativeness are still debated. T o ensure a 
+fair, interpretable and representative evaluation of perturbation  
+prediction models, we conducted an extensive literature survey 
+covering 28 existing tools and benchmarking studies in the field, 
+with a particular focus on a study by Ji et al., to guide our selection 
+of evaluation metrics
+47. From these sources, we identified 19 evalu-
+ation metrics and selected three population-average metrics and 
+three population-distribution metrics (Supplementary Table 1, 
+Methods and Extended Data Fig. 1): (a) Population-average met-
+rics. MSE is among the most stable and widely used metrics in 
+single-cell RNA-sequencing (RNA-seq) evaluation
+47; E-distance, 
+selected as another top-performing metric, provides a robust 
+and informative assessment by primarily capturing the difference 
+in average effects between predicted and actual gene expression 
+profiles
+13; PCC-delta, introduced by GEARS and scGPT, has an ad-
+vantage over the traditional PCC in that it better captures the direc-
+tional consistency of predictions
+5,7; (b) Population-distribution 
+metrics. Wasserstein distance and KL-divergence were selected 
+as the most widely used metrics for evaluating distribution-level 
+prediction performance. They quantify the discrepancy between 
+predicted and actual distributions of single-cell profiles, which is 
+essential for capturing heterogeneity and higher-order statistical 
+properties. The Common-DEGs metric measures the accuracy of 
+the predicted most differentially expressed genes, which is criti-
+cal for downstream functional analyses and biological interpre-
+tation
+15. In our analysis, we prio  ritiz ed using MSE and PCC-delta 
+as the representative metric for model performance47. PCC-delta 
+was particularly empha
+ siz
+ed due to its bounded range from −1 
+to 1, which allows for intuitive and interpretable assessment of  
+model effectiveness. More
+ o
+ver, both metrics are computationally 
+efficient, making them well-suited for large-scale benchmarking.
+ We calculated the metrics in two ways: for all genes and for the 
+top 100 most differentially expressed genes ranked by abso -
+lute effect sizes. It should be noted that, for clarity, we use the 
+term ‘DEGs’ in a broader sense than its conventional statistical 
+definition (Supplementary Note 2). Metrics calculated for this 
+smaller, meaningful set of genes are generally preferred in the 
+field, as genes with modest expression change do not contrib -
+ute substantially to understanding perturbation effects 48. 
+Therefore, for conciseness, we present the results based on the  
+top 100 most differentially expressed genes in the main text,  
+and the analysis results of all genes are provided at https:/ /
+bm2-lab.github.io/scPerturBench-reproducibility/. Moreover,  
+we demonstrate that the number of most differentially  
+expressed genes selected does not affect our main conclusions 
+(Supplementary Note 2). We use a ranking-based method to fur-
+ther compare the performance of the selected methods on the 
+basis of the six metrics (Methods)49.
+ (
+2)
+ T
+o evaluate robustness to technical variation, we generated sim-
+ulated datasets based on real data by introducing controlled lev-
+els of noise and sparsity, allowing us to assess how such artifacts 
+impact method performance
+50. In the main text, we focus on 
+population-average metrics—specifically MSE and PCC-delta—to 
+evaluate model robustness under these challenging conditions, 
+as these metrics more accurately reflect model performance 
+and are computationally efficient
+47. Importantly, this analysis is 
+intended to assess robustness to technical artifacts rather than 
+biological variability in perturbation responses.
+ (
+3)
+ T
+o evaluate scalability, an essential consideration for practical 
+application, we systematically varied the sizes of the datasets. 
+We measured computational performance in terms of runtime 
+and CPU utilization to provide a detailed analysis of resource ef-
+ficiency across tools. This multifaceted evaluation framework 
+ensures a thorough and balanced assessment of single-cell per-
+turbation prediction tools, addressing both methodological 
+rigor and practical applicability.
+Benchmarking analysis for the cellular context generalization 
+scenario
+In the cellular context generalization scenario, we evaluated the predic-
+tion of known perturbations in previously unobserved cellular contexts. 
+The cellular context generalization scenario was further divided into 
+two distinct test settings by partitioning the training and test datasets 
+into independent and identically distributed or in-distribution (i.i.d.) 
+and out-of-distribution (o.o.d.) settings (Fig. 2a)14,18. In the o.o.d. set-
+ting, we used leave-one-out cross-validation, where one context was 
+held out as the test set, while the remaining contexts served as the 
+training set (Supplementary Note 3). In the i.i.d. scenario, the model 
+was trained using the same training data as in the o.o.d. scenario but 
+with access to some of the cells from the held-out context. These extra 
+training cells and the test cells were assumed to be independent and 
+identically distributed14. In practical applications, the o.o.d. scenario 
+is more commonly encountered, as we often aim to predict the effects 
+of perturbations in a new, previously unseen context. Furthermore, 
+the i.i.d. setting can be considered a special case of the o.o.d. scenario, 
+where the test context has a highly similar counterpart in the training 
+data. Therefore, in the following benchmark analysis, we focus primar-
+ily on the o.o.d. setting scenario, and the results of the i.i.d. setting 
+scenario can be found in Supplementary Fig. 1.
+Fig. 2 | Benchmarking results for the o.o.d. setting in the cellular context 
+generalization scenario. a, A schematic diagram illustrating the splitting of 
+training and testing data in the i.i.d. and o.o.d. settings. Different colors represent 
+different cellular contexts. b, Performance overview of the 14 evaluated methods, 
+including accuracy, robustness and scalability. Data are presented as mean 
+values with error bars indicating standard errors of the mean. N = 12 datasets. 
+CV, coefficient of variation. c, Overview of PCC-delta for the 14 methods across 
+the 12 datasets. d, Silhouette scores calculated using three different clustering 
+labels from the Afriat and TCDD datasets. e, Performance overview of biolord 
+and the biolord baseline (without considering covariates) across multi-condition 
+datasets. Data are presented as mean values with error bars indicating standard 
+errors of the mean. N = 4, 4, 42, 6 and 27 predictions for CrossSpecies, Afriat, 
+McFarland, TCDD and sciPlex3 datasets. f, Performance overview of scDisInFact 
+and scDisInFact baseline (without considering covariates) across multi-condition 
+datasets. Data are presented as mean values with error bars indicating standard 
+errors of the mean. N = 4, 4, 42, 6 and 27 predictions for CrossSpecies, Afriat, 
+McFarland, TCDD and sciPlex3 datasets. g, MSE and PCC-delta results for the  
+14 methods on simulated datasets with varying levels of noise and sparsity.  
+h, Runtime and CPU memory usage of the 14 methods on simulated datasets  
+with varying sizes.
+
+===== PDF PAGE 5 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+b
+c
+h
+d
+Training data
+Testing data
+i.i.d. setting
+o.o.d. setting
+a
+Performance
+Low
+High
+Ranking
+1
+14
+scPreGAN
+SCREEN
+CellOT
+scDisInFact
+biolord
+scPRAM
+scVIDR
+trVAE
+inVAE
+scGen
+Accuracy
+ RobustnessProperties
+Language GPU
+Method 
+CV MSE
+CV PCC-delta
+Sparsity Noise
+Scalability
+Time
+(min)
+Memory
+(GB)
+trainMean
+VAE based
+Optimal transport
+based
+GAN based
+Overall
+PCC-delta
+Metrics
+1 0
+CV MSE
+CV PCC-delta
+31.2
+0.9
+1,423
+6.5
+2.1
+1.8
+3.8
+111.4
+2
+2.1
+0.2
+3.9
+3.4
+2.9
+3.8
+4.9
+2.5
+6.1
+3.8
+5.5
+4.5
+1.3
+1.1
+3.2
+1.4
+0.3
+0.3
+0.2
+1
+2
+3
+0
+1
+Cellular context  generalization     o.o.d. setting
+MSE
+E-distance
+baseControl
+baseMLP
+baseReg
+2
+2
+1
+1
+3
+2
+2
+3
+1
+3
+1
+2
+1
+2
+3
+2
+2
+1
+2
+1
+3
+Wasserstein
+Common-DEGsKL-divergence
+3
+1
+1
+Methods
+Cell counts
+1,000 5,00010,00050,000
+Time (min)
+1 perturbation
+Perturbation counts
+1 3 9
+Time (min)
+10,000 cells
+Memory (GB)
+Cell counts
+1,000 5,00010,000 50,000 Perturbation counts
+1 3 9
+Memory (GB)
+10,000 cells
+scGen
+inVAE
+trVAE
+scVIDR
+scPRAM
+biolord
+scDisInFact
+CellOT
+SCREEN
+scPreGAN
+trainMean
+baseControl
+baseMLP
+baseReg
+0
+500
+1,000
+1,500
+2,000
+2,500
+1,100
+1,200
+1,300
+0
+100
+200
+0
+5
+10
+15
+20
+2
+4
+6
+1 perturbation
+0
+0.05
+0.10
+0.15
+Cell type Perturbation Time point
+Silhouette score
+Afriat
+0
+0.1
+0.2
+0.3
+Cell type Perturbation Dosage
+Silhouette score
+TCDD
+scPreGAN
+SCREEN
+CellOT
+scDisInFact
+biolord
+scPRAM
+scVIDR
+trVAE
+inVAE
+scGen
+trainMean
+1 0
+Conditions
+Perturbation
+Perturbation + time point
+Perturbation + dosage
+Datasets with additional covariates
+PCC-delta
+Low
+High
+0
+1Performance
+Ranking
+1
+14
+baseControl
+baseMLP
+baseReg
+2
+2
+1
+1
+1
+3
+3
+1
+2
+1
+2
+3
+3
+1
+2
+1
+3
+2
+2
+1
+3
+1
+3
+2
+1
+2
+2
+1
+3
+2
+1
+2
+3
+3
+1
+2
+1
+2
+3 3
+2
+1
+2
+1
+3
+2
+3
+1
+Methods
+Biolord
+ baseline
+Biolord
+e
+f Methods
+scDisInFact
+baseline
+scDisInFact
+CrossSpecies
+Afriat
+McFarland
+TCDD sciPlex
+CrossSpecies
+Afriat
+McFarland
+TCDD sciPlex
+CrossSpecies
+Afriat
+McFarland
+TCDD sciPlex
+CrossSpecies
+Afriat
+McFarland
+TCDD sciPlex
+CrossSpecies
+Afriat
+McFarland
+TCDD sciPlex
+CrossSpecies
+Afriat
+McFarland
+TCDDsciPlex
+0
+0.5
+1.0
+0
+5
+10
+15
+20
+25
+0
+10
+20
+30
+40
+0
+100
+200
+300
+400
+0
+0.05
+0.1
+MSE PCC-delta E-distance KL-divergence Wasserstein Common-DEGs
+0
+1
+2
+3
+0
+1
+2
+3
+4
+−0.25
+0
+0.25
+0.50
+0
+10
+20
+30
+0
+10
+20
+30
+40
+0
+100
+200
+300
+400
+0
+0.05
+0.10
+g
+Level of noise
+PCC-delta
+0 0.1 0.3 0.5 0.7 0.9
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+PCC-delta
+Level of noise
+0 0.1 0.3 0.5 0.7 0.9
+MSE
+0
+0.5
+1.0
+0
+0.5
+1.0
+0
+5
+10
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+MSE
+0
+2.5
+5.0
+7.5
+Baseline model
+sciPlexTCDD
+McFarland
+Afriat
+CrossSpecies
+KaggleCrossCell
+CrossPatient
+KaggleCrossPatient
+Haber
+KangCrossPatient
+Parekh
+KangCrossCell
+
+===== PDF PAGE 6 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+In the o.o.d. scenario, trVAE, CellOT and inVAE achieved the 
+best overall performance (Fig. 2b ). When selecting a method, users 
+can consider the specific needs of their analysis. For example, if the 
+objective is to minimize population-average metrics such as MSE, 
+inVAE and trVAE are the most suitable options. If the objective is to 
+minimize population-distribution metrics such as KL-divergence and 
+Common-DEGs, scVIDR and scPRAM are the most suitable options. 
+Furthermore, we found that, in contrast to population-average metrics, 
+all methods performed relatively poorly on population-distribution 
+metrics, particularly on the Common-DEGs metric. For instance, in the 
+Haber dataset, although the top-performing method achieved an aver-
+age PCC-delta of 0.86, uniform manifold approximation and projection 
+visualization revealed a substantial discrepancy between the predicted 
+and ground-truth distributions (Supplementary Fig. 12). Furthermore, 
+on average, only about 10% of the true most differentially expressed 
+genes were recovered. We conduct a more in-depth discussion of the 
+underlying reasons for this in the next section on the ‘perturbation 
+generalization scenario’ .
+In addition, among the 12 benchmark datasets used in this study, 
+5 included additional perturbation metadata, such as time-point/dos-
+age information, and these are classified as multi-condition datasets 
+(Fig. 2c). Among the 14 methods tested, only biolord, scDisInFact and 
+scVIDR utilized these additional metadata 16,18,21. Through uniform 
+manifold approximation and projection visualization, calculation of sil-
+houette score51 and multifactor analysis of variance (Fig. 2d, Extended 
+Data Figs. 2 and 3, Supplementary Fig. 7and8, Supplementary Notes 4 
+and5 and Supplementary Table 2), time-point/dosage covariates gen-
+erally had a substantial effect on the cellular response. We evaluated 
+the performance of biolord and scDisInFact on these datasets, as well 
+as the performance of scVIDR on the TCDD and sciPlex3 dataset, to 
+assess whether these tools were optimal for use with multi-condition 
+datasets. However, biolord and scDisInFact did not outperform the 
+tools that did not incorporate covariates on these datasets (Fig. 2c ). 
+This may be because, although the time-point/dosage covariates 
+provided useful information, the baseline performance of biolord 
+and scDisInFact—without incorporating covariate information—was 
+relatively suboptimal. As a result, despite performance improvements 
+upon the inclusion of covariates, these models did not achieve top 
+rankings. T o validate this, we calculated the baseline performance 
+of biolord and scDisInFact on these datasets. In the comparison, the 
+performance of biolord was generally better than that of its baseline 
+model (Fig. 2e). This analysis indicated that incorporating covariate 
+information improved the model’s performance. However, in some 
+cases, scDisInFact did not improve from its baseline value (Fig. 2f ). 
+This aligns with the primary design focus of scDisInFact, which is to 
+address batch effects and integrate single-cell datasets rather than to 
+predict perturbation effects
+18. The scVIDR method achieved the best 
+overall performance on the TCDD dataset and ranked second on the 
+sciPlex3 dataset. Therefore, for a dataset that includes perturbation 
+dosage information, scVIDR is an optimal choice.
+Next, we assessed the robustness of the perturbation effect predic-
+tion algorithms to technical noise and data sparsity using simulated 
+data50. As the noise and sparsity in the data increased, the perfor -
+mance of all methods decreased markedly (Fig. 2g). We also noted 
+that the performance of the algorithms deteriorated more severely for 
+high-sparsity data, indicating that their performance is more sensitive 
+to data sparsity (Fig. 2b). In terms of scalability (Supplementary Note 8), 
+none of the algorithms encountered out-of-memory issues, and their 
+runtimes were within acceptable limits, except for CellOT (Fig. 2h). 
+The increased computational complexity of CellOT arises from its 
+explicit modeling of cell-to-cell heterogeneity, and it currently does 
+not support GPU acceleration.
+In summary, the following insights are obtained regarding the 
+benchmark analysis of the cellular context generalization scenario: 
+(1) trVAE, CellOT and inVAE demonstrated the best overall perfor -
+mance on single-condition datasets. For accurate prediction of DEGs, 
+scPRAM is the optimal choice. Additionally, when the dataset includes 
+perturbation dosage information, such as in chemical perturbation 
+datasets, scVIDR is the best method to use. (2) Models that consider 
+covariates affecting cellular responses provide more accurate pre -
+dictions of single-cell perturbation effects. However, most existing 
+tools do not incorporate covariates, and those that do are still far 
+from being sufficiently accurate. Given the increasing availability 
+of multi-condition data in the single-cell perturbation field, there 
+is a pressing need to develop high-performing models tailored for 
+multi-condition data, which can fully exploit covariate information to 
+achieve improved prediction accuracy. (3) All the algorithms’ perfor-
+mance was affected by data noise and sparsity, with greater sensitivity 
+to sparsity. (4) In terms of scalability, none of the algorithms encoun-
+tered out-of-memory issues, and their runtimes were within acceptable 
+limits, except for CellOT.
+Limitations of current methods in the cellular context 
+generalization scenario
+We observed substantial performance variability among the 14 algo-
+rithms across the 12 datasets in the cellular context generalization 
+test. In some datasets, all methods achieved excellent performance, 
+whereas in others, the performance of all methods was notably poor. 
+For example, in the Afriat dataset, even the trainMean baseline per-
+formed exceptionally well, with a median PCC-delta of 0.92 and an 
+average value of 0.85 (Fig. 2c). On the other hand, in datasets such 
+as KaggleCrossCell, all machine learning models performed poorly, 
+with a median PCC-delta of 0.54 and an average value of 0.52 (Fig. 2c).
+T o investigate the underlying reasons for these discrepancies, we 
+conducted the following analyses: (1) We compared the performance 
+of the methods in the i.i.d. and o.o.d. scenarios. As mentioned earlier, 
+in the i.i.d. scenario, the model was trained using the same training 
+data as in the o.o.d. scenario but with additional access to half of the 
+cells from the held-out context. In other words, in the i.i.d. scenario, 
+we can assume that for each test context, the training dataset always 
+includes a context that is highly similar to it. Therefore, the predic -
+tion task in i.i.d. scenarios is simpler, while making predictions for 
+the same cellular context in o.o.d scenarios is more challenging and 
+places greater demands on the model’s generalization capabilities. 
+Fig. 3 | Limitation of current methods in the cellular context generalization 
+scenario. a, Comparison of the performance between the o.o.d. and i.i.d. 
+settings across all datasets. Data are presented as mean values with error bars 
+indicating standard errors of the mean. N = 217 predictions. b, Comparison of the 
+performance between the o.o.d. and i.i.d. settings in the CrossPatient dataset. 
+Box plots show the median (center line) and the 25th and 75th percentiles 
+(bounds of the box), and whiskers extend to 1.5 times the interquartile range 
+(IQR); N = 10 predictions. c, Spearman’s correlation between MSE or PCC-delta 
+and inter-heterogeneity. We combined the results of the test contexts from the  
+12 datasets, with each point representing a test context in a specific dataset. 
+A linear regression line with 95% confidence interval is shown. Statistical 
+significance was assessed using two-sided t-tests. d, Heat maps showing the 
+similarities between contexts in the KangCrossCell and Haber datasets.  
+e,f, These sub-figures illustrate how the algorithm’s PCC-delta and MSE 
+performance varies with changes in the training context. The x axis represents 
+the dissimilarity between the test context and the newly added training context, 
+with larger values indicating lower similarity. The y axis shows the change in 
+the PCC-delta metric for the test context after adding the new training context. 
+Positive values indicate improved performance, while negative values indicate 
+diminished performance. A linear regression line with 95% confidence interval  
+is shown. PCCs were calculated, and statistical significance was assessed using 
+two-sided t-tests. Adjustments were not made for multiple comparisons.  
+g, Recommendation of suitable software for users based on their needs and  
+the characteristics of the data at hand.
+
+===== PDF PAGE 7 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+f
+a
+o.o.d. setting
+i.i.d. setting
+b
+g
+Does your perturbation
+dataset contain a
+covariate factor?
+Yes
+No
+What covariate factor
+do you have?
+Do you aim to minimize 
+population-average or
+population-distribution metrics?
+Dosage
+Population-distribution
+Population-average
+trVAE
+scPRAM
+scVIDR
+Others
+Do you aim to minimize 
+population-average or
+ population-distribution metrics?
+Population-distribution
+Population-average
+trVAE
+scPRAM
+trVAE
+Running time
+eﬀicient?
+Yes
+inVAE
+No
+CellOT
+trVAE
+Running time
+eﬀicient?
+Yes
+inVAE
+No
+CellOT
+0
+0.5
+1.0
+1.5
+scGen inVAE trVAE scVIDR scPRAM biolord
+scDisInFact
+CellOT SCREENscPreGAN trainMean baseControl
+baseMLP baseReg
+0
+0.1
+0.2
+0.3
+MSE
+CellOT
+0
+0.1
+0.2
+0.3
+0.4
+trVAE
+0.2
+0.4
+0.6
+scPreGAN
+0.1
+0.2
+0.3
+inVAE
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+SCREEN
+0.2
+0.4
+0.6
+scDisInFact
+0.1
+0.2
+0.3
+scGen
+0
+0.1
+0.2
+0.3
+0.4
+MSE
+biolord
+0.1
+0.2
+0.3
+0.4
+scPRAM
+0.1
+0.2
+0.3
+scVIDR
+0.1
+0.2
+0.3
+0.4
+trainMean
+0.1
+0.2
+0.3
+0.4
+baseControl
+0.1
+0.2
+0.3
+0.4
+baseMLP
+0.1
+0.2
+0.3
+0.4
+baseReg
+o.o.d. setting i.i.d. setting o.o.d. setting i.i.d. setting o.o.d. setting i.i.d. setting o.o.d. setting i.i.d. setting o.o.d. setting i.i.d. setting o.o.d. setting i.i.d. setting o.o.d. setting i.i.d. setting
+MSE
+r = –0.78, P = 0.0027
+0
+1
+2 4 6 8 10
+MSE
+0
+0.1
+0.2
+0.3
+0.4
+10 20 30
+r = –0.73, P = 1.5 × 10
+−5
+MSE
+0
+0.5
+1.0
+0 10 20 30
+Inter-heterogeneity
+MSE
+0.25
+0.50
+0.75
+1.00
+0 10 20 30
+Inter-heterogeneity
+PCC-delta
+0
+0.25
+0.50
+0.75
+scGen inVAE trVAE scVIDR scPRAM biolord
+scDisInFact
+CellOT SCREENscPreGAN trainMean baseControl
+baseMLP baseReg
+PCC-delta
+c
+o.o.d. setting
+i.i.d. setting
+−0.1
+0
+0.1
+0.2
+2 4 6 8 10
+PCC-delta
+r = –0.96, P = 1.3 × 10
+−6
+0
+0.1
+0.2
+0.3
+0.4
+10 20 30
+PCC-delta
+r = –0.71, P = 3.9 × 10
+−5
+e
+Dissimilarity Disimilarity
+Dissimilarity
+Dissimilarity
+r = 0.71, P = 3.91 × 10
+−10
+r = –0.47, P = 0.000196
+DC
+CD14_mono
+CD16_mono
+B
+T
+NK
+CD4_T
+CD8_T
+−1
+0
+1
+Pearson’s correlation
+KangCrossCelld
+Enterocyte_progenitor
+Enterocyte
+Stem
+TA_Early
+TA
+Goblet
+Tuft
+Endocrine
+−1
+0
+1
+Pearson’s correlation
+Haber
+Testing contexts
+Training contexts
+Testing contexts
+Training contexts
+
+===== PDF PAGE 8 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+As shown in Fig. 3a,b , the performance of each method in the i.i.d. 
+setting is better than that in the o.o.d. setting, which is expected. (2) 
+We calculated the similarity between the test context and each con -
+text in the training dataset via the E-distance, and the minimum value 
+was used to assess the degree of similarity between the test context 
+and the training context (inter-heterogeneity). As shown in Fig. 3c, 
+when the inter-heterogeneity between the test context and training 
+context was low, the methods generally performed well. In contrast, 
+when the inter-heterogeneity between the test context and training 
+context was high, the performance of the methods was poor. This 
+result indicated that it is still challenging for the current methods to 
+be generalized to a new cellular context that is dissimilar to the train-
+ing cellular context (Extended Data Fig. 4). (3) We conducted holdout 
+experiments on kangCrossCell and Haber datasets to simulate a test 
+to mimic different degrees of inter-heterogeneity (Supplementary 
+Note 9). We first selected several cell lines as the test contexts and then 
+sequentially added contexts that were either similar or dissimilar to the 
+test contexts from the training dataset to observe the performance of 
+each method (Fig. 3d ). When contexts with greater similarity to the 
+test context were added to the training dataset, the prediction per -
+formance generally improved considerably. However, when contexts 
+with low similarity to the test context were added, the performance 
+either showed little improvement or remained unchanged (Fig. 3e,f  
+and Supplementary Fig. 9).
+In summary, the analysis of the benchmark results in the cellular 
+context generalization scenarios shows that the performance of the 
+evaluated methods is highly dependent on the inter-heterogeneity. 
+When predicting perturbation effects in a new cellular context that 
+differs substantially from the training datasets, all methods likely 
+performed unsatisfactorily, highlighting their limited generalizability. 
+We believe that accounting for intercellular heterogeneity is crucial for 
+enhancing the generalizability of current models across diverse cellular 
+contexts. Finally, user guidance is provided regarding the benchmark 
+analysis of the cellular context generalization scenario (Fig. 3g).
+Benchmarking analysis of the perturbation generalization 
+scenario
+In the perturbation generalization scenario, we assess the ability of 
+models to predict the effects of previously unobserved perturbations 
+within a specific cellular context. Depending on the type of pertur -
+bation, this scenario can be further divided into two categories: genetic 
+perturbation effect prediction and chemical perturbation effect  
+prediction. (1) Genetic perturbation effect prediction. In this scenario, 
+we evaluated the performance of 11 existing algorithms, including  
+the foundation models—AttentionPert 23, biolord16, CPA24, GEARS5,  
+GenePert25, linearModel12, scouter27, scFoundation6, scGPT7, scELMo28 
+and GeneCompass29—as well as 4 baseline models, on 13 datasets of 
+varying sizes, including between 25 and 1,618 perturbations. In addi-
+tion, recent studies suggest that for predicting gene expression profiles 
+under combined perturbations, the simplest additive model—which 
+predicts the effects of combined perturbations as the sum of the effects 
+of two single perturbations—often outperforms complex deep learn-
+ing models or foundation models such as scGPT 12. However, these 
+conclusions were derived from a single dataset. T o address this limi-
+tation in the previous evaluations, we included 4 datasets focused  
+on combined perturbations (two-gene combinations) in our evaluation. 
+(2) Chemical perturbation effect prediction. Similarly, in chemical 
+perturbation effect prediction scenarios, datasets are categorized  
+into single-perturbation datasets and combined-perturbation datasets. 
+Among the methods tested, biolord16, chemCPA26 and cycleCDR31 are 
+limited to single-perturbation datasets.
+Genetic perturbation setting.  Across the 9 single-perturbation 
+datasets, GenePert, scGPT and scouter demonstrated the best 
+overall performance (Fig. 4a). Both GenePert and scouter leverage 
+ChatGPT-derived textual descriptions as embeddings. It is surprising 
+that models relying on unaligned natural language embeddings out-
+perform those leveraging transcriptome-informed embeddings. T o 
+investigate the underlying source of performance gain, we conducted 
+an ablation study designed to isolate the contribution of different 
+embedding types. Specifically, we replaced the original embeddings 
+in GenePert and scouter with five alternative embeddings: Gene -
+Compass29, geneformer9, scBERT8, scELMo28 and scGPT7, while keeping 
+all other model parameters and training procedures identical. Among 
+these, scELMo and ChatGPT-based embeddings are derived from  
+large language models (LLMs) trained on biomedical corpora, whereas 
+GeneCompass, geneformer, scBERT and scGPT are derived from  
+foundation models trained on large-scale single-cell transcriptomic 
+datasets. We evaluated model performance using MSE and PCC-delta, 
+as these metrics more accurately reflect model performance and  
+are more computationally efficient 50. As shown, across nine single-  
+gene perturbation datasets, GenePert and scouter consistently 
+achieved top performance when using embeddings from scELMo and 
+ChatGPT (Supplementary Fig. 45). In contrast, performance dropped 
+markedly when transcriptome-informed embeddings (for example, 
+from scGPT and geneformer) were used. Notably, GenePert uses  
+a linear regression model, and scouter uses a simple multilayer per -
+ceptron—yet both outperform more complex models such as GEARS 
+and biolord under certain settings. This suggests that the performance 
+advantage likely stems from the rich biological priors embedded  
+Fig. 4 | Benchmarking results for genetic perturbation in the perturbation 
+generalization scenario. a, Performance overview of the 15 evaluated methods, 
+including accuracy, robustness and scalability. Data are presented as mean  
+values with error bars indicating standard errors of the mean. N = 9 datasets.  
+b, Performance of the 14 methods on MSE and PCC-delta metrics in the Replogel-
+RPE1essential and Replogel-K562essential datasets. The scFoundation method 
+encountered an ‘out-of-memory’ error on these two datasets, so results were 
+not available. Box plots show the median (center line) and the 25th and 75th 
+percentiles (bounds of the box), and whiskers extend to 1.5 times the IQR; N = 798, 
+969 predictions for Replogel-RPE1essential and Replogel-K562essential datasets. 
+c, The relationship between performance differences and the similarities 
+between testing and training perturbations (inter-heterogeneity). The x axis 
+represents inter-heterogeneity, with larger values indicating that a testing 
+perturbation is less similar to the training perturbations (Methods). The y axis 
+represents the performance difference in MSE between the CPA model and 
+trainMean, with lower values indicating that CPA achieves better performance. 
+Each point corresponds to a testing perturbation. A linear regression line 
+with 95% confidence interval is shown. PCCs were calculated, and statistical 
+significance was assessed using two-sided t-tests. Adjustments were not  
+made for multiple comparisons. d, Performance overview of the 15 evaluated 
+methods across the four genetic combination perturbation datasets. Box plots 
+show the median (center line) and the 25th and 75th percentiles (bounds of the 
+box), and whiskers extend to 1.5 times the IQR; N = 4 datasets. e, Performance 
+overview of the 15 evaluated methods on PCC-delta and MSE metrics for the 
+additive gene interaction subtype. Data are presented as mean values with error 
+bars indicating standard errors of the mean. f, Performance overview of the  
+15 evaluated methods on PCC-delta and MSE metrics for potentiation, epistasis 
+and redundant gene interaction subtypes. Data are presented as mean values 
+with error bars indicating standard errors of the mean. g, Average performance 
+of the 15 methods on PCC-delta and MSE metrics across the comb-seen0, combo-
+seen1 and combo-seen2 perturbation categories. h, Performance of the scGPT 
+and trainMean baseline models on MSE and PCC-delta metrics across the comb-
+seen0, combo-seen1 and combo-seen2 perturbation categories in the Schmidt 
+dataset. i, Runtime and CPU memory usage of the 15 methods on simulated 
+datasets with varying cell counts. j, MSE and PCC-delta results for the 15 methods 
+on simulated datasets with varying levels of noise and sparsity. Due to the long 
+runtime of scFoundation, we did not evaluate its robustness.
+
+===== PDF PAGE 9 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+a
+b
+AccuracyMethod 
+1 0
+Overall
+Common-DEGs
+PCC-delta
+MSE
+E-distance
+Perturbation generalization (genetic combo)
+c
+d
+g h
+−0.4
+−0.3
+−0.2
+−0.1
+0
+0 0.2 0.4 0.6
+Inter-heterogeneity
+MSE
+r = –0.5, P = 2.199 × 10
+−18
+r = –0.53, P = 3.579 × 10
+−25
+−0.4
+−0.3
+−0.2
+−0.1
+0
+MSE
+0 0.2 0.4 0.6
+Replogle-K562essentialReplogle-RPE1essential
+0
+0.05
+0.10
+0.15
+0.20
+MSEPCC-delta
+0
+0.2
+0.4
+0.6
+0.8
+Combo seen
+Combo seen
+1 0 2
+Good Bad
+Performance
+0
+0.01
+0.02
+0.03
+0
+0.2
+0.4
+1 0 2
+MSEPCC-delta
+scGPTtrainMean
+0.019
+0.012
+0.006
+0.53
+0.25
+0.14
+Dataset: Schmidt
+Deep learning model
+Graph model
+Foundation model
+Ranking
+1
+15
+Properties
+Language GPU
+Method 
+1 0
+Low
+High
+Performance
+1
+0
+Accuracy
+Metrics
+Scalability
+Time
+(min)
+Memory
+(GB)
+Robustness
+Sparsity Noise
+Linear model trainMean
+linearModel
+GEARS
+scFoundation
+scGPT
+AttentionPert
+scouter
+biolord
+CPA
+GenePert
+baseMLP
+scELMo
+GeneCompass
+baseControl
+baseReg
+Overall
+Common-DEGs
+MSE
+PCC-delta E-distance
+CV MSE
+CV PCC-delta
+CV MSE
+CV PCC-deltaWasserstein KL-divergence
+1
+2
+3
+1
+2
+3
+2
+3
+1
+1
+2
+3
+3
+1
+2
+1
+2
+3
+1
+2
+3
+Perturbation generalization
+(genetic single)
+1
+2
+3
+1
+3
+2
+3
+2
+1
+2
+3
+1
+3
+2
+1
+140.6
+6.7
+57.4
+74.3
+0.7
+0.5
+0.4
+152.2
+1.1
+1.7
+66.9
+386.8
+98.4
+7.3
+0.73
+18.9
+21.1
+17.2
+21.1
+8.4
+5.9
+4.2
+6.2
+9.2
+16.4
+22.3
+24.1
+21.1
+13.3
+10.5
+2
+1
+3
+Methods
+0
+10
+20
+30
+40
+50
+5,000 20,000 50,000 150,000
+Cell counts
+Memory (GB)
+...Out of memory
+5,000 20,000 50,000 150,000
+Cell counts
+0
+200
+400
+...Out of memory
+Time (min)
+50 Perturbations
+i
+50 Perturbations
+CPA
+biolord
+scouter
+AttentionPert
+baseMLP
+scELMo
+GeneCompass
+scGPT
+scFoundation
+GEARS
+GenePert
+linearModel
+trainMean
+baseControl
+baseReg
+trainMean
+linearModel
+GEARS
+scFoundation
+scGPT
+AttentionPert
+scouter
+biolord
+CPA
+GenePert
+baseMLP
+scELMo
+GeneCompass
+baseControl
+baseReg
+Wasserstein KL-divergence
+1
+3
+1
+1
+3
+1
+1
+3
+1
+1
+2
+3
+2
+3
+1
+2
+3
+1
+1
+3
+2
+baseMLP
+baseReg
+scELMo
+GEARS
+GeneCompass
+trainMean
+linearModel
+AttentionPert
+scouter
+biolord
+GenePert
+scGPT
+CPA
+baseControl
+baseMLP
+baseReg
+biolord
+GEARS
+trainMean
+AttentionPert
+scELMo
+GeneCompass
+scouter
+linearModel
+GenePert
+scGPT
+CPA
+PCC-delta
+Replogle-K562essentialReplogle-RPE1essential
+MSEPCC-deltaMSE
+baseControl
+baseMLP
+baseReg
+scouter
+trainMean
+scGPT
+GEARS
+linearModel
+biolord
+GenePert
+AttentionPert
+scELMo
+GeneCompass
+CPA
+baseMLP
+baseControl
+trainMean
+baseReg
+linearModel
+scouter
+scELMo
+GeneCompass
+GEARS
+scGPT
+GenePert
+AttentionPert
+biolord
+CPA
+0
+0.2
+0.4
+0
+0.2
+0.4
+0
+0.5
+1.0
+0
+0.5
+1.0
+fe
+Additive
+PCC-delta
+Potentiation Epistasis Redundant
+0 0.2 0.4 0.6
+MSE
+CPA
+0.25
+0.50
+0.75
+1.00
+0 0.2 0.4 0.6
+MSE
+CPA
+0
+0.4
+0.8
+1.2
+0 0.1 0.2 0.3
+MSE
+0
+0.25
+0.50
+0.75
+1.00
+linearModel
+trainMean
+0.1 0.2 0.3
+CPA
+0
+0.25
+0.50
+0.75
+1.00
+MSE
+baseControl
+Inter-heterogeneity
+j
+0
+0.5
+1.0
+1.5
+2.0MSE
+Level of noise
+0 0.1 0.3 0.5 0.7 0.9
+–0.3
+0
+0.3
+0.6
+PCC-delta
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+PCC-delta
+0
+0.5
+1.0
+1.5
+2.0MSE
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+0
+0.3
+0.6
+0 0.1 0.3 0.5 0.7 0.9
+Level of noise
+
+
+===== PDF PAGE 10 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+in LLM-derived embeddings, rather than model complexity or archi-
+tecture. Furthermore, all downstream architectures, loss functions, 
+training protocols and evaluation metrics were kept constant across 
+experiments. Thus, we believe the observed improvements are not  
+artifacts, but instead reflect genuine representational advantages  
+provided by LLMs. These results indicate that LLM-derived gene 
+embeddings may capture high-level functional and contextual knowl-
+edge that is otherwise hard to extract from gene expression data alone.
+In our study, the four baseline models and linearModel per -
+formed relatively poorly, which differs from the findings of previous  
+studies—potentially due to differences in data preprocessing and  
+the size of the training set (Supplementary Note 18). In datasets 
+with 
+abundant fine-tuning data, deep learning and foundation 
+models such as CPA and scGPT performed well, particularly on 
+population-average metrics. For example, in the Replogle-RPE1es -
+sential and Replogle-K562essential datasets 41, CPA achieved the  
+highest accuracy in terms of both MSE and PCC-delta24 (Fig. 4b). Further 
+analysis revealed that the performance advantage of CPA over train-
+Mean increased as the similarity between the test and training pertur-
+bations decreased (Fig. 4c). This suggests that deep learning models 
+have superior generalizability when fine-tuned on sufficiently large 
+datasets. T o further validate our conclusion, we conducted an experi-
+ment where we varied the training (fine-tuning) set size (10%, 30%, 50% 
+and 80%) on the Replogle-RPE1essential and Replogle-K562essential 
+datasets, keeping all other parameters constant. The results showed 
+a clear trend that the performance of scGPT improved with increasing 
+amounts of fine-tuning data, whereas the trainMean baseline model 
+remained stable or showed slight degradation (Extended Data Fig. 5).
+For the combined-perturbation datasets, we focused on accuracy 
+across three perturbation categories: combo-seen2, combo-seen1 
+and combo-seen0 (Fig. 4d). These categories correspond to scenar -
+ios in which both, one and neither individual perturbation is present  
+in the training set, respectively, which increase the difficulty of  
+achieving high accuracy 5,52. linearModel and scouter achieved the 
+highest overall accuracy across all categories (Fig. 4d). Accurately 
+predicting combined-perturbation effects fundamentally relies on 
+correctly learning the interactions between genes. Therefore, we used 
+the Norman dataset to assess the ability of current models to predict 
+gene interactions
+40. In this dataset, gene interactions are categorized 
+into seven types, including additive, suppressor, synergy and other 
+types (Supplementary Note 10). The additive-based linearModel and 
+trainMean achieved the best performance on the additive interaction 
+type, which is in line with expectations (Fig. 4e). Additionally, CPA 
+performed best on the potentiation, epistasis and redundant gene 
+interaction types, which may indicate that deep learning models have 
+certain advantages in predicting specific types of gene interactions 
+(Fig. 4f and Supplementary Fig. 25).
+Among the combo-seen2, combo-seen1 and combo-seen0  
+perturbation types, predicting the perturbation effects for combo-  
+seen0 was the most challenging and placed greater demands on the 
+model’s generalization ability, as both perturbations are unseen. 
+In all four combined-perturbation datasets, the performance of all 
+tools is the worst for combo-seen0 prediction (Fig. 4g). Notably, in 
+the Schmidt dataset38, scGPT substantially outperformed the baseline 
+model in terms of the MSE and PCC-delta metrics, especially for the 
+combo-seen0 perturbation type (Fig. 4h and Supplementary Fig. 26). 
+This may further demonstrate the superior generalizability of the 
+foundation model in certain test scenarios.
+We also assessed the scalability of algorithms and the robustness 
+of the algorithms to technical noise and data sparsity using simulated 
+data (Methods). The procedure and evaluation metrics were similar  
+to those in the cellular context generalization scenario. In terms of  
+scalability, none of the algorithms encountered out-of-memory  
+issues, and their runtimes were within acceptable limits, except for 
+scFoundation (Fig. 4i). All the algorithms’ performance was affected 
+by data noise and sparsity, with greater sensitivity to sparsity (Fig. 4a,j). 
+Owing to the long runtime of scFoundation, we did not evaluate 
+its robustness.
+Chemical perturbation setting.  For the three single-perturbation 
+datasets, chemCPA achieved the best performance on the 
+population-average metrics, outperforming the baseline model by 
+a substantial margin (Fig. 5a). Unlike other deep learning models, 
+chemCPA performed impressively even on smaller datasets, likely 
+because of its effective use of prior knowledge during pretraining on 
+bulk RNA-seq datasets 53, which enriched its understanding of gene 
+expression patterns. In the combined-perturbation dataset, baseReg 
+outperformed CPA on all six metrics, highlighting the current gap in 
+methods for chemical perturbation prediction, particularly in combi-
+natorial contexts (Fig. 5b). Therefore, developing more effective tools 
+for such scenarios remains an urgent priority.
+Next, we assessed the robustness and scalability of the evalu -
+ated algorithms (Methods). The procedure and evaluation metrics 
+are similar to those in the cellular context generalization scenario. 
+In terms of scalability (Fig. 5c ), none of the algorithms encountered 
+out-of-memory issues, and their runtimes were within acceptable 
+limits. Regarding the impact of sparsity, PRnet and chemCPA were the 
+most stable. Regarding the impact of noise, PRnet and cycleCDR were 
+the most stable (Fig. 5a,d).
+In summary, the following insights were obtained from the 
+benchmark analysis of the perturbation generalization scenario:  
+(1) T o predict genetic single-perturbation effects, GenePert is an 
+optimal choic
+e when the training dataset is small. However, when 
+the fine-tuning dataset is sufficient, deep learning and foundation 
+models such as CPA and scGPT are preferable. (2) In predicting genetic 
+combined-perturbation effects, linearModel and scouter perform the 
+best. (3) In chemical single-perturbation effect prediction, chemCPA  
+is the preferred choice. (4) At present, methods for predicting  
+chemical combined-perturbation effects are limited, and the baseReg 
+baseline model achieves the highest accuracy.
+Limitations of current methods in the perturbation 
+generalization scenario
+In this test scenario, we identified several limitations of current tools: 
+(1) Suboptimal performance in predicting combined-perturbation 
+effects. Although scouter performed best among all the evaluated 
+methods in the combined-perturbation prediction setting, its improve-
+ment over the baseline models was limited (Fig. 4d). Other deep  
+learning models and foundation models even performed worse than 
+the baseline models did; (2) Limited generalizability of deep learning 
+and foundation models. T o evaluate their generalizability, we system-
+atically examined the performance of several representative deep 
+Fig. 5 | Benchmarking results in the perturbation generalization scenario. 
+a, Performance overview of the nine evaluated methods, including accuracy, 
+robustness and scalability. Data are presented as mean values with error bars 
+indicating standard errors of the mean. N = 3 datasets. b, Performance overview 
+of the six evaluated methods on a chemical combination perturbation dataset. 
+c, Runtime and CPU memory usage of the nine methods on simulated datasets 
+with different cell counts. d, MSE and PCC-delta results for the nine methods 
+on simulated datasets with varying levels of noise and sparsity. e, Correlation 
+between the magnitude of perturbation effects and the performance of the 
+methods. A linear regression line with 95% confidence interval is shown. PCCs 
+were calculated, and statistical significance was assessed using two-sided 
+t-tests. Adjustments were not made for multiple comparisons. f, Number of 
+DEGs identified by the baseMLP model in genetic single-perturbation datasets. 
+g, Recommendation of suitable software for users based on their needs and the 
+characteristics of the data at hand.
+
+===== PDF PAGE 11 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+c
+Time (min)
+5,000 20,000 50,000 150,000
+Cell counts
+0
+500
+1,000
+Memory (GB)
+5,000 20,000 50,000 150,000
+Cell counts
+0
+10
+20
+CPA
+biolord
+chemCPA
+PRnet
+cycleCDR
+baseMLP
+trainMean
+baseControl
+baseReg
+Methods
+a
+Ranking
+1
+9
+Performance
+Low
+High1
+0
+trainMean
+chemCPA
+biolord
+CPA
+AccuracyProperties
+Language GPU
+Method 
+Deep learning
+model
+Metrics
+1 0
+Overall
+PCC-delta
+Scalability
+Time
+(min)
+Memory
+(GB)
+23.2
+69.6
+32.7
+0.1
+97.3
+566.3
+0.2
+0.3
+0.2
+3.6
+3.1
+3.9
+0.6
+8.3
+11.5
+0.9
+2
+0.8
+MSE
+E-distance
+Common-DEGs
+Perturbation generalization Chemical single
+Robustness
+Sparsity Noise
+CV PCC-delta
+CV MSE CV MSE
+CV PCC-delta
+baseMLP
+cycleCDR
+PRnet
+baseReg
+baseControl
+Wasserstein
+KL-divergence
+1
+2
+3
+2
+1
+3
+2
+1
+3
+2
+1
+3
+3
+2
+1
+1
+2
+3
+2
+1
+3
+2
+1
+3
+1
+2
+2
+2
+1
+3
+1
+2
+3
+1
+2
+3
+1
+3
+2
+Linear model
+b
+Chemical comboPerturbation generalization
+baseMLP
+PRnet
+CPA
+AccuracyProperties
+Language GPU
+Method 
+Metrics
+Ranking
+1
+6
+Performance
+Low0
+1 0
+Overall
+PCC-delta
+MSE
+E-distance
+Common-DEGs
+baseReg
+baseControl
+trainMean
+Wasserstein
+KL-divergence
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+1
+2
+3
+High1
+e
+r = 0.8, P = 4.25 × 10
+−148
+Genetic single dataset: Replogle-RPE1essential
+g
+Chemical single dataset: Sciplex3-A549 f
+0
+0.25
+0.5
+0.75
+1
+0 2 4 6
+Perturbation eﬀect
+MSE
+0
+0.5
+1.0
+1.5
+2.0
+0 1 2 3 4
+Perturbation eﬀect
+MSE
+r = 0.55, P = 9.95 × 10
+−25
+9 8 7 6 5 4 3 2Dataset 1
+0
+2
+4
+6
+Number of 
+identified DEGs
+Genetic single-perturbation datasets
+baseMLP
+d
+−0.2
+0
+0.2
+0.4
+0.6
+PCC-delta
+Level of noise
+0 0.1 0.3 0.5 0.7 0.9
+−0.3
+0
+0.3
+0.6
+PCC-delta
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+Level of noise
+0 0.1 0.3 0.5 0.7 0.9
+0.5
+1.0
+1.5
+MSE
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+0.5
+1.0
+1.5
+MSE
+Perturbation type
+Genetic
+Chemical
+Single or combo perturbation?
+Single
+Combo 
+ Yes
+No
+trainMean
+GenePert
+scGPT
+scGPT
+CPA
+scouter
+chemCPA
+baseReg
+Single
+Combo 
+Foundation model
+Deep learning model
+Do you have suﬀicient data?
+Yes
+No
+Deep learning model
+Foundation model
+Linear model
+Linear model
+Deep learning model
+Linear model
+Do you have suﬀicient data?
+Single or combo perturbation?
+
+===== PDF PAGE 12 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+learning models, including CPA, scGPT, scouter and GEARS, across 
+13 genetic perturbation benchmark datasets with varying size. As 
+shown in our results, increasing the number of cells or perturbations 
+in the training data did not lead to performance gains across all evalu-
+ation metrics (Supplementary Note 11 and Supplementary Figs. 13 and 
+14). Further analysis revealed that model performance declined on 
+perturbations with high inter-heterogeneity, suggesting that gener-
+alization is more strongly influenced by data quality—particularly the 
+similarity between training and testing perturbations—than by dataset 
+size (Supplementary Fig. 29). Additionally, we used the E-distance to 
+measure the degree of perturbation effects in each dataset. In gen-
+eral, accurately predicting the perturbation expression profile for 
+strong perturbations requires models with greater generalizability. As 
+shown in Fig. 5e, strong perturbations were associated with increased 
+MSE, E-distance and Wasserstein values, suggesting greater difficulty 
+in accurately capturing their expression responses (Supplementary 
+Note 11 and Supplementary Figs. 15–17). Collectively, these findings 
+highlight the current limitations in the generalizability of deep learn-
+ing models for perturbation effect prediction, especially in the pres-
+ence of strong perturbations and heterogeneous perturbations; (3) 
+Poor performance on population-distribution metrics. We observed 
+that all methods likely performed poorly on population-distribution 
+metrics especially on the Common-DEGs metric in genetic perturba-
+tion scenarios. For instance, in genetic single-perturbation datasets, 
+even the best-performing model, baseMLP, identified fewer than 10 of  
+100 true most differentially expressed genes (Fig. 5f). This also aligns 
+with findings from the cellular context generalization scenario.
+Finally, user guidance is provided regarding the benchmark  
+analysis of the perturbation generalization scenario (Fig. 5g).
+Discussion
+In this study, we provide a comprehensive benchmark of single-cell 
+perturbation prediction methods across two key scenarios: cellular 
+context generalization and perturbation generalization. We assessed 
+27 methods with a total of 29 datasets using 6 evaluation metrics—
+MSE, PCC-delta, E-distance, Wasserstein distance, KL-divergence and 
+Common-DEGs—with a focus on evaluating the methods’ generaliz -
+ability. Simulated data were also used to assess the impact of noise 
+and sparsity on performance. Our findings revealed that no single 
+method performs well across all datasets, highlighting the need for 
+user-specific guidance in selecting methods on the basis of dataset 
+characteristics. These results are as follows: (1) In the cellular context 
+generalization scenario, trVAE, CellOT and inVAE demonstrated the 
+best overall performance on single-condition datasets. For the accurate 
+prediction of the top most differentially expressed genes, scPRAM is the 
+optimal choice. Additionally, when the dataset includes perturbation 
+dosage information, scVIDR is the best method. (2) In the perturbation 
+generalization scenario, for predicting genetic single-perturbation 
+effects, GenePert is the optimal choice when the training dataset is 
+small. When the fine-tuning dataset is sufficiently large, CPA and scGPT 
+are preferable. For predicting genetic combined-perturbation effects, 
+the linearModel and scouter method perform the best. In chemical 
+single-perturbation effect prediction, chemCPA is the preferred choice, 
+whereas the baseReg baseline model achieves the highest accuracy in 
+chemical combined-perturbation effect prediction (Fig. 5g).
+For designing future algorithms, the following limitations of exist-
+ing methods and insights should be considered: (1) In the cellular 
+context generalization scenario, most existing tools do not incorporate 
+time-point/dosage covariates, and those that do are still far from suf-
+ficiently accurate. Given the increasing availability of multi-condition 
+data in the single-cell perturbation field, there is a pressing need to 
+develop high-performing models tailored for such data. (2) In both 
+test scenarios, despite accounting for intra-heterogeneity, the models 
+exhibited weaker performance on population-distribution metrics 
+compared to population-average metrics. Typically, deep learning 
+models in the perturbation effect prediction field are optimized using 
+loss functions that focus more on population-average metrics. This may 
+account for the strong performance of these methods on such metrics 
+and their poorer results regarding population-distribution metrics. 
+However, understanding the heterogeneity within cellular subpopula-
+tions in response to perturbations is vital for revealing gene functions 
+and regulatory networks. T o increase prediction accuracy, future mod-
+els for perturbation effect prediction may consider incorporating both 
+population-average and population-distribution metrics into their 
+loss function design; (3) One limitation of current methods emerges 
+in the perturbation generalization setting, where advanced models 
+tend to underperform relative to simpler approaches, particularly on 
+small-scale datasets. This finding suggests that complex models may 
+struggle to generalize effectively in low-data regimes. Enhancing the 
+robustness and generalizability of advanced models under data-limited 
+conditions represents an important direction for future research.  
+(4) All current methods likely exhibited poor generalizability, espe -
+cially when predicting perturbation effects in novel cellular contexts. 
+T o alleviate this, we propose incorporating prior knowledge through 
+cell-line embeddings, which can improve model generalizability (Sup-
+plementary Notes 12 and 13 and Supplementary Figs. 27, 28 and 38). 
+As a proof-of-concept study, we present an initial attempt to inte -
+grate such prior knowledge and formulate an applicable framework  
+with validations. We encourage researchers to explore and develop 
+alternative approaches on the basis of their own deeper understanding 
+and hope that our approach will inspire future work and drive innova-
+tion in this area.
+There are several limitations of our current research. (1) In 
+certain test scenarios, the available datasets are currently insuffi -
+cient, which may lead to bias in the conclusions drawn; (2) Our pro -
+posed cellular context embedding strategy is currently applicable 
+only to cell-line-derived contexts and cannot be directly applied to 
+patient-derived contexts (Supplementary Note 12); (3) While the pro-
+posed cellular context embedding strategy represents a conceptu -
+ally promising direction, its current performance demonstrates only 
+limited improvements—mainly in the PCC-delta and Common-DEGs 
+metrics—and does not consistently surpass baseline methods across 
+evaluation metrics on all the evaluated datasets. As a preliminary 
+attempt, this method remains an early exploration, and we acknowl-
+edge that further methodological refinements will be necessary to 
+improve its performance and enhance its practical applicability;  
+(4) Our current work does not address the challenge of poor perfor -
+mance on population-distribution metrics, which reflect a model’s 
+ability to capture intracellular heterogeneity. Addressing this limitation 
+remains an important direction for future research; (5) One limitation 
+of our current robustness evaluation framework is that it primarily 
+focuses on the effects of technical artifacts, such as noise and sparsity. 
+While this allows us to systematically assess the sensitivity of predic-
+tive models to common experimental distortions, it does not capture 
+biological variability in perturbation responses across different cellular 
+contexts or genetic backgrounds. Evaluating robustness to biological 
+variation with simulator tools such as scDesign3 (ref. 54 ) remains an 
+important and complementary direction for future work.
+Looking ahead, several important directions could further 
+advance the field of single-cell perturbation outcome prediction.  
+(1) There is an urgent need to establish more diverse and compre -
+hensive single-cell perturbation atlases. Similarly to how large-scale 
+single-cell atlases have accelerated algorithmic development in the 
+broader single-cell field, systematically building perturbation-focused 
+cell atlases could catalyze progress in perturbation effect prediction. 
+Notably, Rood et al. have proposed the concept of a ‘perturbation 
+cell atlas’ , highlighting the value of such systematic efforts for the 
+community55. Large-scale resources such as Tahoe-100M and X-Atlas 
+have begun to fill this gap by providing comprehensive perturbation 
+datasets, which lay a strong foundation for future benchmarking 
+
+===== PDF PAGE 13 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+and systematic evaluation of foundation model performance 56,57;  
+(2) Future work may further explore the integration of prior biological 
+knowledge—such as gene regulatory networks or pathway informa -
+tion—into model design to enhance generalization across a wide range 
+of cellular contexts. Incorporating biological priors could substantially 
+improve the robustness and interpretability of perturbation prediction 
+models; (3) Despite promising advances, the field of chemical pertur-
+bation prediction, especially in the context of chemical combination 
+effects, remains underdeveloped. More dedicated research is needed to 
+develop specialized algorithms capable of accurately modeling chemi-
+cal combination perturbations, which would have important implica-
+tions for accelerating chemical discovery and therapeutic development.
+Online content
+Any methods, additional references, Nature Portfolio reporting sum-
+maries, source data, extended data, supplementary information, 
+acknowledgements, peer review information; details of author contri-
+butions and competing interests; and statements of data and code avail-
+ability are available at https://doi.org/10.1038/s41592-025-02980-0.
+References
+1. Sriv atsan, S. R. et al. Massively multiplex chemical transcriptomics 
+at single-cell resolution. Science 367, 45–51 (2020.
+2.
+ Dixit, A
+. et al. Perturb-seq: dissecting molecular circuits with 
+scalable single-cell RNA profiling of pooled genetic screens. Cell 
+167, 1853–1866 (2016).
+3.
+ A
+damson, B. et al. A multiplexed single-cell CRISPR screening 
+platform enables systematic dissection of the unfolded protein 
+response. Cell 167, 1867–1882 (2016).
+4.
+ L
+otfollahi, M., Wolf, F. A. & Theis, F. J. scGen predicts single-cell 
+perturbation responses. Nat. Methods 16, 715–721 (2019).
+5.
+ R
+oohani, Y., Huang, K. & Leskovec, J. Predicting transcriptional 
+outcomes of novel multigene perturbations with GEARS. Nat. 
+Biotechnol. 42, 927–935 (2024).
+6.
+ Hao
+, M. et al. Large-scale foundation model on single-cell 
+transcriptomics. Nat. Methods 21, 1481–1491 (2024).
+7.
+ Cui, H. et al. scGPT
+: toward building a foundation model for 
+single-cell multi-omics using generative AI. Nat. Methods 21, 
+1470–1480 (2024).
+8.
+ Y
+ang, F. et al. scBERT as a large-scale pretrained deep language 
+model for cell type annotation of single-cell RNA-seq data. Nat. 
+Mach. Intell. 4, 852–866 (2022).
+9.
+ Theodoris, C
+. V. et al. Transfer learning enables predictions in 
+network biology. Nature 618, 616–624 (2023).
+10.
+ W
+u, Y. et al. PerturBench: benchmarking machine learning 
+models for cellular perturbation analysis. Preprint at https://arxiv.
+org/abs/2408.10609 (2024).
+11.
+ Bendidi, I. 
+et al. Benchmarking transcriptomics foundation 
+models for perturbation analysis: one PCA still rules them all. 
+Preprint at https://arxiv.org/abs/2410.13956 (2024).
+12.
+ Ahlmann-Elt
+ze, C., Huber, W. & Anders, S. Deep-learning-based 
+gene perturbation effect prediction does not yet outperform 
+simple linear baselines. Nat. Methods 22, 1657–1661 (2025).
+13.
+ P
+eidli, S. et al. scPerturb: harmonized single-cell perturbation 
+data. Nat. Methods 21, 531–540 (2024).
+14.
+ Bunne
+, C. et al. Learning single-cell perturbation responses using 
+neural optimal transport. Nat. Methods 20, 1759–1768 (2023).
+15.
+ Jiang, Q
+., Chen, S., Chen, X. & Jiang, R. scPRAM accurately 
+predicts single-cell gene expression perturbation response based 
+on attention mechanism. Bioinformatics 40, btae265 (2024).
+16.
+ Pir
+an, Z., Cohen, N., Hoshen, Y. & Nitzan, M. Disentanglement of 
+single-cell data with biolord. Nat. Biotechnol. 42, 1678–1683 (2024).
+17.
+ Y
+eh, C. -H., Chen, Z. -G., Liou, C. -Y. & Chen, M. -J. Homogeneous 
+space construction and projection for single-cell expression 
+prediction based on deep learning. Bioengineering 10, 996 (2023).
+18.
+ Zhang, Z., Zhao
+, X., Bindra, M., Qiu, P. & Zhang, X. scDisInFact: 
+disentangled learning for integration and prediction of 
+multi-batch multi-condition single-cell RNA-sequencing data. 
+Nat. Commun. 15, 912 (2024).
+19.
+ W
+ei, X., Dong, J. & Wang, F. scPreGAN, a deep generative 
+model for predicting the response of single-cell expression to 
+perturbation. Bioinformatics 38, 3377–3384 (2022).
+20.
+ W
+ang, H., Wang, Y., Jiang, Q., Zhang, Y. & Chen, S. SCREEN: 
+predicting single-cell gene expression perturbation responses via 
+optimal transport. Front. Comput. Sci. 18, 2095–2228 (2024).
+21.
+ Kana, O
+. et al. Generative modeling of single-cell gene expression 
+for dose-dependent chemical perturbations. Patterns 4, 100817 
+(2023).
+22.
+ L
+otfollahi, M., Naghipourfar, M., Theis, F. J. & Wolf, F. A. 
+Conditional out-of-distribution generation for unpaired data using 
+transfer VAE. Bioinformatics 36, i610–i617 (2020).
+23.
+ Bai, D
+., Ellington, C. N., Mo, S., Song, L. & Xing, E. P. AttentionPert: 
+accurately modeling multiplexed genetic perturbations with 
+multi-scale effects. Bioinformatics 40, i453–i461 (2024).
+24.
+ L
+otfollahi, M. et al. Predicting cellular responses to complex 
+perturbations in high-throughput screens. Mol. Syst. Biol. 19, 
+e11517 (2023).
+25.
+ Chen, Y
+. & Zou, J. Simple and effective embedding model for 
+single-cell biology built from ChatGPT. Nat. Biomed. Eng. 9, 
+483–493 (2025).
+26.
+ Het
+zel, L., Boehm, S., Kilbertus, N., Günnemann, S. & Theis, F. 
+Predicting cellular responses to novel drug perturbations at a 
+single-cell resolution. Adv. Neural Inf. Process. Syst. 35,  
+26711–26722 (2022).
+27.
+ Zhu, O
+. & Li, J. Scouter: predicting transcriptional responses to 
+genetic perturbations with LLM embeddings. Preprint at bioRxiv 
+https://doi.org/10.1101/2024.12.06.627290 (2024).
+28.
+ Liu, T
+., Chen, T., Zheng, W., Luo, X. & Zhao, H. scELMo: 
+embeddings from language models are good learners for 
+single-cell data analysis. Preprint at bioRxiv https://doi.org/ 
+10.1101/2023.12.07.569910 (2023).
+29.
+ Y
+ang, X. et al. GeneCompass: deciphering universal gene 
+regulatory mechanisms with a knowledge-informed 
+cross-species foundation model. Cell Res. 34, 830–845 (2024).
+30.
+ Qi, X. et al. Pr
+edicting transcriptional responses to novel chemical 
+perturbations using deep generative model for drug discovery. 
+Nat. Commun. 15, 9256 (2024).
+31.
+ Huang, W
+. & Liu, H. Predicting single-cell cellular responses to 
+perturbations using cycle consistency learning. Bioinformatics 
+40, i462–i470 (2024).
+32.
+ McF
+arland, J. M. et al. Multiplexed single-cell transcriptional 
+response profiling to define cancer vulnerabilities and 
+therapeutic mechanism of action. Nat. Commun. 11, 4296 (2020).
+33.
+ Kang, H. M. et al. Multiple
+xed droplet single-cell RNA- 
+sequencing using natural genetic variation. Nat. Biotechnol. 36, 
+89–94 (2018).
+34.
+ Hagai, T
+. et al. Gene expression variability across cells and species 
+shapes innate immunity. Nature 563, 197–202 (2018).
+35.
+ Zhao
+, W. et al. Deconvolution of cell type-specific drug responses 
+in human tumor tissue with single-cell RNA-seq. Genome Med. 13, 
+82 (2021).
+36.
+ Nault, R
+., Fader, K. A., Bhattacharya, S. & Zacharewski, T. R. 
+Single-nuclei RNA sequencing assessment of the hepatic effects 
+of 2,3,7,8-tetrachlorodibenzo-p-dioxin. Cell Mol. Gastroenterol. 
+Hepatol. 11, 147–159 (2021).
+37.
+ Haber
+, A. L. et al. A single-cell survey of the small intestinal 
+epithelium. Nature 551, 333–339 (2017).
+38.
+ Schmidt, R
+. et al. CRISPR activation and interference screens 
+decode stimulation responses in primary human T cells. Science 
+375, eabj4008 (2022).
+
+===== PDF PAGE 14 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+39. W essels, H. H. et al. Efficient combinatorial targeting of RNA 
+transcripts in single cells with Cas13 RNA Perturb-seq. Nat. 
+Methods 20, 86–94 (2023).
+40.
+ Norman, T
+. M. et al. Exploring genetic interaction manifolds 
+constructed from rich single-cell phenotypes. Science 365, 
+786–793 (2019).
+41.
+ R
+eplogle, J. M. et al. Mapping information-rich genotype- 
+phenotype landscapes with genome-scale Perturb-seq. Cell 185, 
+2559–2575 (2022).
+42.
+ P
+apalexi, E. et al. Characterizing the molecular regulation of 
+inhibitory immune checkpoints with multimodal single-cell 
+screens. Nat. Genet. 53, 322–331 (2021).
+43.
+ R
+eplogle, J. M. et al. Combinatorial single-cell CRISPR screens 
+by direct guide RNA capture and targeted sequencing. Nat. 
+Biotechnol. 38, 954–961 (2020).
+44.
+ T
+ian, R. et al. Genome-wide CRISPRi/a screens in human neurons 
+link lysosomal failure to ferroptosis. Nat. Neurosci. 24, 1020–1034 
+(2021).
+45.
+ F
+rangieh, C. J. et al. Multimodal pooled Perturb-CITE-seq screens 
+in patient models define mechanisms of cancer immune evasion. 
+Nat. Genet. 53, 332–341 (2021).
+46.
+ W
+ei, Z. et al. PerturBase: a comprehensive database for single-cell 
+perturbation data analysis and visualization. Nucleic Acids Res. 
+53, D1099–D1111 (2025).
+47.
+ Ji, Y
+. et al. Optimal distance metrics for single-cell RNA-seq  
+populations. Preprint at bioRxiv https://doi.org/10.1101/ 
+2023.12.26.572833 (2023).
+48.
+ Gaudelet, T
+. et al. Season combinatorial intervention predictions 
+with Salt & Peper. Preprint at https://arxiv.org/html/2404.16907v1 
+(2024).
+49.
+ L
+uecken, M. D. et al. Benchmarking atlas-level data integration in 
+single-cell genomics. Nat. Methods 19, 41–50 (2022).
+50.
+ Y
+uan, Z. et al. Benchmarking spatial clustering methods with 
+spatially resolved transcriptomics data. Nat. Methods 21, 712–722 
+(2024).
+51.  Shahapur e, K. R. & Nicholas, C. Cluster quality analysis using 
+silhouette score. in 2020 IEEE 7th International Conference on 
+Data Science and Advanced Analytics (DSAA) 747-748 (IEEE, 2020).
+52.
+ Gao
+, Y. et al. Toward subtask-decomposition-based learning and 
+benchmarking for predicting genetic perturbation outcomes and 
+beyond. Nat. Comput Sci. 4, 773–785 (2024).
+53.
+ S
+ubramanian, A. et al. A next generation connectivity map: L1000 
+platform and the first 1,000,000 profiles. Cell 171, 1437–1452 
+(2017).
+54.
+ Song, D
+. et al. scDesign3 generates realistic in silico data for 
+multimodal single-cell and spatial omics. Nat. Biotechnol. 42, 
+247–252 (2024).
+55.
+ R
+ood, J. E., Hupalowska, A. & Regev, A. Toward a foundation 
+model of causal cell and tissue biology with a perturbation cell 
+and tissue atlas. Cell 187, 4520–4545 (2024).
+56.
+ Zhang, J
+. et al. Tahoe-100M: a giga-scale single-cell perturbation 
+atlas for context-dependent gene function and cellular modeling. 
+Preprint at bioRxiv https://doi.org/10.1101/2025.02.20.639398 
+(2025).
+57.
+ Huang, A
+. C. et al. X-Atlas/Orion: genome-wide Perturb-seq 
+datasets via a scalable fix-cryopreserve platform for training 
+dose-dependent biological foundation models. Preprint at bioRxiv 
+https://doi.org/10.1101/2025.06.11.659105 (2025).
+Publisher’s note Springer Nature remains neutral with regard to 
+jurisdictional claims in published maps and institutional affiliations.
+Springer Nature or its licensor (e.g. a society or other partner) holds 
+exclusive rights to this article under a publishing agreement with 
+the author(s) or other rightsholder(s); author self-archiving of the 
+accepted manuscript version of this article is solely governed by the 
+terms of such publishing agreement and applicable law.
+© The Author(s), under exclusive licence to Springer Nature America, 
+Inc. 2025
+
+===== PDF PAGE 15 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+Methods
+Settings of benchmark methods
+In this study, we selected a range of advanced modeling approaches 
+to systematically compare their ability to predict single-cell perturba-
+tion effects. The models include diverse theoretical frameworks and 
+algorithmic structures, ranging from linear models to foundation 
+models, and other deep learning-based approaches. In this study, we 
+evaluated the methods in two key scenarios: cellular context gener -
+alization and perturbation generalization. In the cellular context gen-
+eralization scenario, we selected 14 methods, including 10 published 
+methods, namely, biolord16, CellOT14, inVAE17, scDisInFact18, scGen4, 
+scPRAM15, scPreGAN19, SCREEN20, scVIDR21 and trVAE22 and 4 baseline 
+models. In the perturbation generalization scenario, we examined 18 
+methods: AttentionPert 23, biolord16, CPA24, GEARS5, GenePert25, lin-
+earModel12, scFoundation6, scGPT7, chemCPA26, scouter27, scELMo28, 
+GeneCompass29, PRnet30, cycleCDR31 and 4 baseline models. For each 
+method, the parameters were set according to official guidelines 
+and tailored to align with our benchmarking datasets. Please refer 
+to Supplementary Note 1 for detailed descriptions and settings of all 
+benchmark methods.
+Datasets used in our benchmark
+For the cellular generalization scenario, we collected 12 datasets. These 
+datasets include various cell types, species nd individuals, making 
+them suitable for studying predictions at multiple cellular levels. The 
+datasets were all downloaded from public repositories and the NCBI 
+Gene Expression Omnibus (GEO). Specifically, the kangCrossCell, 
+kangCrossPatient, and Haber datasets use preprocessed data from Lot-
+follahi et al., which can be downloaded directly from Google Drive via 
+https://drive.google.com/drive/folders/1n1SLbXha4OH7j7zZ0zZAxrj_-
+2kczgl8/. kangCrossCell and kangCrossPatient consist of data from 
+human peripheral blood mononuclear cells from eight donors stimu-
+lated with interferon-beta and the corresponding control groups 33. 
+The original data can be obtained from the GEO under the identifier 
+GSE96583. The Haber dataset includes data of intestinal epithelial 
+cells infected with bacterial and helminth infections, and the original 
+dataset is available from the GEO under the identifier GSE92332 (ref. 
+37). The Parekh, CrossPatient and sciPlex3 datasets were obtained 
+from the PerturBase database 46 (http://www.perturbase.cn/). The 
+Parekh perturbation dataset contains overexpression data for eight 
+transcription factors across three cell lines58. The CrossPatient dataset 
+includes single-cell perturbation data for six patients in response to 
+two chemicals, Panobinostat and Etoposide 35. The sciPlex3 dataset 
+comprises measurements from three human cancer cell lines (A549, 
+MCF7 and K562) subjected to perturbations with 188 chemicals at 
+four different dosages1. As suggested in a previous study, only data 
+for the nine most effective chemicals were used for testing 16. The  
+KaggleCrossPatient and KaggleCrossCell datasets were derived from 
+the Open Problems competition. The organizers provided peripheral 
+blood mononuclear cell data from three donors, including data from 
+five cell types exposed to 144 chemicals. These datasets can be down-
+loaded from the Kaggle competition webpage via https://www.kaggle.
+com/competitions/open-problems-single-cell-perturbations/data/. 
+The McFarland 32 dataset contains measurements from six human 
+cancer cell lines exposed to perturbations with 11 chemicals and  
+was downloaded from the scPerturb database 13 (version 1.3), which 
+is available at Zenodo via https://doi.org/10.5281/zenodo.10044268  
+(ref. 59). The CrossSpecies 34 dataset contains expression data from  
+four species (mouse, rat, rabbit and pig). The processed dataset is  
+available at https://github.com/theislab/scgen-reproducibility/
+blob/master/code/DataDownloader.py/. The Afriat perturbation 
+dataset60 was downloaded from the biolord GitHub tutorial site via 
+https://biolord.readthedocs.io/en/latest/tutorials/biolord_pipe -
+line.html. The detailed information of these datasets is given in 
+Supplementary Table 3.
+For the perturbation generalization scenario, we curated 17 
+datasets that broadly cover two perturbation types. These include 13 
+genetic perturbation datasets, of which 9 focus on single perturba -
+tions and 4 focus on combined perturbations, and 4 chemical per-
+turbation datasets, including 3 single-perturbation datasets and one 
+combined-perturbation dataset. The numbers of perturbations in these 
+datasets range from 25 to 1,618, ensuring broad applicability and robust 
+evaluation of the methods. The sciPlex3-comb dataset was downloaded 
+from the CPA tutorial website and can be accessed at https://drive.
+google.com/uc?export=download&id=1RRV0_qYKGTvD3oCklKfoZQ-
+FYqKJy4l6t. The remaining 16 datasets—Adamson 3, Frangieh45, Tian-
+Activation44, TianInhibition44, Replogle-exp6 (ref. 43), Replogle-exp7 
+(ref. 43), Replogle-exp8 (ref. 43), Papalexi42, Replogle-RPE1essential41, 
+Replogle-K562essential41, Norman40, Wessels39, Schmidt38, sciPlex-A549 
+(ref. 1), sciPlex3-K562 (ref. 1) and sciPlex3-MCF7 (ref. 1)—were down -
+loaded from the PerturBase database ( http://www.perturbase.cn/). 
+The TianActivation and TianInhibition datasets correspond to the 
+CRISPR activation and inhibition experiments from the study by Tian 
+et al. The Replogle-exp6, Replogle-exp7 and Replogle-exp8 datasets 
+represent single-cell perturbation data from different experiments 
+conducted in the study by Replogle et al. The Replogle-RPE1essen -
+tial and Replogle-K562essential datasets consist of single-cell per -
+turbation data for the RPE1 and K562 cell lines from Replogle et al. ’s 
+study. The sciPlex-A549, sciPlex3-K562 and sciPlex3-MCF7 datasets 
+include measurements from three human cancer cell lines (A549, K562  
+and MCF7) subjected to perturbations with 188 chemicals at four  
+different dosages. The detailed information of these datasets is  
+given in Supplementary Table 3.
+Data preprocessing
+All single-cell perturbation datasets used in our study were subjected 
+to the following quality-control procedures. (1) Cell filtering. Cells 
+were excluded if they expressed fewer than 200 genes, or exhibited a 
+high mitochondrial gene fraction exceeding 10%. Furthermore, in the 
+context of benchmarking models for the perturbation generalization 
+scenario, cells subjected to perturbations in Schmidt dataset by at 
+most two genes were retained, given the predominance of two-gene 
+combinatorial perturbation data in the currently available datasets, 
+resulting in the exclusion of 5,942 cells. We excluded any perturba -
+tions, other than the control, which affected fewer than 30 cells from 
+our analysis. Additionally, to address the issue of computational effi-
+ciency, the perturbations with a large number of cells need further to 
+be processed. Specifically, for perturbations affecting more than 2,000 
+cells, we used a random selection method to include only 2,000 cells 
+in our downstream analysis. This data preprocessing strategy allows 
+us to balance computational resources and time without substantially 
+compromising model accuracy (Supplementary Note 15). (2) Gene 
+filtering. Genes that were expressed in fewer than three cells were 
+removed. In the context of benchmarking models for perturbation 
+generalization scenario, genes that did not have embeddings from 
+scGPT and scFoundation were excluded for each dataset. T o balance the 
+need for managing computational complexity and preserving maximal 
+information, we constrained each dataset to the 5,000 genes exhibit-
+ing the highest variability. This decision aligns with the preprocessing 
+protocol established by the majority methods. During the selection 
+of highly variable genes, we first split the entire dataset into training 
+and testing sets. The highly variable genes are selected using only the 
+training set, and these selected genes are then used to evaluate model 
+performance on the testing set. This procedure helps to minimize 
+the risk of information leakage. Additionally, we ensured the inclu -
+sion of any genes that were specifically targeted by perturbations but 
+not already represented among these highly variable genes, thereby 
+maintaining the integrity of our dataset for analyses involving these 
+perturbed genes. (3) Data normalization. We used the global scaling 
+normalization technique provided by Scanpy, which standardizes 
+
+===== PDF PAGE 16 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+gene expression levels in each cell by scaling them to a total count of 
+10,000. This normalization is followed by a logarithmic transformation 
+to stabilize variance and improve the interpretability of the data. This 
+method ensures that variations in gene expression across cells are more 
+reflective of biological differences rather than technical disparities in 
+sequencing depth.
+Evaluation metrics
+T o ensure a fair, interpretable and representative evaluation of pertur-
+bation prediction models, we conducted an extensive literature survey 
+covering 28 existing tools and benchmarking papers in the related 
+field (Supplementary Table 1). From these sources, we identified 19 
+evaluation metrics, including MSE, PCC-delta, root mean squared 
+error (RMSE), maximum mean discrepancy (MMD), Euclidean distance, 
+E-distance, Kolmogorov–Smirnov test statistic, mean absolute error, 
+two-sided t-test statistic, cosine similarity, PCC, coefficient of determi-
+nation, classifier control probability, Kendall tau distance, Spearman 
+correlation coefficient, Wasserstein distance, KL-divergence, classifier 
+class projection and Common-DEGs.
+Based on this pool of metrics, we applied four guiding princi -
+ples to select a subset of representative and informative metrics for 
+our study: (1) Accuracy. We prioritized metrics that have been dem -
+onstrated to reliably assess model performance in prior studies. In 
+particular, we referred to a comprehensive benchmark by Jing et al., 
+which systematically evaluated and ranked the performance of various 
+metrics in the context of single-cell perturbation prediction; (2) Com-
+prehensiveness. We aimed to include metrics that evaluate different 
+facets of model performance. Specifically, we distinguished between 
+population-average metrics (which assess the prediction of average 
+expression profiles) and population-distribution metrics (which assess 
+how well a model predicts the full distribution of single-cell profiles); (3) 
+Widespread usage. Among a group of metrics, we favored those most 
+widely adopted in the literature to improve comparability with exist-
+ing methods and minimize subjective bias in metric selection. Among 
+those 19 metrics, Kolmogorov–Smirnov test, two-sided t-test, classifier 
+control probability, classifier class projection and Kendall tau distance 
+were only mentioned in the benchmark study by Jing et al. Moreover, 
+their performance was generally inferior to that of MSE. Including such 
+metrics, which are less sensitive or poorly correlated with prediction 
+quality, could introduce noise or misleading conclusions into model 
+comparison. Therefore, these metrics were excluded from further 
+consideration. (4) Non-redundancy. T o avoid overrepresentation of 
+similar performance aspects, we carefully excluded highly correlated 
+or mathematically equivalent metrics. For example, RMSE is linearly 
+related to MSE, and linear MMD and Euclidean distance are functionally 
+equivalent to MSE after proper scaling. T o further visualize the cor-
+relations between evaluation metrics, we selected two representative 
+datasets from each of the two key scenarios—cellular context generali-
+zation and perturbation generalization—and computed pairwise cor-
+relations among the 13 commonly used metrics. The results revealed 
+that many of these metrics are highly correlated, which aligns with 
+their underlying mathematical formulations (Extended Data Fig. 1). 
+T o reduce redundancy and simplify interpretation, we retained only 
+the most representative metric from each highly correlated group, 
+prioritizing those with the highest accuracy or clearest interpretability. 
+This ensures a more concise and nonoverlapping set of metrics for 
+model evaluation.
+Following these principles, we selected three population-average 
+metrics and three population-distribution metrics. The population-  
+average metrics assess the model’s ability to predict average values, 
+whereas the population-distribution metrics require the model to 
+accurately predict the distribution of single-cell expression profiles.
+ 
+(1)
+ P
+opulation-average metric MSE. The MSE metric chosen for 
+its strong empirical performance in prior benchmarks (for 
+example, Jing et al.) and its ability to capture absolute devia-
+tion between predicted and actual gene expression values. In 
+our analysis, we prioritized using MSE as the representative 
+metric for model performance
+47. We used the Pertpy Python 
+package to calculate the MSE metric. MSE is defined as the mean 
+squared error between the average expressions of the true and 
+predicted groups. This average approximates the bulk RNA-seq 
+measurement of each group. While it is intuitive, it does not 
+consider the variability of the expression of individual cells. The 
+MSE is computed with equation (1):
+MSE = 1
+n
+n
+∑
+i=1
+(yi − ̂yi)
+2
+(1)
+Where yi and ̂yi denote the true and predicted values for the  
+i-th obs ervation, respectively, and n  is the total number of  
+observations.
+ 
+(2)
+ P
+opulation-average metric E-distance. The E-distance metric, 
+selected as another top-performing metric, offers a robust and 
+informative assessment by quantifying the discrepancy in aver-
+age effects between predicted and observed gene expression 
+responses. It is defined as twice the average distance between 
+two groups of cells minus the average distances between the 
+cells within the two groups. We used the Pertpy Python package 
+to calculate the E-distance metric. A larger value indicates lower 
+performance or lower similarity. The E-distance is computed 
+with equation (2):
+E − distance(X,Y)= 2 ×
+1
+nm
+n
+∑
+i=1
+m
+∑
+j=1
+|xi − yj|
+−
+1
+n2
+n
+∑
+i=1
+n
+∑
+j=1
+|xi − xj|−
+1
+m2
+m
+∑
+i=1
+m
+∑
+j=1
+|yi − yj|
+(2)
+ (3) P opulation-average metric PCC-delta. Compared with 
+traditional PCC, PCC-delta offers an important advantage by 
+capturing the directional consistency of predictions—an aspect 
+highly relevant to understanding regulatory changes in 
+perturbed systems. In our analysis, we prioritized PCC-delta as 
+the primary performance metric, as its bounded range from −1 
+to 1 enables an intuitive and interpretable evaluation of model 
+effectiveness. It is defined as the Pearson correlation between 
+the predicted change in post-perturbation gene expression 
+over the unperturbed control expression and the true change  
+in post-perturbation gene expression over the control. 
+Specifically, the mean values are first calculated for the true 
+group, the predicted group and the unperturbed control group, 
+denoted as 
+Ytrue, Ypred and Ycontrol. The PCC is computed with 
+equation (3):
+PCC =
+∑
+n
+i=1(xi − ̄x)(yi − ̄y)
+√∑
+n
+i=1(xi − ̄x)
+2
+√∑
+n
+i=1(yi − ̄y)
+2
+(3)
+Then, the PCC-delta is computed with equation (4):
+PCC − delta = PCC (Ytrue − Ycontrol, Ypred − Ycontrol) (4)
+Other average-based metrics such as RMSE, MMD and Euclid -
+ean distance were excluded due to mathematical redundancy or 
+high correlation with MSE. More specifically, MMD and Euclid -
+ean distance reduce to scaled versions of MSE under standard 
+normalization procedures, and RMSE is simply the square root 
+of MSE, contributing no additional information. R2, PCC, mean 
+absolute error and cosine similarity are highly correlated and 
+redundant with MSE.
+
+===== PDF PAGE 17 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+ (4) P opulation-distribution metric Wasserstein distance. The 
+Wasserstein distance is selected as the most widely used metric 
+for evaluating distribution-level prediction performance. It 
+quantifies the discrepancy between predicted and actual distri-
+butions of single-cell profiles, which is essential for capturing 
+heterogeneity and higher-order statistical properties. However, 
+this metric should be interpreted with caution as its sensitivity 
+to specific data characteristics or modeling assumptions may 
+lead to misleading conclusions
+47. The Wasserstein distance is 
+computed with equation (5):
+W1 (P, Q) = inf
+γ∈Γ(P,Q)
+E(x,y)∼γ [|x − y|] (5)
+ (5) P opulation-distribution metric KL-divergence. The 
+KL-divergence metric is selected as the most widely used metric 
+for evaluating distribution-level prediction performance. It 
+quantifies the discrepancy between predicted and actual distri-
+butions of single-cell profiles, which is essential for capturing 
+heterogeneity and higher-order statistical properties. However, 
+this metric should be interpreted with caution as its sensitivity 
+to specific data characteristics or modeling assumptions may 
+lead to misleading conclusions
+47. The KL-divergence metric is 
+computed with equation (6):
+DKL (P ∥ Q) = ∫
+∞
+−∞
+p (x) log p (x)
+q (x) dx (6)
+ (6) P opulation-distribution metric Common-DEGs. This metric 
+directly assesses the accuracy of predicted DEGs under per-
+turbation, which is critical for biological interpretation and 
+downstream functional analyses. The Common-DEGs metric is 
+defined as the proportion of true most differentially expressed 
+genes among the predicted most differentially expressed genes. 
+A larger value indicates better performance. Both the predicted 
+and true most differentially expressed genes were identified 
+using the Scanpy Python package with default parameters
+61.
+Other population-distribution metrics such as Kendall tau dis -
+tance and classifier class projection were excluded due to redundancy 
+with Wasserstein distance, KL-divergence, and inferiority to MSE.
+Ranking the methods
+We used a straightforward ranking-based strategy to evaluate the 
+relative performance of the selected methods across the six metrics. 
+Specifically, within each dataset, the methods were ranked on the basis 
+of their raw outputs for each metric. The overall ranking of a method in 
+a given dataset was then calculated by averaging its ranks across the six 
+metrics. T o obtain a final ranking across all the datasets, we averaged 
+the overall rankings from each dataset. This ranking-based approach 
+addresses potential inconsistencies in value ranges between different 
+metrics, ensuring a fair comparison.
+Normalization and conversion of the metrics
+Among the six metrics used in our study, PCC-delta and Common-DEGs 
+have ranges between 0 and 1, while MSE, E-distance, Wasserstein  
+and KL-divergence have ranges that far exceed this interval. T o ensure 
+compatibility during the visualization of overall performance, we 
+first normalized their values to fall within the range of 0 to 1 as in 
+equation (7):
+normalizedY = Y − min(Y)
+max(Y)−min(Y) (7)
+Y is the raw output of a specific metric. We then converted the  
+normalized scores by applying 1 − normalized Y . As a result, for all 
+metrics, a larger score indicates a better accuracy. It should be noted 
+that in other cases, we used their raw outputs for visualization.
+Calculation of the similarity between cellular contexts in the 
+cellular context generalization scenario
+In the cellular context generalization scenario, we calculated the simi-
+larity between the test context and each context in the training dataset 
+via the E-distance. Specifically, we reduced the unperturbed control 
+group in each context to 5,000 dimensions using principal component 
+analysis and then measured the distance between pairs of contexts 
+using the E-distance13 function from the Pertpy Python package62. The 
+minimum value was used to assess the degree of similarity between 
+the test context and the training contexts. A larger value indicates a 
+lower similarity.
+Evaluation of the strength of a perturbation in the 
+perturbation generalization scenario
+For each perturbation, we calculated the E-distance between the unper-
+turbed control group and the perturbed group. Specifically, both 
+groups were reduced to 5,000 dimensions using principal component 
+analysis, and the E-distance function from the Pertpy Python package 
+was used to quantify the distance between them62. The distance value 
+was used to represent the strength of a perturbation and a larger value 
+indicates a stronger effect.
+The generation of simulated data with different level of noise 
+and sparsity
+We used the script from Yuan et al. to generate simulated data, which 
+allowed us to evaluate how noise and sparsity impact the performance 
+of the methods. In their original work, Yuan et al. introduced varying 
+levels of noise and sparsity into spatially resolved transcriptomics data 
+to systematically assess the robustness of spatial clustering methods. 
+Following a similar rationale, we applied controlled varying levels of 
+noise and sparsity into real datasets, allowing us to simulate realistic 
+experimental challenges and evaluate model performance under vary-
+ing levels of technical noise and dropout. The process of generating the 
+simulated data can be broken down into two parts: adding noise and 
+introducing sparsity: (1) Adding noise. T o introduce noise into the gene 
+expression data, we applied Poisson noise at varying levels (0.1, 0.3, 0.5, 
+0.7 and 0.9). The Poisson noise was generated by sampling from a Pois-
+son distribution where the rate parameter (λ) for each gene expression 
+value was determined by multiplying the original expression values by 
+the specified noise level. For example, at a noise level of 0.1, the noise 
+added to each gene expression value was proportional to 10% of the 
+original expression value. The generated Poisson noise was then added 
+to the original gene expression matrix, producing a noisy version of 
+the dataset. This approach allows us to simulate gene expression data 
+with varying levels of noise intensity, which is useful for assessing the 
+impact of different noise levels on model performance; (2) Introducing 
+sparsity. For sparsity, we randomly removed gene expression values 
+at different rates (0, 0.1, 0.3, 0.5, 0.7 and 0.9). For instance, when the 
+removal rate is set to 0.9, each gene expression value has a 90% prob-
+ability of being set to zero, making the data highly sparse. Conversely, 
+a removal rate of 0 means that no values are removed, and the gene 
+expression matrix remains unchanged. This process simulates various 
+levels of sparsity in the data and allows us to evaluate how different 
+sparsity levels affect the performance of the model. The detailed infor-
+mation of these simulated datasets is given in Supplementary Table 4.
+Computational resources
+Most of the benchmark tasks were conducted on an Ubuntu18 system 
+with a 96-core CPU, with 1,000 GB of RAM and four NVIDIA 3090 24 GB 
+GPUs. The scFoundation model has high GPU memory requirements, so 
+we ran it on a server with two NVIDIA A6000 48 GB GPUs. Both servers 
+used the Ubuntu 18.04 operating system.
+
+===== PDF PAGE 18 =====
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+Reporting summary
+Further information on research design is available in the Nature 
+Portfolio Reporting Summary linked to this article.
+Data availability
+We have uploaded all the processed datasets used in our benchmark 
+study to Figshare at https://doi.org/10.6084/m9.figshare.28143422 
+(ref. 63) and https://doi.org/10.6084/m9.figshare.28147883 (ref. 64) 
+and Zenodo via https://doi.org/10.5281/zenodo.14607156 (ref. 65) and 
+https://doi.org/10.5281/zenodo.14638779 (ref. 66).
+The kangCrossCell33, kangCrossPatient33 and Haber 37 datasets con -
+sist of preprocessed data from Lotfollahi et al., which can be down -
+loaded directly from Google Drive via https://drive.google.com/drive/
+folders/1n1SLbXha4OH7j7zZ0zZAxrj_-2kczgl8. The Parekh58, CrossPa-
+tient35 and sciPlex3 (ref. 1) datasets were obtained from the PerturBase 
+database http://www.perturbase.cn/. KaggleCrossPatient and Kaggle-
+CrossCell can be downloaded from the Kaggle competition webpage 
+via https://www.kaggle.com/competitions/open-problems-single-cell-
+perturbations/data/. The McFarland32 dataset was downloaded from 
+the scPerturb database (version 1.3), which is available at Zenodo via 
+https://doi.org/10.5281/zenodo.10044268. (ref. 59). CrossSpecies34 
+is available at https://github.com/theislab/scgen-reproducibility/
+blob/master/code/DataDownloader.py/. The Afriat 60 perturbation 
+dataset was downloaded from the biolord GitHub tutorial site via 
+https://biolord.readthedocs.io/en/latest/tutorials/biolord_pipeline.
+html. The sciPlex3_comb dataset 1 was downloaded from the CPA 
+tutorial website and can be accessed at https://drive.google.com/
+uc?export=download&id=1RRV0_qYKGTvD3oCklKfoZQFYqKJy4l6t. 
+The remaining 16 datasets—Adamson 3, Frangieh45, TianActivation44, 
+TianInhibition 44, Replogle_exp6 (ref. 43 ), Replogle_exp7 (ref. 43 ), 
+Replogle_exp8 (ref. 43), Papalexi42, Replogle_RPE1essential41, Replo-
+gle_K562essential 41, Norman 40, Wessels39, Schmidt 38, sciPlex_A549  
+(ref. 1), sciPlex3_K562 (ref. 1) and sciPlex3_MCF7 (ref. 1)—were down-
+loaded from the PerturBase database via http://www.perturbase.cn/. 
+Source data are provided with this paper.
+Code availability
+The scripts used in this study are available via GitHub at https://github.
+com/bm2-lab/scPerturBench/ and Zenodo at https://doi.org/10.5281/
+zenodo.15904698 (ref. 65). T o promote transparency and reproduc-
+ibility, we provide a Podman image that contains all major scripts used 
+in our benchmark, along with the complete set of preconfigured conda 
+environments (https://github.com/bm2-lab/scPerturBench/). We have 
+created an online platform that hosts the benchmarking results of all 
+evaluated tools across all datasets and performance metrics included in 
+our study (https://bm2-lab.github.io/scPerturBench-reproducibility/).
+References
+58. P arekh, U. et al. Mapping cellular reprogramming via pooled 
+overexpression screens with paired fitness and single-cell 
+RNA-sequencing readout. Cell Syst. 7, 548–555 (2018).
+59.
+ P
+eidli, S. et al. scPerturb single-cell perturbation data: RNA 
+and protein h5ad files (1.3). Zenodo https://doi.org/10.5281/
+zenodo.10044268 (2022).
+60.
+ Afriat, A
+. et al. A spatiotemporally resolved single-cell atlas of the 
+Plasmodium liver stage. Nature 611, 563–569 (2022).
+61.
+ W
+olf, F. A., Angerer, P. & Theis, F. J. SCANPY: large-scale 
+single-cell gene expression data analysis. Genome Biol. 19, 15 
+(2018).
+62.
+ Heumos, L
+. et al. Pertpy: an end-to-end framework for 
+perturbation analysis. Preprint at bioRxiv https://doi.
+org/10.1101/2024.08.04.606516 (2024).
+63.
+ Zhiting, W
+. Cellular context generalization datasets. Figshare 
+https://doi.org/10.6084/m9.figshare.28143422 (2025).
+64.
+ Zhiting, W
+. Perturbation generalization datasets. Figshare  
+https://doi.org/10.6084/m9.figshare.28147883 (2025).
+65.
+ W
+ei, Z. et al. Benchmarking algorithms for generalizable 
+single-cell perturbation response prediction. Zenodo  
+https://doi.org/10.5281/zenodo.14607156 (2025).
+66.
+ Zhiting, W
+. Perturbation generalization H5ad datasets. Zenodo 
+https://doi.org/10.5281/zenodo.14638780 (2025).
+Acknowledgements
+We gratefully acknowledge all single-cell perturbation dataset 
+owners for generously sharing their data. Q.L. was supported by 
+the National Key Research and Development Program of China 
+(grant no. 2025YFC3409300), National Natural Science Foundation 
+of China (grant no. T2425019, 32341008), Shanghai Pilot Program 
+for Basic Research; Shanghai Science and Technology Innovation 
+Action Plan—Key Specialization in Computational Biology, Shanghai 
+Shuguang Scholars Project, Shanghai Excellent Academic Leader 
+Project, Shanghai Municipal Science and Technology Major Project 
+(2021SHZDZX0100), Fundamental Research Funds for the Central 
+Universities, Funding for open access charge, National Natural 
+Science Foundation of China. Z.W. was supported by the National 
+Natural Science Foundation of China (32500555).
+Author contributions
+Z.W., Y.W., Y.C.G., A.L., G.C. and Q.L. conceived and designed the study. 
+Z.W. designed the metrics, established the benchmarking pipeline 
+and collected the methods and datasets. Z.W. and Y.W. implemented 
+the benchmarking pipeline. Y.C.G. developed the cell-line embedding 
+strategy. Z.W. and Y.W. analyzed the results and generated the figures 
+with help from P.L., D.S., Y.L.G., S.Q.W., D.L., K.D., X.Y., C.T., S.F., X.C., 
+W.L., Y.Y. and C.Z. Z.W., Y.W. and Q.L. wrote the manuscript. Z.W. and 
+S.G.W. designed the website. Q.L., G.C. and A.L. supervised the entire 
+project. All authors read and approved the final manuscript.
+Competing interests
+The authors declare no competing interests.
+Additional information
+Extended data is available for this paper at  
+https://doi.org/10.1038/s41592-025-02980-0.
+Supplementary information The online version contains supplementary 
+material available at https://doi.org/10.1038/s41592-025-02980-0.
+Correspondence and requests for materials should be addressed to 
+Aibin Liang, Guohui Chuai or Qi Liu.
+Peer review information Nature Methods thanks Yi Zhao and the other, 
+anonymous, reviewer(s) for their contribution to the peer review of 
+this work. Primary Handling Editor: Lin Tang, in collaboration with the 
+Nature Methods team.
+Reprints and permissions information is available at  
+www.nature.com/reprints.

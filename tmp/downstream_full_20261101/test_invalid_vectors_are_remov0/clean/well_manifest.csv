@@ -1,0 +1,16 @@
+well_id,experiment_name,plate,gene,treatment,split,role
+gene-A_1_G_2,gene-A,1,G,G_guide_2,val,query
+gene-A_1_H_1,gene-A,1,H,H_guide_1,val,query
+gene-A_1_H_2,gene-A,1,H,H_guide_2,val,query
+gene-A_2_G_1,gene-A,2,G,G_guide_1,train,gallery
+gene-A_2_G_2,gene-A,2,G,G_guide_2,train,gallery
+gene-A_2_H_1,gene-A,2,H,H_guide_1,train,gallery
+gene-A_2_H_2,gene-A,2,H,H_guide_2,train,gallery
+gene-B_1_G_1,gene-B,1,G,G_guide_1,val,query
+gene-B_1_G_2,gene-B,1,G,G_guide_2,val,query
+gene-B_1_H_1,gene-B,1,H,H_guide_1,val,query
+gene-B_1_H_2,gene-B,1,H,H_guide_2,val,query
+gene-B_3_G_1,gene-B,3,G,G_guide_1,train,gallery
+gene-B_3_G_2,gene-B,3,G,G_guide_2,train,gallery
+gene-B_3_H_1,gene-B,3,H,H_guide_1,train,gallery
+gene-B_3_H_2,gene-B,3,H,H_guide_2,train,gallery

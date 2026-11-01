@@ -1,0 +1,204 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+and systematic evaluation of foundation model performance 56,57;  
+(2) Future work may further explore the integration of prior biological 
+knowledge—such as gene regulatory networks or pathway informa -
+tion—into model design to enhance generalization across a wide range 
+of cellular contexts. Incorporating biological priors could substantially 
+improve the robustness and interpretability of perturbation prediction 
+models; (3) Despite promising advances, the field of chemical pertur-
+bation prediction, especially in the context of chemical combination 
+effects, remains underdeveloped. More dedicated research is needed to 
+develop specialized algorithms capable of accurately modeling chemi-
+cal combination perturbations, which would have important implica-
+tions for accelerating chemical discovery and therapeutic development.
+Online content
+Any methods, additional references, Nature Portfolio reporting sum-
+maries, source data, extended data, supplementary information, 
+acknowledgements, peer review information; details of author contri-
+butions and competing interests; and statements of data and code avail-
+ability are available at https://doi.org/10.1038/s41592-025-02980-0.
+References
+1. Sriv atsan, S. R. et al. Massively multiplex chemical transcriptomics 
+at single-cell resolution. Science 367, 45–51 (2020.
+2.
+ Dixit, A
+. et al. Perturb-seq: dissecting molecular circuits with 
+scalable single-cell RNA profiling of pooled genetic screens. Cell 
+167, 1853–1866 (2016).
+3.
+ A
+damson, B. et al. A multiplexed single-cell CRISPR screening 
+platform enables systematic dissection of the unfolded protein 
+response. Cell 167, 1867–1882 (2016).
+4.
+ L
+otfollahi, M., Wolf, F. A. & Theis, F. J. scGen predicts single-cell 
+perturbation responses. Nat. Methods 16, 715–721 (2019).
+5.
+ R
+oohani, Y., Huang, K. & Leskovec, J. Predicting transcriptional 
+outcomes of novel multigene perturbations with GEARS. Nat. 
+Biotechnol. 42, 927–935 (2024).
+6.
+ Hao
+, M. et al. Large-scale foundation model on single-cell 
+transcriptomics. Nat. Methods 21, 1481–1491 (2024).
+7.
+ Cui, H. et al. scGPT
+: toward building a foundation model for 
+single-cell multi-omics using generative AI. Nat. Methods 21, 
+1470–1480 (2024).
+8.
+ Y
+ang, F. et al. scBERT as a large-scale pretrained deep language 
+model for cell type annotation of single-cell RNA-seq data. Nat. 
+Mach. Intell. 4, 852–866 (2022).
+9.
+ Theodoris, C
+. V. et al. Transfer learning enables predictions in 
+network biology. Nature 618, 616–624 (2023).
+10.
+ W
+u, Y. et al. PerturBench: benchmarking machine learning 
+models for cellular perturbation analysis. Preprint at https://arxiv.
+org/abs/2408.10609 (2024).
+11.
+ Bendidi, I. 
+et al. Benchmarking transcriptomics foundation 
+models for perturbation analysis: one PCA still rules them all. 
+Preprint at https://arxiv.org/abs/2410.13956 (2024).
+12.
+ Ahlmann-Elt
+ze, C., Huber, W. & Anders, S. Deep-learning-based 
+gene perturbation effect prediction does not yet outperform 
+simple linear baselines. Nat. Methods 22, 1657–1661 (2025).
+13.
+ P
+eidli, S. et al. scPerturb: harmonized single-cell perturbation 
+data. Nat. Methods 21, 531–540 (2024).
+14.
+ Bunne
+, C. et al. Learning single-cell perturbation responses using 
+neural optimal transport. Nat. Methods 20, 1759–1768 (2023).
+15.
+ Jiang, Q
+., Chen, S., Chen, X. & Jiang, R. scPRAM accurately 
+predicts single-cell gene expression perturbation response based 
+on attention mechanism. Bioinformatics 40, btae265 (2024).
+16.
+ Pir
+an, Z., Cohen, N., Hoshen, Y. & Nitzan, M. Disentanglement of 
+single-cell data with biolord. Nat. Biotechnol. 42, 1678–1683 (2024).
+17.
+ Y
+eh, C. -H., Chen, Z. -G., Liou, C. -Y. & Chen, M. -J. Homogeneous 
+space construction and projection for single-cell expression 
+prediction based on deep learning. Bioengineering 10, 996 (2023).
+18.
+ Zhang, Z., Zhao
+, X., Bindra, M., Qiu, P. & Zhang, X. scDisInFact: 
+disentangled learning for integration and prediction of 
+multi-batch multi-condition single-cell RNA-sequencing data. 
+Nat. Commun. 15, 912 (2024).
+19.
+ W
+ei, X., Dong, J. & Wang, F. scPreGAN, a deep generative 
+model for predicting the response of single-cell expression to 
+perturbation. Bioinformatics 38, 3377–3384 (2022).
+20.
+ W
+ang, H., Wang, Y., Jiang, Q., Zhang, Y. & Chen, S. SCREEN: 
+predicting single-cell gene expression perturbation responses via 
+optimal transport. Front. Comput. Sci. 18, 2095–2228 (2024).
+21.
+ Kana, O
+. et al. Generative modeling of single-cell gene expression 
+for dose-dependent chemical perturbations. Patterns 4, 100817 
+(2023).
+22.
+ L
+otfollahi, M., Naghipourfar, M., Theis, F. J. & Wolf, F. A. 
+Conditional out-of-distribution generation for unpaired data using 
+transfer VAE. Bioinformatics 36, i610–i617 (2020).
+23.
+ Bai, D
+., Ellington, C. N., Mo, S., Song, L. & Xing, E. P. AttentionPert: 
+accurately modeling multiplexed genetic perturbations with 
+multi-scale effects. Bioinformatics 40, i453–i461 (2024).
+24.
+ L
+otfollahi, M. et al. Predicting cellular responses to complex 
+perturbations in high-throughput screens. Mol. Syst. Biol. 19, 
+e11517 (2023).
+25.
+ Chen, Y
+. & Zou, J. Simple and effective embedding model for 
+single-cell biology built from ChatGPT. Nat. Biomed. Eng. 9, 
+483–493 (2025).
+26.
+ Het
+zel, L., Boehm, S., Kilbertus, N., Günnemann, S. & Theis, F. 
+Predicting cellular responses to novel drug perturbations at a 
+single-cell resolution. Adv. Neural Inf. Process. Syst. 35,  
+26711–26722 (2022).
+27.
+ Zhu, O
+. & Li, J. Scouter: predicting transcriptional responses to 
+genetic perturbations with LLM embeddings. Preprint at bioRxiv 
+https://doi.org/10.1101/2024.12.06.627290 (2024).
+28.
+ Liu, T
+., Chen, T., Zheng, W., Luo, X. & Zhao, H. scELMo: 
+embeddings from language models are good learners for 
+single-cell data analysis. Preprint at bioRxiv https://doi.org/ 
+10.1101/2023.12.07.569910 (2023).
+29.
+ Y
+ang, X. et al. GeneCompass: deciphering universal gene 
+regulatory mechanisms with a knowledge-informed 
+cross-species foundation model. Cell Res. 34, 830–845 (2024).
+30.
+ Qi, X. et al. Pr
+edicting transcriptional responses to novel chemical 
+perturbations using deep generative model for drug discovery. 
+Nat. Commun. 15, 9256 (2024).
+31.
+ Huang, W
+. & Liu, H. Predicting single-cell cellular responses to 
+perturbations using cycle consistency learning. Bioinformatics 
+40, i462–i470 (2024).
+32.
+ McF
+arland, J. M. et al. Multiplexed single-cell transcriptional 
+response profiling to define cancer vulnerabilities and 
+therapeutic mechanism of action. Nat. Commun. 11, 4296 (2020).
+33.
+ Kang, H. M. et al. Multiple
+xed droplet single-cell RNA- 
+sequencing using natural genetic variation. Nat. Biotechnol. 36, 
+89–94 (2018).
+34.
+ Hagai, T
+. et al. Gene expression variability across cells and species 
+shapes innate immunity. Nature 563, 197–202 (2018).
+35.
+ Zhao
+, W. et al. Deconvolution of cell type-specific drug responses 
+in human tumor tissue with single-cell RNA-seq. Genome Med. 13, 
+82 (2021).
+36.
+ Nault, R
+., Fader, K. A., Bhattacharya, S. & Zacharewski, T. R. 
+Single-nuclei RNA sequencing assessment of the hepatic effects 
+of 2,3,7,8-tetrachlorodibenzo-p-dioxin. Cell Mol. Gastroenterol. 
+Hepatol. 11, 147–159 (2021).
+37.
+ Haber
+, A. L. et al. A single-cell survey of the small intestinal 
+epithelium. Nature 551, 333–339 (2017).
+38.
+ Schmidt, R
+. et al. CRISPR activation and interference screens 
+decode stimulation responses in primary human T cells. Science 
+375, eabj4008 (2022).

@@ -1,0 +1,130 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+In the o.o.d. scenario, trVAE, CellOT and inVAE achieved the 
+best overall performance (Fig. 2b ). When selecting a method, users 
+can consider the specific needs of their analysis. For example, if the 
+objective is to minimize population-average metrics such as MSE, 
+inVAE and trVAE are the most suitable options. If the objective is to 
+minimize population-distribution metrics such as KL-divergence and 
+Common-DEGs, scVIDR and scPRAM are the most suitable options. 
+Furthermore, we found that, in contrast to population-average metrics, 
+all methods performed relatively poorly on population-distribution 
+metrics, particularly on the Common-DEGs metric. For instance, in the 
+Haber dataset, although the top-performing method achieved an aver-
+age PCC-delta of 0.86, uniform manifold approximation and projection 
+visualization revealed a substantial discrepancy between the predicted 
+and ground-truth distributions (Supplementary Fig. 12). Furthermore, 
+on average, only about 10% of the true most differentially expressed 
+genes were recovered. We conduct a more in-depth discussion of the 
+underlying reasons for this in the next section on the ‘perturbation 
+generalization scenario’ .
+In addition, among the 12 benchmark datasets used in this study, 
+5 included additional perturbation metadata, such as time-point/dos-
+age information, and these are classified as multi-condition datasets 
+(Fig. 2c). Among the 14 methods tested, only biolord, scDisInFact and 
+scVIDR utilized these additional metadata 16,18,21. Through uniform 
+manifold approximation and projection visualization, calculation of sil-
+houette score51 and multifactor analysis of variance (Fig. 2d, Extended 
+Data Figs. 2 and 3, Supplementary Fig. 7and8, Supplementary Notes 4 
+and5 and Supplementary Table 2), time-point/dosage covariates gen-
+erally had a substantial effect on the cellular response. We evaluated 
+the performance of biolord and scDisInFact on these datasets, as well 
+as the performance of scVIDR on the TCDD and sciPlex3 dataset, to 
+assess whether these tools were optimal for use with multi-condition 
+datasets. However, biolord and scDisInFact did not outperform the 
+tools that did not incorporate covariates on these datasets (Fig. 2c ). 
+This may be because, although the time-point/dosage covariates 
+provided useful information, the baseline performance of biolord 
+and scDisInFact—without incorporating covariate information—was 
+relatively suboptimal. As a result, despite performance improvements 
+upon the inclusion of covariates, these models did not achieve top 
+rankings. T o validate this, we calculated the baseline performance 
+of biolord and scDisInFact on these datasets. In the comparison, the 
+performance of biolord was generally better than that of its baseline 
+model (Fig. 2e). This analysis indicated that incorporating covariate 
+information improved the model’s performance. However, in some 
+cases, scDisInFact did not improve from its baseline value (Fig. 2f ). 
+This aligns with the primary design focus of scDisInFact, which is to 
+address batch effects and integrate single-cell datasets rather than to 
+predict perturbation effects
+18. The scVIDR method achieved the best 
+overall performance on the TCDD dataset and ranked second on the 
+sciPlex3 dataset. Therefore, for a dataset that includes perturbation 
+dosage information, scVIDR is an optimal choice.
+Next, we assessed the robustness of the perturbation effect predic-
+tion algorithms to technical noise and data sparsity using simulated 
+data50. As the noise and sparsity in the data increased, the perfor -
+mance of all methods decreased markedly (Fig. 2g). We also noted 
+that the performance of the algorithms deteriorated more severely for 
+high-sparsity data, indicating that their performance is more sensitive 
+to data sparsity (Fig. 2b). In terms of scalability (Supplementary Note 8), 
+none of the algorithms encountered out-of-memory issues, and their 
+runtimes were within acceptable limits, except for CellOT (Fig. 2h). 
+The increased computational complexity of CellOT arises from its 
+explicit modeling of cell-to-cell heterogeneity, and it currently does 
+not support GPU acceleration.
+In summary, the following insights are obtained regarding the 
+benchmark analysis of the cellular context generalization scenario: 
+(1) trVAE, CellOT and inVAE demonstrated the best overall perfor -
+mance on single-condition datasets. For accurate prediction of DEGs, 
+scPRAM is the optimal choice. Additionally, when the dataset includes 
+perturbation dosage information, such as in chemical perturbation 
+datasets, scVIDR is the best method to use. (2) Models that consider 
+covariates affecting cellular responses provide more accurate pre -
+dictions of single-cell perturbation effects. However, most existing 
+tools do not incorporate covariates, and those that do are still far 
+from being sufficiently accurate. Given the increasing availability 
+of multi-condition data in the single-cell perturbation field, there 
+is a pressing need to develop high-performing models tailored for 
+multi-condition data, which can fully exploit covariate information to 
+achieve improved prediction accuracy. (3) All the algorithms’ perfor-
+mance was affected by data noise and sparsity, with greater sensitivity 
+to sparsity. (4) In terms of scalability, none of the algorithms encoun-
+tered out-of-memory issues, and their runtimes were within acceptable 
+limits, except for CellOT.
+Limitations of current methods in the cellular context 
+generalization scenario
+We observed substantial performance variability among the 14 algo-
+rithms across the 12 datasets in the cellular context generalization 
+test. In some datasets, all methods achieved excellent performance, 
+whereas in others, the performance of all methods was notably poor. 
+For example, in the Afriat dataset, even the trainMean baseline per-
+formed exceptionally well, with a median PCC-delta of 0.92 and an 
+average value of 0.85 (Fig. 2c). On the other hand, in datasets such 
+as KaggleCrossCell, all machine learning models performed poorly, 
+with a median PCC-delta of 0.54 and an average value of 0.52 (Fig. 2c).
+T o investigate the underlying reasons for these discrepancies, we 
+conducted the following analyses: (1) We compared the performance 
+of the methods in the i.i.d. and o.o.d. scenarios. As mentioned earlier, 
+in the i.i.d. scenario, the model was trained using the same training 
+data as in the o.o.d. scenario but with additional access to half of the 
+cells from the held-out context. In other words, in the i.i.d. scenario, 
+we can assume that for each test context, the training dataset always 
+includes a context that is highly similar to it. Therefore, the predic -
+tion task in i.i.d. scenarios is simpler, while making predictions for 
+the same cellular context in o.o.d scenarios is more challenging and 
+places greater demands on the model’s generalization capabilities. 
+Fig. 3 | Limitation of current methods in the cellular context generalization 
+scenario. a, Comparison of the performance between the o.o.d. and i.i.d. 
+settings across all datasets. Data are presented as mean values with error bars 
+indicating standard errors of the mean. N = 217 predictions. b, Comparison of the 
+performance between the o.o.d. and i.i.d. settings in the CrossPatient dataset. 
+Box plots show the median (center line) and the 25th and 75th percentiles 
+(bounds of the box), and whiskers extend to 1.5 times the interquartile range 
+(IQR); N = 10 predictions. c, Spearman’s correlation between MSE or PCC-delta 
+and inter-heterogeneity. We combined the results of the test contexts from the  
+12 datasets, with each point representing a test context in a specific dataset. 
+A linear regression line with 95% confidence interval is shown. Statistical 
+significance was assessed using two-sided t-tests. d, Heat maps showing the 
+similarities between contexts in the KangCrossCell and Haber datasets.  
+e,f, These sub-figures illustrate how the algorithm’s PCC-delta and MSE 
+performance varies with changes in the training context. The x axis represents 
+the dissimilarity between the test context and the newly added training context, 
+with larger values indicating lower similarity. The y axis shows the change in 
+the PCC-delta metric for the test context after adding the new training context. 
+Positive values indicate improved performance, while negative values indicate 
+diminished performance. A linear regression line with 95% confidence interval  
+is shown. PCCs were calculated, and statistical significance was assessed using 
+two-sided t-tests. Adjustments were not made for multiple comparisons.  
+g, Recommendation of suitable software for users based on their needs and  
+the characteristics of the data at hand.

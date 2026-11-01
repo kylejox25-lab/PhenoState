@@ -1,0 +1,4 @@
+ap,hit@1,hit@10,hit@5,mrr,n_query_guides,n_query_tasks,n_query_wells,perturbation_label,random_ap,random_recall@1,random_recall@10,random_recall@5,recall@1,recall@10,recall@5
+1.0,1.0,1.0,1.0,1.0,0,2,2,compound:drug0|dose:1,0.611111111111111,0.3333333333333333,1.0,1.0,1.0,1.0,1.0
+1.0,1.0,1.0,1.0,1.0,0,2,2,compound:drug1|dose:1,0.611111111111111,0.3333333333333333,1.0,1.0,1.0,1.0,1.0
+1.0,1.0,1.0,1.0,1.0,0,2,2,compound:drug2|dose:1,0.611111111111111,0.3333333333333333,1.0,1.0,1.0,1.0,1.0

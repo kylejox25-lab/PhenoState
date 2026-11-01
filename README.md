@@ -32,6 +32,10 @@ CA-MAE 在当前完整输入下有 24,576 个通道 token，75% 遮挡后有 6,1
 
 ### embedding 评价与重建评价
 
+当前正式评测覆盖表型活性（相对对照 mAP、分层 energy distance、显著活性比例）、重复扰动检索（同 guide／化合物＋浓度，含 mAP、Recall、percent replicating）和跨 guide 基因检索（MRR、Recall、mAP）。编码器只输入图像，train 板作参考库、val/test 板作查询。`cellvit-retrieval` 可独立评价任意来源和维度的 well embedding：`--embedding NAME ALL.parquet` 或 `--model NAME TRAIN.parquet QUERY.parquet`，不要求模型代码、checkpoint、GPU 或 MDS；可从独立文件读取划分。活性检测必须显式指定阴性对照规则。详见 [任务协议与服务器示例](docs/representation_evaluation.md)。原训练脚本只导出 val/test，使用原模型时需补导 train。
+
+下面的 03 Notebook 保留较宽范围的探索功能；本阶段的正式计分以新 CLI 的固定 train-gallery 协议为准。Notebook 的 smoke 子集结果不用于正式排名。
+
 03 Notebook 按 `well_id` 连接真实 metadata，比较三种新增方法、普通 MAE 和可选公开表征（OpenPhenom、MAE-L、MAE-G、CellProfiler）。公开表征的训练数据、维数和预算不同，仅作背景参考。现有公开 Parquet 是 `well_id` 加多个标量特征列；新模型导出为 `well_id` 加固定长度 `embedding` 列，评测读取器兼容两种格式，并排除 CellProfiler 的索引列。
 
 主评估使用跨实验、跨 guide 的基因原型检索 MRR/Recall，以及同实验、同浓度、跨板的化合物 mAP/Recall；辅助报告 cosine/Pearson 相似度、重复一致性和批次审计。Notebook 解释公式、正负样本规则、覆盖率、随机基线及高低分含义。所有模型固定相同孔位、查询与候选集合；分组 bootstrap 以基因或化合物为单位。验证集用于选择配置，测试集用于最终报告；PCA 和全局标准化只在训练参考上拟合。二维 PCA/UMAP 图只作解释，不独立决定模型优劣。当前本地没有完整外部药物—基因关联真值，不伪造 MoA、毒性或靶点指标。
@@ -148,7 +152,7 @@ cellvit-train --mds-root /path/to/rxrx3_mds --output /path/to/runs/mae_smoke \
 
 正式实验改用新的输出目录和预定的 epoch 数。单张 3090 从 `batch-size 1` 起核查显存，再决定是否增大；梯度累积在优化器更新前按实际孔位数平均梯度。训练使用 FP16 自动混合精度、梯度缩放、AdamW、预热加余弦学习率；默认学习率为 `1.5e-4`。如需取消混合精度，可传 `--no-amp`。`config.json` 保存运行配置和 MDS 清单哈希，`metrics.jsonl` 记录训练损失、学习率、吞吐、峰值显存和每轮验证重建损失，`latest.pt` 保存模型、优化器、缩放器、读取进度和随机状态。恢复时需保持原训练参数与数据清单一致。
 
-验证重建损失用于评价 MAE 本身的遮挡重建任务；最低验证 MSE 对应的完整检查点另存为 `best_reconstruction.pt`。这个名字只代表重建最佳。跨 guide、跨板检索评测尚未实现。
+验证重建损失用于评价 MAE 本身的遮挡重建任务；最低验证 MSE 对应的完整检查点另存为 `best_reconstruction.pt`。这个名字只代表重建最佳。跨 guide、同 guide 跨板检索使用独立的 `cellvit-retrieval` 入口，见上述评测方案。
 
 ### AMP 溢出与训练进度
 

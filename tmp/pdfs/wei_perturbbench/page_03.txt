@@ -1,0 +1,249 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+Cellular context generalization Perturbation generalization
+Foundation model
+GRN model
+Deep learning model
+Cell Gene
+Perturbation
+Cell Gene
+Perturbation
+?
+Train
+Generate
+Predict
+Cell Gene
+Perturbation
+Cell Gene
+Perturbation
+Train
+Generate
+Predict
+17 datasets
+13 genetic
+4 combo
+4 chemical
+12 datasets
+7 single-condition 5 multi-conditions
+(genetic, chemical,
+environmental factors)
+3 Perturb 2 Perturb, dosage
+Linear model
+(Genetic, chemical)
+AI
+3 Perturb, time
+Ground truth Prediction
+Accuracy
+MSE
+PCC-delta
+Wasserstein
+Common-DEGs
+Overall rank
+Method 1
+Method 2
+Method 3
+Limitation and insights
+Robustness Scalability
+Level of noise Accuracy
+Level of sparsityAccuracy
+Time 
+Number of
+perturbations/cellsMemory
+Number of
+perturbations/cells
+...Out of memory
+Population-distribution
+ metrics
+Population-average
+metrics
+MSE,
+PCC-delta,
+E-distance
+Wasserstein,
+KL-divergence,
+Common-DEGs
+ GB
+scGen, CellOT, trVAE,
+inVAE, scPreGAN, SCREEN, 
+scPRAM, baseMLP,
+ baseControl, trainMean,
+baseReg
+14 methods
+scELMo, scFoundation,
+scGPT, GeneCompass, 
+AttentionPert,
+scouter, GEARS,
+GenePert, linearModel
+CPA, biolord,
+baseMLP,
+baseControl,
+trainMean,
+baseReg
+chemCPA,
+PRnet, 
+cycleCDR
+18 methods
+Scenarios
+Datasets
+Methods
+Evaluation
+Kang et al.
+Haber et al.
+Norman et al.
+Replogle et al.
+...
+9 single 1 combo3 single
+scDisInFact,
+biolord,
+scVIDR
+a
+b
+E-distance
+KL-divergence
+KangCrossCell
+Parekh
+KangCrossPatient
+Haber
+KaggleCrossPatient
+CrossPatient
+KaggleCrossCell
+Contexts Context counts
+Cell lines
+Cell lines
+Patients
+Cell lines
+Patients
+Patients
+Cell lines
+Conditions
+Single
+Single
+Single
+Single
+Single
+Single
+Single
+8
+8
+3
+8
+6
+3
+5
+2
+2
+11
+4
+3
+11
+11
+Dataset ID/name
+Perturbation counts
+CrossSpecies
+Afriat
+McFarland
+TCDD
+Sciplex3
+Contexts Context counts
+Species
+Cell lines
+Cell lines
+Cell lines
+Cell lines
+Conditions
+Multi
+Multi
+Multi
+Multi
+Multi
+2
+12
+3
+2
+10
+Dataset ID/name
+Perturbation counts
+4
+5
+2
+6
+3
+c
+Dataset ID/name Perturbation
+type
+ Is 
+combination
+Perturbation
+counts
+Genetic
+Adamson
+Frangieh
+TianActivation
+TianInhibition
+Replogle-exp7
+Replogle-exp8
+Papalexi
+Replogle-RPE1essential
+Replogle-K562-essential
+No
+No
+No
+No
+No
+No
+No
+No
+No
+77
+212
+93
+181
+105
+62
+26
+1,331
+1,618
+Dataset ID/name Perturbation
+type
+ Is 
+combination
+Perturbation
+counts
+Chemical
+Norman
+Wessels
+Schmidt
+Reploge-exp6
+Sciplex3-A549
+Sciplex3-MCF7
+Sciplex3-K562
+Sciplex3-comb
+Yes
+Yes
+Yes
+Yes
+No
+No
+No
+Yes
+227
+128
+148
+70
+188
+188
+188
+32
+Genetic
+?
+Fig. 1 | Workflow and datasets for benchmarking the single-cell perturbation 
+effect prediction. a, We classified the single-cell perturbation effects 
+prediction tasks into ‘cellular context generalization scenario’ and ‘perturbation 
+generalization scenario’ . In the cellular context generalization scenario, we 
+benchmarked 14 methods across 12 datasets. In the perturbation generalization 
+scenario, we benchmarked 18 methods across 17 datasets. We adopted 6 metrics 
+to evaluate the performance of these algorithms, and we also assessed their 
+robustness, scalability and consumed computational resources. b, Detailed 
+information of the 12 single-cell perturbation datasets used in cellular context 
+generalization scenario. c, Detailed information of the 17 single-cell perturbation 
+datasets used in perturbation generalization scenario.

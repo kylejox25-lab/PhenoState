@@ -1,0 +1,87 @@
+{
+  "format": "cellvit-well-evaluation-v2",
+  "query_split": "val",
+  "gallery_split": "train",
+  "query_unit": "single well",
+  "tasks": [
+    "activity",
+    "same-guide",
+    "compound",
+    "cross-guide"
+  ],
+  "metric": "cosine",
+  "preprocessing": "raw",
+  "ks": [
+    1,
+    5,
+    10
+  ],
+  "seed": 2026,
+  "n_bootstrap": 10,
+  "n_null": 20,
+  "n_permutations": 29,
+  "max_controls_per_plate": 4,
+  "max_replicates": 20,
+  "control_rules": {
+    "CRISPR": {
+      "where": {
+        "well_type_label": [
+          "Intron controls"
+        ]
+      },
+      "match_fields": [
+        "cell_type"
+      ]
+    },
+    "COMPOUND": {
+      "where": {
+        "treatment": [
+          "EMPTY_control"
+        ],
+        "well_type_label": [
+          ""
+        ]
+      },
+      "match_fields": [
+        "cell_type"
+      ]
+    }
+  },
+  "encoder_input": "image only; perturbation metadata is used for evaluation",
+  "metadata_sha256": "794b016b845ab882a0588bff23e47682c9625eea2890df2d89bcb55685fa8431",
+  "manifest_sha256": null,
+  "split_source": "metadata split column",
+  "models": {
+    "encoder_A": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_all_tasks_on_independent_0\\a.parquet",
+          "sha256": "15a5645b47f03cc79bbaa4255e9544e1e60de2123c43bf491331a6a6ac77693a",
+          "n_file_rows": 126,
+          "schema_metadata": {}
+        }
+      ],
+      "checkpoint_verification": "unverified; arbitrary embedding source"
+    },
+    "encoder_B": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_all_tasks_on_independent_0\\b.parquet",
+          "sha256": "933fdfe475820e57e946b239a8f8b2a1ff294ea19bfc9e53899930a4f0897e93",
+          "n_file_rows": 126,
+          "schema_metadata": {}
+        }
+      ],
+      "checkpoint_verification": "unverified; arbitrary embedding source"
+    }
+  },
+  "allow_partial": false,
+  "drop_nonfinite": false,
+  "uncertainty": "perturbation bootstrap conditional on supplied embeddings; not training-seed uncertainty",
+  "external_functional_truth": "not used",
+  "software": {
+    "python": "3.11.15",
+    "numpy": "2.4.3",
+    "pyarrow": "25.0.1"
+  }
+}

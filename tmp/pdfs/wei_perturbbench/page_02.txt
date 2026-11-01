@@ -1,0 +1,131 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+of the performance of foundation models compared with baseline 
+models is performed. By analyzing datasets of varying sizes, it is found 
+that baseline models tend to perform better on smaller training data-
+sets. In contrast, foundation models tend to perform better in terms 
+of both prediction accuracy and generalizability, when the fine-tuning 
+datasets are sufficiently large. Based on our findings, we have devel-
+oped a tool selection guidance tailored to dataset characteristics, 
+enabling researchers to quickly select the most suitable methods;  
+(3) For challenging cases where perturbation effect prediction needs 
+to be generalized to a new cellular context that is substantially differ-
+ent from the model’s training contexts, we explored a cellular context 
+embedding strategy as a potential approach to enhance generaliza-
+tion. This strategy was found to improve perturbation effect predic-
+tion in our evaluation.
+Overall, our study underscores the importance of tailoring per -
+turbation prediction methods to specific data characteristics and 
+highlights the need for further improvements in model design to 
+increase generalizability. We anticipate that the insights gained from 
+this benchmark will facilitate the development of methods with greater 
+effectiveness and generalizability for diverse single-cell perturbation 
+prediction tasks.
+Results
+A comprehensive framework for benchmarking single-cell 
+perturbation effect prediction
+Methods. T o thoroughly assess the performance of prediction meth-
+ods in this field, we developed a comprehensive benchmark framework, 
+including state-of-the-art methods, diverse datasets and rigorous 
+evaluation metrics (Fig. 1a). In this study, we evaluated the methods 
+across two key scenarios: cellular context generalization and pertur-
+bation generalization (Fig. 1a). While we aimed to include a diverse set 
+of methods in our evaluation, several tools were excluded for specific 
+reasons (Supplementary Note 1). As a result, in the cellular context 
+generalization scenario, we examined 10 methods from published 
+studies: biolord16, CellOT14, inVAE17, scDisInFact18, scGen4, scPRAM15, 
+scPreGAN19, SCREEN20, scVIDR21 and trVAE22. In the perturbation gener-
+alization scenario, we examined another 14 methods: AttentionPert23, 
+biolord16, CPA24, GEARS5, GenePert25, linearModel12, scFoundation6, 
+scGPT7, chemCPA26, scouter27, scELMo28, GeneCompass29, PRnet30 and 
+cycleCDR31. Given the growing concerns raised in recent literature 
+regarding the effectiveness of advanced machine learning models, 
+particularly foundation models, we also included 4 baseline models 
+named baseReg, baseMLP, baseControl and trainMean (Methods). 
+These baseline models serve as benchmarks to determine whether 
+more complex methods learn additional meaningful information 
+from the data. In total, our evaluation includes 23 published methods 
+and 4 baseline models, covering a broad spectrum of methodological 
+approaches in single-cell perturbation effect prediction.
+Datasets. The systematic benchmark relies on a collection of diverse 
+datasets designed to reflect real-world biological challenges. For 
+the cellular context generalization scenario, we curated 12 datasets 
+categorized on the basis of the cellular context 1,32– 37 (Fig. 1b). These 
+datasets include 8 that are focused on cross-cell-line predictions  
+(predicting perturbation effects in a new cell type), 3 that are focused 
+on cross-patient predictions (predicting perturbation effects in  
+a new patient) and one that is focused on cross-species predictions  
+(predicting perturbation effects in a new species). Each dataset  
+challenges the ability of the models to generalize perturbation  
+effects across contexts. Additionally, the datasets can be further 
+gr
+ouped on the basis of the presence of perturbation metadata.  
+Of the 12 datasets, 7 contain only perturbation data (single-condition 
+datasets), and the remaining 5 include additional perturbation  
+metadata, that is, time-point/dosage information (multi-condition 
+datasets).
+of cellular contexts (such as cell lines) for a specific perturbation and 
+then using the model to predict the effects of that perturbation in a dif-
+ferent, unobserved cellular context. A prominent tool in this category 
+is scGen, which is based on variational autoencoders and enables pre-
+dictions to be generated across diverse cellular contexts4. The second 
+category, defined as the ‘perturbation generalization scenario’ , involves  
+training a model on the effects of a set of perturbations, which are 
+usually measured in a specific cellular context, and then using the 
+model to predict the effects of unseen perturbations. Notable methods  
+in this category include GEARS, which is based on knowledge graphs 
+of gene–gene relationships that can be generalized to unseen 
+perturbed genes5.
+In recent years, numerous methods have been presented in  
+the field of single-cell perturbation effect prediction for both of 
+the aforementioned scenarios. In addition, single-cell foundation  
+models have established a paradigm for in silico perturbation predic-
+tion through pretraining and fine-tuning strategies6– 9. Models such as 
+scGPT and scFoundation, which utilize large-scale pretrained archi -
+tectures, have demonstrated the potential to predict perturbation 
+effects across diverse cellular and perturbation contexts6,7. However, 
+recent studies have continued to raise concerns regarding the true 
+effectiveness of these models10– 12. Specifically, many of these methods 
+do not outperform baseline models or linear models on the basis of 
+straightforward assumptions when they are evaluated across multiple 
+datasets. This has led to a growing call for more comprehensive and 
+rigorous assessments of these methods. T o address this, researchers 
+should carefully examine several key aspects of single-cell perturba-
+tion effective modeling methods, including the comprehensiveness 
+of the test scenarios they are designed for, the diversity of the datasets 
+used and the thoroughness of the evaluation metrics. Only by properly 
+and thoroughly addressing these factors can we obtain a reliable and 
+clear understanding of the strengths and limitations of these methods. 
+Furthermore, it is crucial for an evaluation framework to go beyond 
+performance tests and present applicable guidance and solutions 
+for the development of more reliable and generalizable models in 
+this domain.
+In this study, we provide a comprehensive evaluation of single-cell 
+perturbation prediction methods, where the main procedure is as fol-
+lows: (1) In the cellular context generalization scenario, we compare 14 
+methods across 12 datasets that cover a wide range of cellular contexts 
+from different cell lines, participant samples, and even different spe-
+cies to investigate the generalizability of the methods across different 
+cellular contexts; (2) in the perturbation generalization scenario, we 
+compare 18 methods across 17 datasets to investigate generalizability 
+to unseen perturbations; (3) in both scenarios, we use 6 evaluation 
+metrics to comprehensively assess prediction accuracy, including 
+the mean squared error (MSE), Pearson correlation coefficient delta 
+(PCC-delta) 5, E-distance 13, Wasserstein distance 14, Kullback–Leibler 
+divergence (KL-divergence) and common differentially expressed 
+genes (Common-DEGs) 15; and (4) we utilize simulated data in both 
+scenarios to assess the scalability of the evaluated methods and to 
+investigate impacts of noise and sparsity on the performance of those 
+methods. Analysis results obtained from the comprehensive bench-
+mark are presented, including the following: (1) Our study indicated 
+that there is no ‘one-size-fits-all’ method that works well across all 
+datasets. Some limitations of current methods, including foundation 
+models for both test scenarios, were identified. In the cellular context 
+generalization scenario, owing to limitations in algorithm design, that 
+is, neglecting the specificity of perturbation responses across differ-
+ent cellular contexts (intercellular heterogeneity, or for simplicity 
+inter-heterogeneity), all methods likely exhibit poor generalizability. 
+Specifically, when predicting the effects of perturbations in a new 
+cellular context that is quite different from the training datasets, all 
+methods performed poorly, even worse than the baseline models; (2) 
+In the perturbation generalization scenario, an objective evaluation 

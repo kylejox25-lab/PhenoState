@@ -1,0 +1,49 @@
+{
+  "format": "cellvit-well-evaluation-v2",
+  "query_split": "val",
+  "gallery_split": "train",
+  "query_unit": "single well",
+  "tasks": [
+    "cross-guide"
+  ],
+  "metric": "cosine",
+  "preprocessing": "raw",
+  "ks": [
+    1,
+    5,
+    10
+  ],
+  "seed": 2026,
+  "n_bootstrap": 0,
+  "n_null": 500,
+  "n_permutations": 1000,
+  "max_controls_per_plate": 16,
+  "max_replicates": 20,
+  "control_rules": null,
+  "encoder_input": "image only; perturbation metadata is used for evaluation",
+  "metadata_sha256": "d56957b083395254f8143a517a34c2e80ac5cc1a4fedf94e02b18ccb2d90f175",
+  "manifest_sha256": null,
+  "split_source": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\generic_input_20261030\\test_arbitrary_wide_embeddings0\\mds\\plate_splits.json",
+  "models": {
+    "any_encoder": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\generic_input_20261030\\test_arbitrary_wide_embeddings0\\external_features.parquet",
+          "sha256": "8ea1f1f14f56ff2db901dfafb909c37815db66f681c14f94a79d9f1f23877d7c",
+          "n_file_rows": 16,
+          "schema_metadata": {}
+        }
+      ],
+      "checkpoint_verification": "unverified; arbitrary embedding source"
+    }
+  },
+  "allow_partial": false,
+  "drop_nonfinite": false,
+  "uncertainty": "perturbation bootstrap conditional on supplied embeddings; not training-seed uncertainty",
+  "external_functional_truth": "not used",
+  "software": {
+    "python": "3.11.15",
+    "numpy": "2.4.3",
+    "pyarrow": "25.0.1"
+  }
+}

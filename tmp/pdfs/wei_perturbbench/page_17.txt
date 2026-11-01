@@ -1,0 +1,127 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+ (4) P opulation-distribution metric Wasserstein distance. The 
+Wasserstein distance is selected as the most widely used metric 
+for evaluating distribution-level prediction performance. It 
+quantifies the discrepancy between predicted and actual distri-
+butions of single-cell profiles, which is essential for capturing 
+heterogeneity and higher-order statistical properties. However, 
+this metric should be interpreted with caution as its sensitivity 
+to specific data characteristics or modeling assumptions may 
+lead to misleading conclusions
+47. The Wasserstein distance is 
+computed with equation (5):
+W1 (P, Q) = inf
+γ∈Γ(P,Q)
+E(x,y)∼γ [|x − y|] (5)
+ (5) P opulation-distribution metric KL-divergence. The 
+KL-divergence metric is selected as the most widely used metric 
+for evaluating distribution-level prediction performance. It 
+quantifies the discrepancy between predicted and actual distri-
+butions of single-cell profiles, which is essential for capturing 
+heterogeneity and higher-order statistical properties. However, 
+this metric should be interpreted with caution as its sensitivity 
+to specific data characteristics or modeling assumptions may 
+lead to misleading conclusions
+47. The KL-divergence metric is 
+computed with equation (6):
+DKL (P ∥ Q) = ∫
+∞
+−∞
+p (x) log p (x)
+q (x) dx (6)
+ (6) P opulation-distribution metric Common-DEGs. This metric 
+directly assesses the accuracy of predicted DEGs under per-
+turbation, which is critical for biological interpretation and 
+downstream functional analyses. The Common-DEGs metric is 
+defined as the proportion of true most differentially expressed 
+genes among the predicted most differentially expressed genes. 
+A larger value indicates better performance. Both the predicted 
+and true most differentially expressed genes were identified 
+using the Scanpy Python package with default parameters
+61.
+Other population-distribution metrics such as Kendall tau dis -
+tance and classifier class projection were excluded due to redundancy 
+with Wasserstein distance, KL-divergence, and inferiority to MSE.
+Ranking the methods
+We used a straightforward ranking-based strategy to evaluate the 
+relative performance of the selected methods across the six metrics. 
+Specifically, within each dataset, the methods were ranked on the basis 
+of their raw outputs for each metric. The overall ranking of a method in 
+a given dataset was then calculated by averaging its ranks across the six 
+metrics. T o obtain a final ranking across all the datasets, we averaged 
+the overall rankings from each dataset. This ranking-based approach 
+addresses potential inconsistencies in value ranges between different 
+metrics, ensuring a fair comparison.
+Normalization and conversion of the metrics
+Among the six metrics used in our study, PCC-delta and Common-DEGs 
+have ranges between 0 and 1, while MSE, E-distance, Wasserstein  
+and KL-divergence have ranges that far exceed this interval. T o ensure 
+compatibility during the visualization of overall performance, we 
+first normalized their values to fall within the range of 0 to 1 as in 
+equation (7):
+normalizedY = Y − min(Y)
+max(Y)−min(Y) (7)
+Y is the raw output of a specific metric. We then converted the  
+normalized scores by applying 1 − normalized Y . As a result, for all 
+metrics, a larger score indicates a better accuracy. It should be noted 
+that in other cases, we used their raw outputs for visualization.
+Calculation of the similarity between cellular contexts in the 
+cellular context generalization scenario
+In the cellular context generalization scenario, we calculated the simi-
+larity between the test context and each context in the training dataset 
+via the E-distance. Specifically, we reduced the unperturbed control 
+group in each context to 5,000 dimensions using principal component 
+analysis and then measured the distance between pairs of contexts 
+using the E-distance13 function from the Pertpy Python package62. The 
+minimum value was used to assess the degree of similarity between 
+the test context and the training contexts. A larger value indicates a 
+lower similarity.
+Evaluation of the strength of a perturbation in the 
+perturbation generalization scenario
+For each perturbation, we calculated the E-distance between the unper-
+turbed control group and the perturbed group. Specifically, both 
+groups were reduced to 5,000 dimensions using principal component 
+analysis, and the E-distance function from the Pertpy Python package 
+was used to quantify the distance between them62. The distance value 
+was used to represent the strength of a perturbation and a larger value 
+indicates a stronger effect.
+The generation of simulated data with different level of noise 
+and sparsity
+We used the script from Yuan et al. to generate simulated data, which 
+allowed us to evaluate how noise and sparsity impact the performance 
+of the methods. In their original work, Yuan et al. introduced varying 
+levels of noise and sparsity into spatially resolved transcriptomics data 
+to systematically assess the robustness of spatial clustering methods. 
+Following a similar rationale, we applied controlled varying levels of 
+noise and sparsity into real datasets, allowing us to simulate realistic 
+experimental challenges and evaluate model performance under vary-
+ing levels of technical noise and dropout. The process of generating the 
+simulated data can be broken down into two parts: adding noise and 
+introducing sparsity: (1) Adding noise. T o introduce noise into the gene 
+expression data, we applied Poisson noise at varying levels (0.1, 0.3, 0.5, 
+0.7 and 0.9). The Poisson noise was generated by sampling from a Pois-
+son distribution where the rate parameter (λ) for each gene expression 
+value was determined by multiplying the original expression values by 
+the specified noise level. For example, at a noise level of 0.1, the noise 
+added to each gene expression value was proportional to 10% of the 
+original expression value. The generated Poisson noise was then added 
+to the original gene expression matrix, producing a noisy version of 
+the dataset. This approach allows us to simulate gene expression data 
+with varying levels of noise intensity, which is useful for assessing the 
+impact of different noise levels on model performance; (2) Introducing 
+sparsity. For sparsity, we randomly removed gene expression values 
+at different rates (0, 0.1, 0.3, 0.5, 0.7 and 0.9). For instance, when the 
+removal rate is set to 0.9, each gene expression value has a 90% prob-
+ability of being set to zero, making the data highly sparse. Conversely, 
+a removal rate of 0 means that no values are removed, and the gene 
+expression matrix remains unchanged. This process simulates various 
+levels of sparsity in the data and allows us to evaluate how different 
+sparsity levels affect the performance of the model. The detailed infor-
+mation of these simulated datasets is given in Supplementary Table 4.
+Computational resources
+Most of the benchmark tasks were conducted on an Ubuntu18 system 
+with a 96-core CPU, with 1,000 GB of RAM and four NVIDIA 3090 24 GB 
+GPUs. The scFoundation model has high GPU memory requirements, so 
+we ran it on a server with two NVIDIA A6000 48 GB GPUs. Both servers 
+used the Ubuntu 18.04 operating system.

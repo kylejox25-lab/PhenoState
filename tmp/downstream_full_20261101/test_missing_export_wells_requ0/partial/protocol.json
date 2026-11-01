@@ -1,0 +1,101 @@
+{
+  "format": "cellvit-well-evaluation-v2",
+  "query_split": "val",
+  "gallery_split": "train",
+  "query_unit": "single well",
+  "tasks": [
+    "cross-guide",
+    "same-guide"
+  ],
+  "metric": "cosine",
+  "preprocessing": "raw",
+  "ks": [
+    1,
+    5,
+    10
+  ],
+  "seed": 2026,
+  "n_bootstrap": 20,
+  "n_null": 500,
+  "n_permutations": 1000,
+  "max_controls_per_plate": 16,
+  "max_replicates": 20,
+  "control_rules": null,
+  "encoder_input": "image only; perturbation metadata is used for evaluation",
+  "metadata_sha256": "d56957b083395254f8143a517a34c2e80ac5cc1a4fedf94e02b18ccb2d90f175",
+  "manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+  "split_source": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_missing_export_wells_requ0\\mds",
+  "models": {
+    "mae": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_missing_export_wells_requ0\\mae_train.parquet",
+          "sha256": "0a18d2709384b5efab36bda4ee4bcca895a54686823152197f30c3d0fd591cbe",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "mae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "train",
+            "cellvit_checkpoint": "/old-server/mae.pt",
+            "cellvit_checkpoint_sha256": "222e292d98107dd39a2561332f781b6c7655f9503c6e9bc656fc159cb7fdbff7"
+          }
+        },
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_missing_export_wells_requ0\\mae_val.parquet",
+          "sha256": "b9c57b38e7d17ce847173eb0f8d0bf40559ff662e5ae5cb5ae8d66ea76929348",
+          "n_file_rows": 7,
+          "schema_metadata": {
+            "cellvit_model_type": "mae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "val",
+            "cellvit_checkpoint": "/old-server/mae.pt",
+            "cellvit_checkpoint_sha256": "222e292d98107dd39a2561332f781b6c7655f9503c6e9bc656fc159cb7fdbff7"
+          }
+        }
+      ],
+      "checkpoint_verification": "sha256_verified"
+    },
+    "diffmae": {
+      "files": [
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_missing_export_wells_requ0\\diffmae_train.parquet",
+          "sha256": "8bd06702bd00613cc743449a42a9d5b4124dae33d8c7e66c847d06d056937801",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "diffmae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "train",
+            "cellvit_checkpoint": "/old-server/diffmae.pt",
+            "cellvit_checkpoint_sha256": "d091d16732eac9827a8f843692bc2ef4fd4f9794da55792948363e73c3324a42"
+          }
+        },
+        {
+          "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\downstream_full_20261101\\test_missing_export_wells_requ0\\diffmae_val.parquet",
+          "sha256": "c7c0b0f050cf69d29fc232d2734cb585aa71870a76a16f0db446f7d7865aaeea",
+          "n_file_rows": 8,
+          "schema_metadata": {
+            "cellvit_model_type": "diffmae",
+            "cellvit_pooling": "mean",
+            "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+            "cellvit_split": "val",
+            "cellvit_checkpoint": "/old-server/diffmae.pt",
+            "cellvit_checkpoint_sha256": "d091d16732eac9827a8f843692bc2ef4fd4f9794da55792948363e73c3324a42"
+          }
+        }
+      ],
+      "checkpoint_verification": "sha256_verified"
+    }
+  },
+  "allow_partial": true,
+  "drop_nonfinite": false,
+  "uncertainty": "perturbation bootstrap conditional on supplied embeddings; not training-seed uncertainty",
+  "external_functional_truth": "not used",
+  "software": {
+    "python": "3.11.15",
+    "numpy": "2.4.3",
+    "pyarrow": "25.0.1"
+  }
+}

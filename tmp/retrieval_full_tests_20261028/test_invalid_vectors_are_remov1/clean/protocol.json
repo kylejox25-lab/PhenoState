@@ -1,0 +1,113 @@
+{
+  "format": "cellvit-frozen-retrieval-v1",
+  "query_split": "val",
+  "gallery_split": "train",
+  "query_unit": "single well",
+  "tasks": [
+    "cross-guide",
+    "same-guide"
+  ],
+  "metric": "cosine",
+  "preprocessing": "raw",
+  "ks": [
+    1,
+    5,
+    10
+  ],
+  "encoder_input": "image only; gene/guide labels define evaluation relevance",
+  "cross_guide": "other experiment; equal guide-weighted gene prototypes; exclude entire query guide",
+  "same_guide": "same experiment, other plates; ignore same-gene other-guide wells",
+  "aggregation": "candidate-experiment tasks -> well -> guide -> gene -> macro mean",
+  "generalization": "held-out plate queries against a training-image reference gallery",
+  "uncertainty": "gene bootstrap conditional on supplied checkpoints; no training-seed uncertainty",
+  "n_bootstrap": 20,
+  "seed": 2026,
+  "block_size": 64,
+  "allow_partial": false,
+  "drop_nonfinite": true,
+  "created_at_utc": "2026-10-28T05:51:16.180148+00:00",
+  "software": {
+    "python": "3.11.15",
+    "numpy": "2.4.3",
+    "pyarrow": "25.0.1"
+  },
+  "command_argv": [
+    "-c"
+  ],
+  "metadata_path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_invalid_vectors_are_remov1\\metadata.csv",
+  "metadata_sha256": "d56957b083395254f8143a517a34c2e80ac5cc1a4fedf94e02b18ccb2d90f175",
+  "mds_root": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_invalid_vectors_are_remov1\\mds",
+  "manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+  "plate_splits_sha256": "1fd9876041c2ca7ae5f301b1d87533353f16a52f364ebbdbc220245879e796f9",
+  "models": {
+    "mae": {
+      "algorithm": "mae",
+      "train": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_invalid_vectors_are_remov1\\mae_train.parquet",
+        "sha256": "0a18d2709384b5efab36bda4ee4bcca895a54686823152197f30c3d0fd591cbe",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "mae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "train",
+          "cellvit_checkpoint": "/old-server/mae.pt",
+          "cellvit_checkpoint_sha256": "222e292d98107dd39a2561332f781b6c7655f9503c6e9bc656fc159cb7fdbff7"
+        },
+        "provenance": "native"
+      },
+      "query": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_invalid_vectors_are_remov1\\mae_val.parquet",
+        "sha256": "1a26458042d7b4264eb48fbb1e4455646c374b7836c04f46ad3762d7acc86761",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "mae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "val",
+          "cellvit_checkpoint": "/old-server/mae.pt",
+          "cellvit_checkpoint_sha256": "222e292d98107dd39a2561332f781b6c7655f9503c6e9bc656fc159cb7fdbff7"
+        },
+        "provenance": "native"
+      },
+      "checkpoint_verification": "sha256_verified"
+    },
+    "diffmae": {
+      "algorithm": "diffmae",
+      "train": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_invalid_vectors_are_remov1\\diffmae_train.parquet",
+        "sha256": "8bd06702bd00613cc743449a42a9d5b4124dae33d8c7e66c847d06d056937801",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "diffmae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "train",
+          "cellvit_checkpoint": "/old-server/diffmae.pt",
+          "cellvit_checkpoint_sha256": "d091d16732eac9827a8f843692bc2ef4fd4f9794da55792948363e73c3324a42"
+        },
+        "provenance": "native"
+      },
+      "query": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_invalid_vectors_are_remov1\\diffmae_val.parquet",
+        "sha256": "c7c0b0f050cf69d29fc232d2734cb585aa71870a76a16f0db446f7d7865aaeea",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "diffmae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "val",
+          "cellvit_checkpoint": "/old-server/diffmae.pt",
+          "cellvit_checkpoint_sha256": "d091d16732eac9827a8f843692bc2ef4fd4f9794da55792948363e73c3324a42"
+        },
+        "provenance": "native"
+      },
+      "checkpoint_verification": "sha256_verified"
+    }
+  },
+  "external_functional_truth": "not used"
+}

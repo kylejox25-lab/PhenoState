@@ -1,0 +1,5 @@
+energy_distance,map,model,n_groups,n_tests,percent_active,percent_energy_active,perturbation_type,task
+2.828427108610701,1.0,encoder_A,3,3,100.0,100.0,COMPOUND,activity
+2.8284271247461903,1.0,encoder_A,4,4,100.0,100.0,CRISPR,activity
+2.828427108610701,1.0,encoder_B,3,3,100.0,100.0,COMPOUND,activity
+2.8284271247461903,1.0,encoder_B,4,4,100.0,100.0,CRISPR,activity

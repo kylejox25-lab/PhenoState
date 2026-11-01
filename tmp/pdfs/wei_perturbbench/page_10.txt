@@ -1,0 +1,130 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+in LLM-derived embeddings, rather than model complexity or archi-
+tecture. Furthermore, all downstream architectures, loss functions, 
+training protocols and evaluation metrics were kept constant across 
+experiments. Thus, we believe the observed improvements are not  
+artifacts, but instead reflect genuine representational advantages  
+provided by LLMs. These results indicate that LLM-derived gene 
+embeddings may capture high-level functional and contextual knowl-
+edge that is otherwise hard to extract from gene expression data alone.
+In our study, the four baseline models and linearModel per -
+formed relatively poorly, which differs from the findings of previous  
+studies—potentially due to differences in data preprocessing and  
+the size of the training set (Supplementary Note 18). In datasets 
+with 
+abundant fine-tuning data, deep learning and foundation 
+models such as CPA and scGPT performed well, particularly on 
+population-average metrics. For example, in the Replogle-RPE1es -
+sential and Replogle-K562essential datasets 41, CPA achieved the  
+highest accuracy in terms of both MSE and PCC-delta24 (Fig. 4b). Further 
+analysis revealed that the performance advantage of CPA over train-
+Mean increased as the similarity between the test and training pertur-
+bations decreased (Fig. 4c). This suggests that deep learning models 
+have superior generalizability when fine-tuned on sufficiently large 
+datasets. T o further validate our conclusion, we conducted an experi-
+ment where we varied the training (fine-tuning) set size (10%, 30%, 50% 
+and 80%) on the Replogle-RPE1essential and Replogle-K562essential 
+datasets, keeping all other parameters constant. The results showed 
+a clear trend that the performance of scGPT improved with increasing 
+amounts of fine-tuning data, whereas the trainMean baseline model 
+remained stable or showed slight degradation (Extended Data Fig. 5).
+For the combined-perturbation datasets, we focused on accuracy 
+across three perturbation categories: combo-seen2, combo-seen1 
+and combo-seen0 (Fig. 4d). These categories correspond to scenar -
+ios in which both, one and neither individual perturbation is present  
+in the training set, respectively, which increase the difficulty of  
+achieving high accuracy 5,52. linearModel and scouter achieved the 
+highest overall accuracy across all categories (Fig. 4d). Accurately 
+predicting combined-perturbation effects fundamentally relies on 
+correctly learning the interactions between genes. Therefore, we used 
+the Norman dataset to assess the ability of current models to predict 
+gene interactions
+40. In this dataset, gene interactions are categorized 
+into seven types, including additive, suppressor, synergy and other 
+types (Supplementary Note 10). The additive-based linearModel and 
+trainMean achieved the best performance on the additive interaction 
+type, which is in line with expectations (Fig. 4e). Additionally, CPA 
+performed best on the potentiation, epistasis and redundant gene 
+interaction types, which may indicate that deep learning models have 
+certain advantages in predicting specific types of gene interactions 
+(Fig. 4f and Supplementary Fig. 25).
+Among the combo-seen2, combo-seen1 and combo-seen0  
+perturbation types, predicting the perturbation effects for combo-  
+seen0 was the most challenging and placed greater demands on the 
+model’s generalization ability, as both perturbations are unseen. 
+In all four combined-perturbation datasets, the performance of all 
+tools is the worst for combo-seen0 prediction (Fig. 4g). Notably, in 
+the Schmidt dataset38, scGPT substantially outperformed the baseline 
+model in terms of the MSE and PCC-delta metrics, especially for the 
+combo-seen0 perturbation type (Fig. 4h and Supplementary Fig. 26). 
+This may further demonstrate the superior generalizability of the 
+foundation model in certain test scenarios.
+We also assessed the scalability of algorithms and the robustness 
+of the algorithms to technical noise and data sparsity using simulated 
+data (Methods). The procedure and evaluation metrics were similar  
+to those in the cellular context generalization scenario. In terms of  
+scalability, none of the algorithms encountered out-of-memory  
+issues, and their runtimes were within acceptable limits, except for 
+scFoundation (Fig. 4i). All the algorithms’ performance was affected 
+by data noise and sparsity, with greater sensitivity to sparsity (Fig. 4a,j). 
+Owing to the long runtime of scFoundation, we did not evaluate 
+its robustness.
+Chemical perturbation setting.  For the three single-perturbation 
+datasets, chemCPA achieved the best performance on the 
+population-average metrics, outperforming the baseline model by 
+a substantial margin (Fig. 5a). Unlike other deep learning models, 
+chemCPA performed impressively even on smaller datasets, likely 
+because of its effective use of prior knowledge during pretraining on 
+bulk RNA-seq datasets 53, which enriched its understanding of gene 
+expression patterns. In the combined-perturbation dataset, baseReg 
+outperformed CPA on all six metrics, highlighting the current gap in 
+methods for chemical perturbation prediction, particularly in combi-
+natorial contexts (Fig. 5b). Therefore, developing more effective tools 
+for such scenarios remains an urgent priority.
+Next, we assessed the robustness and scalability of the evalu -
+ated algorithms (Methods). The procedure and evaluation metrics 
+are similar to those in the cellular context generalization scenario. 
+In terms of scalability (Fig. 5c ), none of the algorithms encountered 
+out-of-memory issues, and their runtimes were within acceptable 
+limits. Regarding the impact of sparsity, PRnet and chemCPA were the 
+most stable. Regarding the impact of noise, PRnet and cycleCDR were 
+the most stable (Fig. 5a,d).
+In summary, the following insights were obtained from the 
+benchmark analysis of the perturbation generalization scenario:  
+(1) T o predict genetic single-perturbation effects, GenePert is an 
+optimal choic
+e when the training dataset is small. However, when 
+the fine-tuning dataset is sufficient, deep learning and foundation 
+models such as CPA and scGPT are preferable. (2) In predicting genetic 
+combined-perturbation effects, linearModel and scouter perform the 
+best. (3) In chemical single-perturbation effect prediction, chemCPA  
+is the preferred choice. (4) At present, methods for predicting  
+chemical combined-perturbation effects are limited, and the baseReg 
+baseline model achieves the highest accuracy.
+Limitations of current methods in the perturbation 
+generalization scenario
+In this test scenario, we identified several limitations of current tools: 
+(1) Suboptimal performance in predicting combined-perturbation 
+effects. Although scouter performed best among all the evaluated 
+methods in the combined-perturbation prediction setting, its improve-
+ment over the baseline models was limited (Fig. 4d). Other deep  
+learning models and foundation models even performed worse than 
+the baseline models did; (2) Limited generalizability of deep learning 
+and foundation models. T o evaluate their generalizability, we system-
+atically examined the performance of several representative deep 
+Fig. 5 | Benchmarking results in the perturbation generalization scenario. 
+a, Performance overview of the nine evaluated methods, including accuracy, 
+robustness and scalability. Data are presented as mean values with error bars 
+indicating standard errors of the mean. N = 3 datasets. b, Performance overview 
+of the six evaluated methods on a chemical combination perturbation dataset. 
+c, Runtime and CPU memory usage of the nine methods on simulated datasets 
+with different cell counts. d, MSE and PCC-delta results for the nine methods 
+on simulated datasets with varying levels of noise and sparsity. e, Correlation 
+between the magnitude of perturbation effects and the performance of the 
+methods. A linear regression line with 95% confidence interval is shown. PCCs 
+were calculated, and statistical significance was assessed using two-sided 
+t-tests. Adjustments were not made for multiple comparisons. f, Number of 
+DEGs identified by the baseMLP model in genetic single-perturbation datasets. 
+g, Recommendation of suitable software for users based on their needs and the 
+characteristics of the data at hand.

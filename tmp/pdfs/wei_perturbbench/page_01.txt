@@ -1,0 +1,58 @@
+Nature Methods
+nature methods
+https://doi.org/10.1038/s41592-025-02980-0
+Analysis
+Benchmarking algorithms for generalizable 
+single-cell perturbation response prediction
+ 
+Zhiting Wei    1,2,3,4,6, Yiheng Wang1,2,5,6, Yicheng Gao1,2,6, Shuguang Wang    1,2,6, 
+Ping Li1, Duanmiao Si1,2, Yuli Gao1,2, Siqi Wu1,2, Danlu Li1,2, Kejing Dong    1,2, 
+Xingbo Yang1,2, Chen Tang1,2, Shaliu Fu    1,2, Xiaohan Chen1,2, Wannian Li1,2, 
+Yuzhou You1,2, Chen Zhang1,2, Aibin Liang    1 , Guohui Chuai    1,2,3  & 
+Qi Liu    1,2,3 
+Single-cell perturbation technologies enable systematic investigation 
+of gene functions and regulatory networks with single-cell resolution. 
+However, performing large-scale and combinatorial perturbation screens 
+poses notable challenges due to their exponentially increased complexity. 
+Computational methods, including foundation models, have been 
+developed to predict perturbation effects. Yet despite claims of promising 
+performance, concerns remain about their true efficacy, particularly when 
+evaluated across diverse and previously unseen cellular contexts and 
+perturbation scenarios. Here, we present a comprehensive benchmark of 
+27 methods for single-cell perturbation response prediction, evaluated 
+across 29 datasets using 6 complementary performance metrics. By 
+evaluating them under multiple scenarios, we systematically assess their 
+generalizability, including that of emerging foundation models. Our results 
+provide practical guidance for method selection and underscore the need 
+for cellular context embedding approaches to enhance the generalizability 
+of perturbation effect prediction in single-cell research.
+Single-cell perturbation technology (for example, Perturb-seq and 
+sciPlex) provides an innovative platform for integrating single-cell 
+sequencing technologies with targeted perturbations, such as gene 
+knockouts, knockdowns and chemical treatments, to reveal gene func-
+tions, regulatory networks and mechanisms driving cell states at a 
+single-cell resolution1– 3. Despite its immense potential, the application 
+of single-cell perturbation sequencing at large scales faces substantial 
+practical and economic barriers. Conducting large-scale perturbation 
+screens, particularly for combined perturbations, is infeasible because 
+of the exponential growth in complexity.
+T o address the challenges associated with large-scale perturbation 
+screens, various computational methods have been developed to pre-
+dict perturbation effects. These computational methods can generally 
+be classified into two major categories on the basis of their application 
+scenarios. The first category, defined as the ‘cellular context generali-
+zation scenario’ , involves training a model on data measured in a set 
+Received: 20 January 2025
+Accepted: 5 November 2025
+Published online: xx xx xxxx
+ Check for updates
+1Department of Hematology, Tongji Hospital, Frontier Science Center for Stem Cell Research, Bioinformatics Department, School of Life Sciences and 
+Technology, Tongji University, Shanghai, China. 2Shanghai Key Laboratory of Anesthesiology and Brain Functional Modulation, Clinical Research Center 
+for Anesthesiology and Perioperative Medicine, Translational Research Institute of Brain and Brain-Like Intelligence, Shanghai Fourth People’s Hospital, 
+Frontier Science Center for Stem Cell Research, Bioinformatics Department, School of Life Sciences and Technology, Tongji University, Shanghai, 
+China. 
+3State Key Laboratory of Autonomous Intelligent Unmanned Systems, Frontiers Science Center for Intelligent Autonomous Systems, Ministry of 
+Education, Shanghai Research Institute for Intelligent Autonomous Systems, Shanghai, China. 4Institute for Data-Driven Tumor Immunology, Chongqing 
+Medical University, Chongqing, China. 5Institute of Biophysics, Chinese Academy of Sciences; College of Life Sciences, University of Chinese Academy of 
+Sciences, Beijing, China. 6These authors contributed equally: Zhiting Wei, Yiheng Wang, Yicheng Gao, Shuguang Wang.  e-mail: lab7182@tongji.edu.cn; 
+18alexanderm117@tongji.edu.cn; qiliu@tongji.edu.cn

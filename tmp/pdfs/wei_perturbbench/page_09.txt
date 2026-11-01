@@ -1,0 +1,394 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+a
+b
+AccuracyMethod 
+1 0
+Overall
+Common-DEGs
+PCC-delta
+MSE
+E-distance
+Perturbation generalization (genetic combo)
+c
+d
+g h
+−0.4
+−0.3
+−0.2
+−0.1
+0
+0 0.2 0.4 0.6
+Inter-heterogeneity
+MSE
+r = –0.5, P = 2.199 × 10
+−18
+r = –0.53, P = 3.579 × 10
+−25
+−0.4
+−0.3
+−0.2
+−0.1
+0
+MSE
+0 0.2 0.4 0.6
+Replogle-K562essentialReplogle-RPE1essential
+0
+0.05
+0.10
+0.15
+0.20
+MSEPCC-delta
+0
+0.2
+0.4
+0.6
+0.8
+Combo seen
+Combo seen
+1 0 2
+Good Bad
+Performance
+0
+0.01
+0.02
+0.03
+0
+0.2
+0.4
+1 0 2
+MSEPCC-delta
+scGPTtrainMean
+0.019
+0.012
+0.006
+0.53
+0.25
+0.14
+Dataset: Schmidt
+Deep learning model
+Graph model
+Foundation model
+Ranking
+1
+15
+Properties
+Language GPU
+Method 
+1 0
+Low
+High
+Performance
+1
+0
+Accuracy
+Metrics
+Scalability
+Time
+(min)
+Memory
+(GB)
+Robustness
+Sparsity Noise
+Linear model trainMean
+linearModel
+GEARS
+scFoundation
+scGPT
+AttentionPert
+scouter
+biolord
+CPA
+GenePert
+baseMLP
+scELMo
+GeneCompass
+baseControl
+baseReg
+Overall
+Common-DEGs
+MSE
+PCC-delta E-distance
+CV MSE
+CV PCC-delta
+CV MSE
+CV PCC-deltaWasserstein KL-divergence
+1
+2
+3
+1
+2
+3
+2
+3
+1
+1
+2
+3
+3
+1
+2
+1
+2
+3
+1
+2
+3
+Perturbation generalization
+(genetic single)
+1
+2
+3
+1
+3
+2
+3
+2
+1
+2
+3
+1
+3
+2
+1
+140.6
+6.7
+57.4
+74.3
+0.7
+0.5
+0.4
+152.2
+1.1
+1.7
+66.9
+386.8
+98.4
+7.3
+0.73
+18.9
+21.1
+17.2
+21.1
+8.4
+5.9
+4.2
+6.2
+9.2
+16.4
+22.3
+24.1
+21.1
+13.3
+10.5
+2
+1
+3
+Methods
+0
+10
+20
+30
+40
+50
+5,000 20,000 50,000 150,000
+Cell counts
+Memory (GB)
+...Out of memory
+5,000 20,000 50,000 150,000
+Cell counts
+0
+200
+400
+...Out of memory
+Time (min)
+50 Perturbations
+i
+50 Perturbations
+CPA
+biolord
+scouter
+AttentionPert
+baseMLP
+scELMo
+GeneCompass
+scGPT
+scFoundation
+GEARS
+GenePert
+linearModel
+trainMean
+baseControl
+baseReg
+trainMean
+linearModel
+GEARS
+scFoundation
+scGPT
+AttentionPert
+scouter
+biolord
+CPA
+GenePert
+baseMLP
+scELMo
+GeneCompass
+baseControl
+baseReg
+Wasserstein KL-divergence
+1
+3
+1
+1
+3
+1
+1
+3
+1
+1
+2
+3
+2
+3
+1
+2
+3
+1
+1
+3
+2
+baseMLP
+baseReg
+scELMo
+GEARS
+GeneCompass
+trainMean
+linearModel
+AttentionPert
+scouter
+biolord
+GenePert
+scGPT
+CPA
+baseControl
+baseMLP
+baseReg
+biolord
+GEARS
+trainMean
+AttentionPert
+scELMo
+GeneCompass
+scouter
+linearModel
+GenePert
+scGPT
+CPA
+PCC-delta
+Replogle-K562essentialReplogle-RPE1essential
+MSEPCC-deltaMSE
+baseControl
+baseMLP
+baseReg
+scouter
+trainMean
+scGPT
+GEARS
+linearModel
+biolord
+GenePert
+AttentionPert
+scELMo
+GeneCompass
+CPA
+baseMLP
+baseControl
+trainMean
+baseReg
+linearModel
+scouter
+scELMo
+GeneCompass
+GEARS
+scGPT
+GenePert
+AttentionPert
+biolord
+CPA
+0
+0.2
+0.4
+0
+0.2
+0.4
+0
+0.5
+1.0
+0
+0.5
+1.0
+fe
+Additive
+PCC-delta
+Potentiation Epistasis Redundant
+0 0.2 0.4 0.6
+MSE
+CPA
+0.25
+0.50
+0.75
+1.00
+0 0.2 0.4 0.6
+MSE
+CPA
+0
+0.4
+0.8
+1.2
+0 0.1 0.2 0.3
+MSE
+0
+0.25
+0.50
+0.75
+1.00
+linearModel
+trainMean
+0.1 0.2 0.3
+CPA
+0
+0.25
+0.50
+0.75
+1.00
+MSE
+baseControl
+Inter-heterogeneity
+j
+0
+0.5
+1.0
+1.5
+2.0MSE
+Level of noise
+0 0.1 0.3 0.5 0.7 0.9
+–0.3
+0
+0.3
+0.6
+PCC-delta
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+PCC-delta
+0
+0.5
+1.0
+1.5
+2.0MSE
+Level of sparsity
+0 0.1 0.3 0.5 0.7 0.9
+0
+0.3
+0.6
+0 0.1 0.3 0.5 0.7 0.9
+Level of noise

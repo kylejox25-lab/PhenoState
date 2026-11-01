@@ -31,6 +31,7 @@ cellvit-check-loader = "cellvit.data.check_loader:main"
 cellvit-train = "cellvit.train.mae:main"
 cellvit-embed = "cellvit.infer:main"
 cellvit-evaluate = "cellvit.evaluate:main"
+cellvit-retrieval = "cellvit.retrieval:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

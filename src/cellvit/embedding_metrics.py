@@ -282,27 +282,54 @@ def _rank_record(scores, candidate_ids, positives, ks):
     return result
 
 
-def _summarize(records, n_queries, ks, *, seed, n_bootstrap, extra=None):
+def _summarize(records, n_queries, ks, *, seed, n_bootstrap, aggregation="label", extra=None):
     if n_bootstrap < 0:
         raise ValueError("n_bootstrap must be nonnegative")
+    if aggregation not in {"label", "gene_guide"}:
+        raise ValueError("aggregation must be label or gene_guide")
     valid = [record for record in records if record.get("reason") is None]
     fields = ["ap", "mrr", "random_ap", *[f"recall@{k}" for k in ks],
               *[f"hit@{k}" for k in ks], *[f"random_recall@{k}" for k in ks]]
     grouped = defaultdict(list)
     for record in valid:
         grouped[record["perturbation_label"]].append(record)
-    groups = [{"perturbation_label": label, "n_query_tasks": len(items),
-               **{field: float(np.mean([item[field] for item in items])) for field in fields}}
-              for label, items in sorted(grouped.items())]
+    groups = []
+    for label, items in sorted(grouped.items()):
+        if aggregation == "gene_guide":
+            by_well = defaultdict(list)
+            for item in items:
+                if not item.get("guide"):
+                    raise ValueError("gene_guide aggregation requires a guide on each query record")
+                by_well[item["guide"], item["well_id"]].append(item)
+            by_guide = defaultdict(list)
+            for (guide, _), well_tasks in sorted(by_well.items()):
+                by_guide[guide].append([np.mean([item[field] for item in well_tasks]) for field in fields])
+            means = np.mean([np.mean(wells, axis=0) for _, wells in sorted(by_guide.items())], axis=0)
+        else:
+            means = [np.mean([item[field] for item in items]) for field in fields]
+        groups.append({"perturbation_label": label, "n_query_tasks": len(items),
+                       "n_query_wells": len({item["well_id"] for item in items}),
+                       "n_query_guides": len({item["guide"] for item in items if item.get("guide")}),
+                       **{field: float(value) for field, value in zip(fields, means)}})
+    all_groups = {record["perturbation_label"] for record in records}
+    all_guides = {(record["perturbation_label"], record["guide"]) for record in records if record.get("guide")}
+    valid_guides = {(record["perturbation_label"], record["guide"]) for record in valid if record.get("guide")}
     summary = {"n_queries": n_queries, "n_evaluable_queries": len({r["well_id"] for r in valid}),
                "n_query_tasks": len(records), "n_evaluable_tasks": len(valid),
                "n_groups": len(groups), "coverage": len({r["well_id"] for r in valid}) / n_queries
                if n_queries else 0.0,
+               "n_requested_groups": len(all_groups), "n_requested_guides": len(all_guides),
+               "n_evaluable_guides": len(valid_guides),
+               "group_coverage": len(groups) / len(all_groups) if all_groups else 0.0,
+               "guide_coverage": len(valid_guides) / len(all_guides) if all_guides else 0.0,
+               "task_coverage": len(valid) / len(records) if records else 0.0,
                "excluded_reasons": dict(Counter(r["reason"] for r in records if r.get("reason"))),
-               "aggregation": "macro mean across perturbation labels; tasks averaged within label",
+               "aggregation": ("candidate-experiment tasks -> well -> guide -> gene -> macro mean"
+                               if aggregation == "gene_guide" else
+                               "macro mean across perturbation labels; tasks averaged within label"),
                "recall_definition": "fraction of all relevant candidates in the first K ranks",
                "tie_break": "ascending candidate well_id (gene name for gene prototypes)",
-               "bootstrap_unit": "perturbation_label", "seed": seed}
+               "bootstrap_unit": "gene" if aggregation == "gene_guide" else "perturbation_label", "seed": seed}
     for field in fields:
         summary["map" if field == "ap" else field] = float(np.mean([g[field] for g in groups])) if groups else None
     summary["candidate_count_range"] = [min(r["n_candidates"] for r in valid),
@@ -326,17 +353,20 @@ def retrieval_metrics(
     ks: Sequence[int] = (1, 5, 10), protocol: str = "compound",
     query_well_ids: Iterable[str] | None = None,
     candidate_well_ids: Iterable[str] | None = None, block_size: int = 64,
-    seed: int = 2026, n_bootstrap: int = 1000,
+    seed: int = 2026, n_bootstrap: int = 1000, aggregation: str = "label",
 ) -> dict:
     """Same-experiment/same-dose, cross-plate compound retrieval (Project §6.1).
 
     ``protocol='gene_well'`` is a supplementary same-experiment cross-plate,
     cross-guide retrieval. Use gene_retrieval_metrics for the primary gene
-    prototype protocol. Controls never count as queries or gallery positives.
+    prototype protocol. ``protocol='same_guide'`` retrieves same-guide wells,
+    ignoring same-gene other-guide wells. ``aggregation='gene_guide'`` gives
+    each gene and each guide within that gene equal weight. Controls never count
+    as queries or gallery positives.
     Scores are computed separately per experiment/dose context. Peak similarity
     storage is block_size × context gallery size, never N × N.
     """
-    if block_size < 1 or protocol not in {"compound", "gene_well"}:
+    if block_size < 1 or protocol not in {"compound", "gene_well", "same_guide"}:
         raise ValueError("Invalid block_size or retrieval protocol")
     ks = _ks(ks)
     meta, vectors, valid = _inputs(values, rows, metric)
@@ -367,15 +397,19 @@ def retrieval_metrics(
             selected = context_queries[start:start + block_size]
             similarities = vectors[selected] @ context_vectors.T
             for qi, scores in zip(selected, similarities):
-                record = {"well_id": ids[qi], "perturbation_label": labels[qi], "reason": None}
+                record = {"well_id": ids[qi], "perturbation_label": labels[qi],
+                          "guide": guides[qi], "experiment_name": meta[qi]["experiment_name"], "reason": None}
                 if not valid[qi]:
                     record["reason"] = "invalid_query_vector"
                     records.append(record)
                     continue
                 mask = (context_batches != batches[qi]) & (context_ids != ids[qi])
-                if kind == "CRISPR":
+                if protocol == "same_guide":
+                    mask &= (context_labels != labels[qi]) | (context_guides == guides[qi])
+                elif kind == "CRISPR":
                     mask &= context_guides != guides[qi]
-                positive = context_labels[mask] == labels[qi]
+                positive = (context_guides[mask] == guides[qi] if protocol == "same_guide"
+                            else context_labels[mask] == labels[qi])
                 if not positive.any():
                     record["reason"] = "no_cross_plate_positives"
                 elif positive.all():
@@ -384,7 +418,7 @@ def retrieval_metrics(
                     record.update(_rank_record(scores[mask], context_ids[mask], positive, ks))
                 records.append(record)
     records.sort(key=lambda record: record["well_id"])
-    return _summarize(records, len(q_indices), ks, seed=seed, n_bootstrap=n_bootstrap,
+    return _summarize(records, len(q_indices), ks, seed=seed, n_bootstrap=n_bootstrap, aggregation=aggregation,
                       extra={"protocol": protocol, "metric": metric, "block_size": block_size,
                              "n_invalid_vectors": int((~valid).sum())})
 
@@ -393,7 +427,8 @@ def gene_retrieval_metrics(
     values: np.ndarray, rows: Sequence[Mapping], *, metric: str = "cosine",
     ks: Sequence[int] = (1, 5), query_well_ids: Iterable[str] | None = None,
     candidate_well_ids: Iterable[str] | None = None, block_size: int = 64,
-    seed: int = 2026, n_bootstrap: int = 1000,
+    seed: int = 2026, n_bootstrap: int = 1000, aggregation: str = "label",
+    prototype_weighting: str = "well", strict_prototypes: bool = False,
 ) -> dict:
     """Cross-experiment, cross-guide gene prototype retrieval (Project §6.1).
 
@@ -401,9 +436,14 @@ def gene_retrieval_metrics(
     prototype per gene. The query's entire guide is removed before computing
     prototypes, not merely its well. Experiments without the query gene cannot
     supply a positive and are omitted from tasks; zero-task queries are recorded.
+    ``prototype_weighting='guide'`` first averages repeated wells within guide,
+    then averages the guide means equally. Strict prototypes fail on nonempty
+    degenerate means instead of silently changing each model's candidate set.
     """
     if block_size < 1:
         raise ValueError("block_size must be positive")
+    if prototype_weighting not in {"well", "guide"}:
+        raise ValueError("prototype_weighting must be well or guide")
     ks = _ks(ks)
     meta, vectors, valid = _inputs(values, rows, metric)
     query = _selection(meta, query_well_ids)
@@ -433,6 +473,14 @@ def gene_retrieval_metrics(
                 raise ValueError("A guide maps to multiple genes")
             guide_sums[guide][1] += raw[i]
             guide_sums[guide][2] += 1
+        if prototype_weighting == "guide":
+            sums.fill(0)
+            counts.fill(0)
+            for guide, (gi, total, count) in list(guide_sums.items()):
+                mean = total / count
+                sums[gi] += mean
+                counts[gi] += 1
+                guide_sums[guide] = [gi, mean, 1]
         pools[experiment] = genes, sums, counts, guide_sums
         for gene in genes:
             gene_experiments[gene].add(experiment)
@@ -440,7 +488,8 @@ def gene_retrieval_metrics(
     records = []
     for qi in q_indices:
         row = meta[qi]
-        record = {"well_id": row["well_id"], "perturbation_label": row["perturbation_label"], "reason": None}
+        record = {"well_id": row["well_id"], "perturbation_label": row["perturbation_label"],
+                  "guide": row["guide"], "experiment_name": row["experiment_name"], "reason": None}
         if not valid[qi]:
             records.append({**record, "reason": "invalid_query_vector"})
             continue
@@ -458,6 +507,10 @@ def gene_retrieval_metrics(
             counts[gi] -= count
         means = sums / np.maximum(counts, 1)[:, None]
         prototypes, good = unit_vectors(means, metric)
+        if strict_prototypes and ((counts > 0) & ~good).any():
+            invalid_genes = [genes[i] for i in np.flatnonzero((counts > 0) & ~good)]
+            raise ValueError(f"Invalid nonempty gene prototypes in {experiment} after excluding {guide}: "
+                             f"{invalid_genes[:5]}; models must retain identical candidate genes")
         good &= counts > 0
         selected = np.flatnonzero(good)
         candidate_genes = [genes[i] for i in selected]
@@ -467,6 +520,7 @@ def gene_retrieval_metrics(
             for qi, similarities in zip(block, scores):
                 row = meta[qi]
                 record = {"well_id": row["well_id"], "perturbation_label": row["perturbation_label"],
+                          "guide": row["guide"], "experiment_name": row["experiment_name"],
                           "candidate_experiment": experiment, "reason": None}
                 positive = np.array([gene == row["gene"] for gene in candidate_genes])
                 if not positive.any():
@@ -476,10 +530,12 @@ def gene_retrieval_metrics(
                 else:
                     record.update(_rank_record(similarities, candidate_genes, positive, ks))
                 records.append(record)
-    return _summarize(records, len(q_indices), ks, seed=seed, n_bootstrap=n_bootstrap,
+    return _summarize(records, len(q_indices), ks, seed=seed, n_bootstrap=n_bootstrap, aggregation=aggregation,
                       extra={"protocol": "cross_experiment_cross_guide_gene_prototypes", "metric": metric,
                              "n_invalid_vectors": int((~valid).sum()),
-                             "prototype": "mean raw embeddings after excluding the query guide"})
+                             "prototype": ("equal guide means after excluding the query guide" if prototype_weighting == "guide"
+                                           else "mean raw embeddings after excluding the query guide"),
+                             "prototype_weighting": prototype_weighting, "strict_prototypes": strict_prototypes})
 
 
 def percent_replicating(
@@ -487,7 +543,10 @@ def percent_replicating(
     n_null: int = 500, n_bootstrap: int = 1000, seed: int = 2026,
     max_replicates: int | None = 20, max_groups: int | None = None,
 ) -> dict:
-    """Median cross-plate replicate similarity vs a repeat-count matched null.
+    """Legacy all-pairs replicate protocol used by the exploratory notebook.
+
+    Formal query-gallery same-guide/compound evaluation uses
+    ``cellvit.replicate_metrics.replicate_metrics`` instead.
 
     Groups are (perturbation label, experiment). Each null group uses the same
     number of wells and the identical plate/type/dose pattern, drawn from

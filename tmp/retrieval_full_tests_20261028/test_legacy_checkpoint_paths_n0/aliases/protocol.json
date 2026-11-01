@@ -1,0 +1,109 @@
+{
+  "format": "cellvit-frozen-retrieval-v1",
+  "query_split": "val",
+  "gallery_split": "train",
+  "query_unit": "single well",
+  "tasks": [
+    "cross-guide",
+    "same-guide"
+  ],
+  "metric": "cosine",
+  "preprocessing": "raw",
+  "ks": [
+    1,
+    5,
+    10
+  ],
+  "encoder_input": "image only; gene/guide labels define evaluation relevance",
+  "cross_guide": "other experiment; equal guide-weighted gene prototypes; exclude entire query guide",
+  "same_guide": "same experiment, other plates; ignore same-gene other-guide wells",
+  "aggregation": "candidate-experiment tasks -> well -> guide -> gene -> macro mean",
+  "generalization": "held-out plate queries against a training-image reference gallery",
+  "uncertainty": "gene bootstrap conditional on supplied checkpoints; no training-seed uncertainty",
+  "n_bootstrap": 20,
+  "seed": 2026,
+  "block_size": 64,
+  "allow_partial": false,
+  "drop_nonfinite": false,
+  "created_at_utc": "2026-10-28T05:51:16.311875+00:00",
+  "software": {
+    "python": "3.11.15",
+    "numpy": "2.4.3",
+    "pyarrow": "25.0.1"
+  },
+  "command_argv": [
+    "-c"
+  ],
+  "metadata_path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_legacy_checkpoint_paths_n0\\metadata.csv",
+  "metadata_sha256": "d56957b083395254f8143a517a34c2e80ac5cc1a4fedf94e02b18ccb2d90f175",
+  "mds_root": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_legacy_checkpoint_paths_n0\\mds",
+  "manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+  "plate_splits_sha256": "1fd9876041c2ca7ae5f301b1d87533353f16a52f364ebbdbc220245879e796f9",
+  "models": {
+    "seed1": {
+      "algorithm": "mae",
+      "train": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_legacy_checkpoint_paths_n0\\mae_train.parquet",
+        "sha256": "1d3625be1424073cc5262cd93f0c5f114f167bb5dea3b8474f61f0281e8e7903",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "mae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "train",
+          "cellvit_checkpoint": "/old-server/mae.pt"
+        },
+        "provenance": "native"
+      },
+      "query": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_legacy_checkpoint_paths_n0\\mae_val.parquet",
+        "sha256": "a4b84120ded4061d32f112ee7f30c5024c1e2152e89c29f1cf2d212a18bc6a22",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "mae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "val",
+          "cellvit_checkpoint": "/old-server/mae.pt"
+        },
+        "provenance": "native"
+      },
+      "checkpoint_verification": "legacy_path_only; identical checkpoint contents cannot be verified"
+    },
+    "seed2": {
+      "algorithm": "mae",
+      "train": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_legacy_checkpoint_paths_n0\\mae_train.parquet",
+        "sha256": "1d3625be1424073cc5262cd93f0c5f114f167bb5dea3b8474f61f0281e8e7903",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "mae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "train",
+          "cellvit_checkpoint": "/old-server/mae.pt"
+        },
+        "provenance": "native"
+      },
+      "query": {
+        "path": "D:\\XKJ_Proj\\cell_painting\\project\\tmp\\retrieval_full_tests_20261028\\test_legacy_checkpoint_paths_n0\\mae_val.parquet",
+        "sha256": "a4b84120ded4061d32f112ee7f30c5024c1e2152e89c29f1cf2d212a18bc6a22",
+        "n_file_rows": 8,
+        "n_expected_file_rows": 8,
+        "schema_metadata": {
+          "cellvit_model_type": "mae",
+          "cellvit_pooling": "mean",
+          "cellvit_manifest_sha256": "a971891c83a8fb20a8f61b6b0b067d0338c39a124b5dcc2b88d138feae770dbe",
+          "cellvit_split": "val",
+          "cellvit_checkpoint": "/old-server/mae.pt"
+        },
+        "provenance": "native"
+      },
+      "checkpoint_verification": "legacy_path_only; identical checkpoint contents cannot be verified"
+    }
+  },
+  "external_functional_truth": "not used"
+}

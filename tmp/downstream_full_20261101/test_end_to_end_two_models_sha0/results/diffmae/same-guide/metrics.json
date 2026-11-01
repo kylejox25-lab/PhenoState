@@ -1,0 +1,511 @@
+{
+  "summary": {
+    "n_queries": 8,
+    "n_evaluable_queries": 8,
+    "n_query_tasks": 8,
+    "n_evaluable_tasks": 8,
+    "n_groups": 2,
+    "coverage": 1.0,
+    "n_requested_groups": 2,
+    "n_requested_guides": 4,
+    "n_evaluable_guides": 4,
+    "group_coverage": 1.0,
+    "guide_coverage": 1.0,
+    "task_coverage": 1.0,
+    "excluded_reasons": {},
+    "aggregation": "candidate-experiment tasks -> well -> guide -> gene -> macro mean",
+    "recall_definition": "fraction of all relevant candidates in the first K ranks",
+    "tie_break": "ascending candidate well_id (gene name for gene prototypes)",
+    "bootstrap_unit": "gene",
+    "seed": 2026,
+    "map": 0.3333333333333333,
+    "mrr": 0.3333333333333333,
+    "random_ap": 0.611111111111111,
+    "recall@1": 0.0,
+    "recall@5": 1.0,
+    "recall@10": 1.0,
+    "hit@1": 0.0,
+    "hit@5": 1.0,
+    "hit@10": 1.0,
+    "random_recall@1": 0.3333333333333333,
+    "random_recall@5": 1.0,
+    "random_recall@10": 1.0,
+    "candidate_count_range": [
+      3,
+      3
+    ],
+    "ci95": {
+      "map": [
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "mrr": [
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "random_ap": [
+        0.611111111111111,
+        0.611111111111111
+      ],
+      "recall@1": [
+        0.0,
+        0.0
+      ],
+      "recall@5": [
+        1.0,
+        1.0
+      ],
+      "recall@10": [
+        1.0,
+        1.0
+      ],
+      "hit@1": [
+        0.0,
+        0.0
+      ],
+      "hit@5": [
+        1.0,
+        1.0
+      ],
+      "hit@10": [
+        1.0,
+        1.0
+      ],
+      "random_recall@1": [
+        0.3333333333333333,
+        0.3333333333333333
+      ],
+      "random_recall@5": [
+        1.0,
+        1.0
+      ],
+      "random_recall@10": [
+        1.0,
+        1.0
+      ],
+      "percent_replicating": null
+    },
+    "protocol": "same_guide",
+    "metric": "cosine",
+    "block_size": 64,
+    "n_invalid_vectors": 0,
+    "percent_replicating": null,
+    "replication_coverage": 0.0,
+    "overall_query_coverage": 1.0
+  },
+  "queries": [
+    {
+      "well_id": "gene-A_1_G_1",
+      "perturbation_label": "gene:G",
+      "guide": "G_guide_1",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-A_1_G_2",
+      "perturbation_label": "gene:G",
+      "guide": "G_guide_2",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-A_1_H_1",
+      "perturbation_label": "gene:H",
+      "guide": "H_guide_1",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-A_1_H_2",
+      "perturbation_label": "gene:H",
+      "guide": "H_guide_2",
+      "experiment_name": "gene-A",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_G_1",
+      "perturbation_label": "gene:G",
+      "guide": "G_guide_1",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_G_2",
+      "perturbation_label": "gene:G",
+      "guide": "G_guide_2",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_H_1",
+      "perturbation_label": "gene:H",
+      "guide": "H_guide_1",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "well_id": "gene-B_1_H_2",
+      "perturbation_label": "gene:H",
+      "guide": "H_guide_2",
+      "experiment_name": "gene-B",
+      "reason": null,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "n_candidates": 3,
+      "n_positives": 1,
+      "random_ap": 0.611111111111111,
+      "first_positive_rank": 3,
+      "recall@1": 0.0,
+      "hit@1": 0.0,
+      "random_recall@1": 0.3333333333333333,
+      "recall@5": 1.0,
+      "hit@5": 1.0,
+      "random_recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@10": 1.0,
+      "random_recall@10": 1.0
+    }
+  ],
+  "groups": [
+    {
+      "perturbation_label": "gene:G",
+      "n_query_tasks": 4,
+      "n_query_wells": 4,
+      "n_query_guides": 2,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "random_ap": 0.611111111111111,
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@1": 0.0,
+      "hit@5": 1.0,
+      "hit@10": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "random_recall@5": 1.0,
+      "random_recall@10": 1.0
+    },
+    {
+      "perturbation_label": "gene:H",
+      "n_query_tasks": 4,
+      "n_query_wells": 4,
+      "n_query_guides": 2,
+      "ap": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "random_ap": 0.611111111111111,
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "hit@1": 0.0,
+      "hit@5": 1.0,
+      "hit@10": 1.0,
+      "random_recall@1": 0.3333333333333333,
+      "random_recall@5": 1.0,
+      "random_recall@10": 1.0
+    }
+  ],
+  "replication": {
+    "summary": {
+      "protocol": "query_gallery_same_guide_percent_replicating",
+      "metric": "cosine",
+      "percent_replicating": null,
+      "ci95": {
+        "percent_replicating": null
+      },
+      "n_groups_available": 8,
+      "n_evaluable_groups": 0,
+      "n_evaluable_perturbations": 0,
+      "coverage": 0.0,
+      "excluded_reasons": {
+        "insufficient_matched_distinct_null_labels": 8
+      },
+      "n_invalid_vectors": 0,
+      "n_null": 500,
+      "n_bootstrap": 20,
+      "seed": 2026,
+      "max_replicates": 20,
+      "null_quantile": 0.95,
+      "bootstrap_unit": "perturbation_label",
+      "aggregation": "experiments within label, then macro label mean",
+      "pair_selection": "cross-plate query-gallery pairs only",
+      "null_matching": "exact query/gallery role + plate/type/dose; distinct other genes or compounds",
+      "null_sampling": "uniform null label, then uniform well within label; matching never relaxed"
+    },
+    "groups": [],
+    "replicates": [
+      {
+        "perturbation_label": "guide:G_guide_1",
+        "experiment_name": "gene-A",
+        "gene": "G",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_G_1"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_G_1"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:G_guide_1",
+        "experiment_name": "gene-B",
+        "gene": "G",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_G_1"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_G_1"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:G_guide_2",
+        "experiment_name": "gene-A",
+        "gene": "G",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_G_2"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_G_2"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:G_guide_2",
+        "experiment_name": "gene-B",
+        "gene": "G",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_G_2"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_G_2"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:H_guide_1",
+        "experiment_name": "gene-A",
+        "gene": "H",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_H_1"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_H_1"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:H_guide_1",
+        "experiment_name": "gene-B",
+        "gene": "H",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_H_1"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_H_1"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:H_guide_2",
+        "experiment_name": "gene-A",
+        "gene": "H",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-A_1_H_2"
+        ],
+        "gallery_well_ids_used": [
+          "gene-A_2_H_2"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      },
+      {
+        "perturbation_label": "guide:H_guide_2",
+        "experiment_name": "gene-B",
+        "gene": "H",
+        "reason": "insufficient_matched_distinct_null_labels",
+        "n_query_available": 1,
+        "n_gallery_available": 1,
+        "n_replicates_available": 2,
+        "n_query_used": 1,
+        "n_gallery_used": 1,
+        "n_replicates_used": 2,
+        "n_pairs": 1,
+        "query_well_ids_used": [
+          "gene-B_1_H_2"
+        ],
+        "gallery_well_ids_used": [
+          "gene-B_3_H_2"
+        ],
+        "median_similarity": 0.0,
+        "n_distinct_null_labels": 1
+      }
+    ]
+  }
+}

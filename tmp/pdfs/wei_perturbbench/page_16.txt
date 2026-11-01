@@ -1,0 +1,172 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+gene expression levels in each cell by scaling them to a total count of 
+10,000. This normalization is followed by a logarithmic transformation 
+to stabilize variance and improve the interpretability of the data. This 
+method ensures that variations in gene expression across cells are more 
+reflective of biological differences rather than technical disparities in 
+sequencing depth.
+Evaluation metrics
+T o ensure a fair, interpretable and representative evaluation of pertur-
+bation prediction models, we conducted an extensive literature survey 
+covering 28 existing tools and benchmarking papers in the related 
+field (Supplementary Table 1). From these sources, we identified 19 
+evaluation metrics, including MSE, PCC-delta, root mean squared 
+error (RMSE), maximum mean discrepancy (MMD), Euclidean distance, 
+E-distance, Kolmogorov–Smirnov test statistic, mean absolute error, 
+two-sided t-test statistic, cosine similarity, PCC, coefficient of determi-
+nation, classifier control probability, Kendall tau distance, Spearman 
+correlation coefficient, Wasserstein distance, KL-divergence, classifier 
+class projection and Common-DEGs.
+Based on this pool of metrics, we applied four guiding princi -
+ples to select a subset of representative and informative metrics for 
+our study: (1) Accuracy. We prioritized metrics that have been dem -
+onstrated to reliably assess model performance in prior studies. In 
+particular, we referred to a comprehensive benchmark by Jing et al., 
+which systematically evaluated and ranked the performance of various 
+metrics in the context of single-cell perturbation prediction; (2) Com-
+prehensiveness. We aimed to include metrics that evaluate different 
+facets of model performance. Specifically, we distinguished between 
+population-average metrics (which assess the prediction of average 
+expression profiles) and population-distribution metrics (which assess 
+how well a model predicts the full distribution of single-cell profiles); (3) 
+Widespread usage. Among a group of metrics, we favored those most 
+widely adopted in the literature to improve comparability with exist-
+ing methods and minimize subjective bias in metric selection. Among 
+those 19 metrics, Kolmogorov–Smirnov test, two-sided t-test, classifier 
+control probability, classifier class projection and Kendall tau distance 
+were only mentioned in the benchmark study by Jing et al. Moreover, 
+their performance was generally inferior to that of MSE. Including such 
+metrics, which are less sensitive or poorly correlated with prediction 
+quality, could introduce noise or misleading conclusions into model 
+comparison. Therefore, these metrics were excluded from further 
+consideration. (4) Non-redundancy. T o avoid overrepresentation of 
+similar performance aspects, we carefully excluded highly correlated 
+or mathematically equivalent metrics. For example, RMSE is linearly 
+related to MSE, and linear MMD and Euclidean distance are functionally 
+equivalent to MSE after proper scaling. T o further visualize the cor-
+relations between evaluation metrics, we selected two representative 
+datasets from each of the two key scenarios—cellular context generali-
+zation and perturbation generalization—and computed pairwise cor-
+relations among the 13 commonly used metrics. The results revealed 
+that many of these metrics are highly correlated, which aligns with 
+their underlying mathematical formulations (Extended Data Fig. 1). 
+T o reduce redundancy and simplify interpretation, we retained only 
+the most representative metric from each highly correlated group, 
+prioritizing those with the highest accuracy or clearest interpretability. 
+This ensures a more concise and nonoverlapping set of metrics for 
+model evaluation.
+Following these principles, we selected three population-average 
+metrics and three population-distribution metrics. The population-  
+average metrics assess the model’s ability to predict average values, 
+whereas the population-distribution metrics require the model to 
+accurately predict the distribution of single-cell expression profiles.
+ 
+(1)
+ P
+opulation-average metric MSE. The MSE metric chosen for 
+its strong empirical performance in prior benchmarks (for 
+example, Jing et al.) and its ability to capture absolute devia-
+tion between predicted and actual gene expression values. In 
+our analysis, we prioritized using MSE as the representative 
+metric for model performance
+47. We used the Pertpy Python 
+package to calculate the MSE metric. MSE is defined as the mean 
+squared error between the average expressions of the true and 
+predicted groups. This average approximates the bulk RNA-seq 
+measurement of each group. While it is intuitive, it does not 
+consider the variability of the expression of individual cells. The 
+MSE is computed with equation (1):
+MSE = 1
+n
+n
+∑
+i=1
+(yi − ̂yi)
+2
+(1)
+Where yi and ̂yi denote the true and predicted values for the  
+i-th obs ervation, respectively, and n  is the total number of  
+observations.
+ 
+(2)
+ P
+opulation-average metric E-distance. The E-distance metric, 
+selected as another top-performing metric, offers a robust and 
+informative assessment by quantifying the discrepancy in aver-
+age effects between predicted and observed gene expression 
+responses. It is defined as twice the average distance between 
+two groups of cells minus the average distances between the 
+cells within the two groups. We used the Pertpy Python package 
+to calculate the E-distance metric. A larger value indicates lower 
+performance or lower similarity. The E-distance is computed 
+with equation (2):
+E − distance(X,Y)= 2 ×
+1
+nm
+n
+∑
+i=1
+m
+∑
+j=1
+|xi − yj|
+−
+1
+n2
+n
+∑
+i=1
+n
+∑
+j=1
+|xi − xj|−
+1
+m2
+m
+∑
+i=1
+m
+∑
+j=1
+|yi − yj|
+(2)
+ (3) P opulation-average metric PCC-delta. Compared with 
+traditional PCC, PCC-delta offers an important advantage by 
+capturing the directional consistency of predictions—an aspect 
+highly relevant to understanding regulatory changes in 
+perturbed systems. In our analysis, we prioritized PCC-delta as 
+the primary performance metric, as its bounded range from −1 
+to 1 enables an intuitive and interpretable evaluation of model 
+effectiveness. It is defined as the Pearson correlation between 
+the predicted change in post-perturbation gene expression 
+over the unperturbed control expression and the true change  
+in post-perturbation gene expression over the control. 
+Specifically, the mean values are first calculated for the true 
+group, the predicted group and the unperturbed control group, 
+denoted as 
+Ytrue, Ypred and Ycontrol. The PCC is computed with 
+equation (3):
+PCC =
+∑
+n
+i=1(xi − ̄x)(yi − ̄y)
+√∑
+n
+i=1(xi − ̄x)
+2
+√∑
+n
+i=1(yi − ̄y)
+2
+(3)
+Then, the PCC-delta is computed with equation (4):
+PCC − delta = PCC (Ytrue − Ycontrol, Ypred − Ycontrol) (4)
+Other average-based metrics such as RMSE, MMD and Euclid -
+ean distance were excluded due to mathematical redundancy or 
+high correlation with MSE. More specifically, MMD and Euclid -
+ean distance reduce to scaled versions of MSE under standard 
+normalization procedures, and RMSE is simply the square root 
+of MSE, contributing no additional information. R2, PCC, mean 
+absolute error and cosine similarity are highly correlated and 
+redundant with MSE.

@@ -1,0 +1,125 @@
+Nature Methods
+Analysis https://doi.org/10.1038/s41592-025-02980-0
+Reporting summary
+Further information on research design is available in the Nature 
+Portfolio Reporting Summary linked to this article.
+Data availability
+We have uploaded all the processed datasets used in our benchmark 
+study to Figshare at https://doi.org/10.6084/m9.figshare.28143422 
+(ref. 63) and https://doi.org/10.6084/m9.figshare.28147883 (ref. 64) 
+and Zenodo via https://doi.org/10.5281/zenodo.14607156 (ref. 65) and 
+https://doi.org/10.5281/zenodo.14638779 (ref. 66).
+The kangCrossCell33, kangCrossPatient33 and Haber 37 datasets con -
+sist of preprocessed data from Lotfollahi et al., which can be down -
+loaded directly from Google Drive via https://drive.google.com/drive/
+folders/1n1SLbXha4OH7j7zZ0zZAxrj_-2kczgl8. The Parekh58, CrossPa-
+tient35 and sciPlex3 (ref. 1) datasets were obtained from the PerturBase 
+database http://www.perturbase.cn/. KaggleCrossPatient and Kaggle-
+CrossCell can be downloaded from the Kaggle competition webpage 
+via https://www.kaggle.com/competitions/open-problems-single-cell-
+perturbations/data/. The McFarland32 dataset was downloaded from 
+the scPerturb database (version 1.3), which is available at Zenodo via 
+https://doi.org/10.5281/zenodo.10044268. (ref. 59). CrossSpecies34 
+is available at https://github.com/theislab/scgen-reproducibility/
+blob/master/code/DataDownloader.py/. The Afriat 60 perturbation 
+dataset was downloaded from the biolord GitHub tutorial site via 
+https://biolord.readthedocs.io/en/latest/tutorials/biolord_pipeline.
+html. The sciPlex3_comb dataset 1 was downloaded from the CPA 
+tutorial website and can be accessed at https://drive.google.com/
+uc?export=download&id=1RRV0_qYKGTvD3oCklKfoZQFYqKJy4l6t. 
+The remaining 16 datasets—Adamson 3, Frangieh45, TianActivation44, 
+TianInhibition 44, Replogle_exp6 (ref. 43 ), Replogle_exp7 (ref. 43 ), 
+Replogle_exp8 (ref. 43), Papalexi42, Replogle_RPE1essential41, Replo-
+gle_K562essential 41, Norman 40, Wessels39, Schmidt 38, sciPlex_A549  
+(ref. 1), sciPlex3_K562 (ref. 1) and sciPlex3_MCF7 (ref. 1)—were down-
+loaded from the PerturBase database via http://www.perturbase.cn/. 
+Source data are provided with this paper.
+Code availability
+The scripts used in this study are available via GitHub at https://github.
+com/bm2-lab/scPerturBench/ and Zenodo at https://doi.org/10.5281/
+zenodo.15904698 (ref. 65). T o promote transparency and reproduc-
+ibility, we provide a Podman image that contains all major scripts used 
+in our benchmark, along with the complete set of preconfigured conda 
+environments (https://github.com/bm2-lab/scPerturBench/). We have 
+created an online platform that hosts the benchmarking results of all 
+evaluated tools across all datasets and performance metrics included in 
+our study (https://bm2-lab.github.io/scPerturBench-reproducibility/).
+References
+58. P arekh, U. et al. Mapping cellular reprogramming via pooled 
+overexpression screens with paired fitness and single-cell 
+RNA-sequencing readout. Cell Syst. 7, 548–555 (2018).
+59.
+ P
+eidli, S. et al. scPerturb single-cell perturbation data: RNA 
+and protein h5ad files (1.3). Zenodo https://doi.org/10.5281/
+zenodo.10044268 (2022).
+60.
+ Afriat, A
+. et al. A spatiotemporally resolved single-cell atlas of the 
+Plasmodium liver stage. Nature 611, 563–569 (2022).
+61.
+ W
+olf, F. A., Angerer, P. & Theis, F. J. SCANPY: large-scale 
+single-cell gene expression data analysis. Genome Biol. 19, 15 
+(2018).
+62.
+ Heumos, L
+. et al. Pertpy: an end-to-end framework for 
+perturbation analysis. Preprint at bioRxiv https://doi.
+org/10.1101/2024.08.04.606516 (2024).
+63.
+ Zhiting, W
+. Cellular context generalization datasets. Figshare 
+https://doi.org/10.6084/m9.figshare.28143422 (2025).
+64.
+ Zhiting, W
+. Perturbation generalization datasets. Figshare  
+https://doi.org/10.6084/m9.figshare.28147883 (2025).
+65.
+ W
+ei, Z. et al. Benchmarking algorithms for generalizable 
+single-cell perturbation response prediction. Zenodo  
+https://doi.org/10.5281/zenodo.14607156 (2025).
+66.
+ Zhiting, W
+. Perturbation generalization H5ad datasets. Zenodo 
+https://doi.org/10.5281/zenodo.14638780 (2025).
+Acknowledgements
+We gratefully acknowledge all single-cell perturbation dataset 
+owners for generously sharing their data. Q.L. was supported by 
+the National Key Research and Development Program of China 
+(grant no. 2025YFC3409300), National Natural Science Foundation 
+of China (grant no. T2425019, 32341008), Shanghai Pilot Program 
+for Basic Research; Shanghai Science and Technology Innovation 
+Action Plan—Key Specialization in Computational Biology, Shanghai 
+Shuguang Scholars Project, Shanghai Excellent Academic Leader 
+Project, Shanghai Municipal Science and Technology Major Project 
+(2021SHZDZX0100), Fundamental Research Funds for the Central 
+Universities, Funding for open access charge, National Natural 
+Science Foundation of China. Z.W. was supported by the National 
+Natural Science Foundation of China (32500555).
+Author contributions
+Z.W., Y.W., Y.C.G., A.L., G.C. and Q.L. conceived and designed the study. 
+Z.W. designed the metrics, established the benchmarking pipeline 
+and collected the methods and datasets. Z.W. and Y.W. implemented 
+the benchmarking pipeline. Y.C.G. developed the cell-line embedding 
+strategy. Z.W. and Y.W. analyzed the results and generated the figures 
+with help from P.L., D.S., Y.L.G., S.Q.W., D.L., K.D., X.Y., C.T., S.F., X.C., 
+W.L., Y.Y. and C.Z. Z.W., Y.W. and Q.L. wrote the manuscript. Z.W. and 
+S.G.W. designed the website. Q.L., G.C. and A.L. supervised the entire 
+project. All authors read and approved the final manuscript.
+Competing interests
+The authors declare no competing interests.
+Additional information
+Extended data is available for this paper at  
+https://doi.org/10.1038/s41592-025-02980-0.
+Supplementary information The online version contains supplementary 
+material available at https://doi.org/10.1038/s41592-025-02980-0.
+Correspondence and requests for materials should be addressed to 
+Aibin Liang, Guohui Chuai or Qi Liu.
+Peer review information Nature Methods thanks Yi Zhao and the other, 
+anonymous, reviewer(s) for their contribution to the peer review of 
+this work. Primary Handling Editor: Lin Tang, in collaboration with the 
+Nature Methods team.
+Reprints and permissions information is available at  
+www.nature.com/reprints.
