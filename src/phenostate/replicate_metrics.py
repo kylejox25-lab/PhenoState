@@ -32,7 +32,7 @@ def replicate_metrics(
     query_well_ids: Iterable[str] | None = None,
     candidate_well_ids: Iterable[str] | None = None,
     metric: str = "cosine", n_null: int = 500, n_bootstrap: int = 1000,
-    seed: int = 2026, max_replicates: int | None = 20,
+    seed: int = 2026, max_replicates: int | None = 20, progress=None,
 ) -> dict:
     """Compare median query-gallery replicate similarity to a matched null.
 
@@ -89,7 +89,10 @@ def replicate_metrics(
 
     rng = np.random.default_rng(seed)
     records = []
-    for (group_label, experiment), requested in sorted(query_groups.items()):
+    groups = sorted(query_groups.items())
+    if progress is not None:
+        groups = progress.track(groups, f"{protocol} replication groups")
+    for (group_label, experiment), requested in groups:
         q = [i for i in requested if valid[i]]
         g = [i for i in gallery_groups[group_label, experiment] if valid[i]]
         record = {"perturbation_label": group_label, "experiment_name": experiment,

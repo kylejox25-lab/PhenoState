@@ -184,7 +184,7 @@ def activity_metrics(
     query_well_ids: Iterable[str] | None = None, candidate_well_ids: Iterable[str] | None = None,
     metric: str = "cosine", ks: Sequence[int] = (1, 5, 10), n_permutations: int = 1000,
     n_bootstrap: int = 1000, seed: int = 2026, max_controls_per_plate: int = 16,
-    q_threshold: float = .05,
+    q_threshold: float = .05, progress=None,
 ) -> dict:
     """Test unique guides and compound+dose treatments against matched controls.
 
@@ -239,7 +239,10 @@ def activity_metrics(
         if indices["query"]:
             by_treatment[key[:2]].append((key, indices))
     groups = []
-    for (kind, label), contexts in sorted(by_treatment.items()):
+    treatments = sorted(by_treatment.items())
+    if progress is not None:
+        treatments = progress.track(treatments, "Activity perturbations")
+    for (kind, label), contexts in treatments:
         observed_ap, observed_energy, null_ap, null_energy = [], [], [], []
         valid_query_ids = set()
         for key, indices in sorted(contexts):

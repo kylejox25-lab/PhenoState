@@ -93,6 +93,8 @@ phenostate-retrieval \
 
 输出目录须不存在；失败写入保留 .incomplete，不覆盖已有结果。
 
+运行时向 stderr 即时输出元数据校验、特征读取/哈希、共同孔位数、模型/任务开始结束及任务组进度。`--log-every 50` 为默认组/块间隔，`0` 关闭日志；stdout 保留最终 JSON。结果目录在评分完成后才创建。评价使用 CPU；activity 默认1000次置换、重复任务默认500次 null 抽样，完整数据可能长时间计算。比较多个模型时在同一个命令中重复 `--model`；分开运行必须指定不同输出目录。
+
 ## 输出
 
 summary.csv / summary.md 汇总主辅指标；summary_by_type.csv 单列 CRISPR／COMPOUND 活性，paired_differences.csv 给配对差值和 CI。MODEL/TASK/metrics.json 保留完整协议、类型分层、覆盖率与排除原因。queries.csv、groups.csv 对应 well 检索与分组结果；activity 的 blocks.csv 记录匹配、抽样和实验详情；重复任务的 replicates.csv 记录 PR 观测及零阈值。protocol.json、coverage.json、well_manifest.csv 保留输入哈希、参数与共同孔位。标准化模式另保存 standardization.npz。

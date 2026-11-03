@@ -26,6 +26,7 @@ from phenostate.embedding_metrics import (
     EmbeddingTable, align_embedding_tables, evaluation_metadata,
     gene_retrieval_metrics, load_embedding_parquet, retrieval_metrics, unit_vectors,
 )
+from phenostate.progress import Progress
 
 TASKS = ("activity", "same-guide", "compound", "cross-guide")
 RETRIEVAL_TASKS = ("cross-guide", "same-guide")
@@ -99,7 +100,7 @@ def _saved_splits(metadata_path, mds_root=None, splits_path=None):
 
 
 def _read_model(spec, train_path, query_path, *, metadata, split_by_id, query_split,
-                manifest_hash, allow_partial, generic=False):
+                manifest_hash, allow_partial, generic=False, progress=None):
     prefix, separator, label = spec.partition(":")
     name = label if separator else prefix
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", name):
@@ -111,6 +112,8 @@ def _read_model(spec, train_path, query_path, *, metadata, split_by_id, query_sp
     selected = {key for key, split in split_by_id.items() if split in {"train", query_split}}
     tables, provenance = [], []
     for path, roles in paths.items():
+        if progress is not None:
+            progress(f"{name}: reading {path}")
         parquet = pq.ParquetFile(path)
         if "well_id" not in parquet.schema_arrow.names:
             raise ValueError(f"{path}: missing well_id column")
@@ -138,6 +141,8 @@ def _read_model(spec, train_path, query_path, *, metadata, split_by_id, query_sp
         if not allow_partial and not expected_ids <= set(ids):
             raise ValueError(f"{path}: missing split wells; export complete splits or explicitly use --allow-partial")
         tables.append(load_embedding_parquet(path, well_ids=expected_ids))
+        if progress is not None:
+            progress(f"{name}: loaded {len(tables[-1].well_ids)} wells; hashing {path.name}")
         provenance.append({"path": str(path), "sha256": _sha256(path), "n_file_rows": len(ids), "schema_metadata": tags})
     first = tables[0]
     if any(table.values.shape[1] != first.values.shape[1] or table.feature_names != first.feature_names for table in tables):
@@ -253,7 +258,7 @@ def evaluate_embeddings(
     preprocessing: str = "raw", ks: Sequence[int] = (1, 5, 10), block_size: int = 64,
     n_bootstrap: int = 1000, seed: int = 2026, drop_nonfinite: bool = False, allow_partial: bool = False,
     control_rules: Mapping | None = None, n_permutations: int = 1000, n_null: int = 500,
-    max_controls: int = 16, max_replicates: int = 20,
+    max_controls: int = 16, max_replicates: int = 20, log_every: int = 50,
 ) -> dict:
     tasks = tuple(dict.fromkeys(tasks))
     if not tasks or set(tasks) - set(TASKS) or query_split not in {"val", "test"}:
@@ -264,15 +269,20 @@ def evaluate_embeddings(
         raise ValueError("Activity requires explicit --control-rules; controls are never inferred")
     if preprocessing not in {"raw", "standardize"} or metric not in {"cosine", "pearson"}:
         raise ValueError("Invalid preprocessing or metric")
-    if n_bootstrap < 0 or block_size < 1 or not ks or any(k < 1 for k in ks) or n_permutations < 1 or n_null < 1:
+    if n_bootstrap < 0 or block_size < 1 or not ks or any(k < 1 for k in ks) or n_permutations < 1 or n_null < 1 or log_every < 0:
         raise ValueError("Invalid bootstrap/permutation count, block size or K")
+    progress = Progress(log_every)
+    progress(f"Starting CPU evaluation: {len(models) + len(embeddings)} models, tasks={','.join(tasks)}, "
+             f"permutations={n_permutations}, null={n_null}, bootstrap={n_bootstrap}")
     destination = output_dir.resolve()
     stage = destination.with_name(destination.name + ".incomplete")
     if destination.exists() or stage.exists():
         raise FileExistsError(f"Choose a new output directory: {destination}")
     if mds_root is not None and (destination == mds_root.resolve() or mds_root.resolve() in destination.parents):
         raise ValueError("Output must be outside the MDS directory")
+    progress(f"Reading metadata and validating saved splits: {metadata_path}")
     metadata, split_by_id, manifest_hash = _saved_splits(metadata_path, mds_root, splits_path)
+    progress(f"Metadata verified: {len(metadata)} wells; gallery=train, query={query_split}")
     wanted = {key for key, split in split_by_id.items() if split in {"train", query_split}}
     tables, provenance = {}, {}
     sources = [(name, train, query, False) for name, train, query in models]
@@ -280,10 +290,11 @@ def evaluate_embeddings(
     for spec, train, query, generic in sources:
         name, table, info = _read_model(spec, train, query, metadata=metadata, split_by_id=split_by_id,
                                         query_split=query_split, manifest_hash=manifest_hash,
-                                        allow_partial=allow_partial, generic=generic)
+                                        allow_partial=allow_partial, generic=generic, progress=progress)
         if name in tables:
             raise ValueError(f"Duplicate embedding name: {name}")
         tables[name], provenance[name] = table, info
+    progress("Aligning common wells and checking feature validity")
     aligned, rows, coverage = align_embedding_tables(tables, metadata, well_ids=wanted, drop_nonfinite=drop_nonfinite)
     train_mask = np.array([split_by_id[row["well_id"]] == "train" for row in rows])
     if not train_mask.any() or train_mask.all():
@@ -308,6 +319,7 @@ def evaluate_embeddings(
     requested_train = len(wanted) - requested_query
     if not query_ids or not train_ids:
         raise ValueError("No common valid query or gallery wells remain")
+    progress(f"Common valid wells: gallery={len(train_ids)}, query={len(query_ids)}")
     coverage.update(n_requested_query_wells=requested_query, n_requested_gallery_wells=requested_train,
                     n_common_valid_query_wells=len(query_ids), n_common_valid_gallery_wells=len(train_ids),
                     query_embedding_coverage=len(query_ids) / requested_query,
@@ -316,9 +328,10 @@ def evaluate_embeddings(
     results = {}
     for name, values in aligned.items():
         options = dict(metric=metric, ks=ks, query_well_ids=query_ids, candidate_well_ids=train_ids,
-                       block_size=block_size, n_bootstrap=n_bootstrap, seed=seed)
+                       block_size=block_size, n_bootstrap=n_bootstrap, seed=seed, progress=progress)
         results[name] = {}
         for task in tasks:
+            progress(f"{name}: starting task {task}")
             result = _score(values, rows, task, options, control_rules=control_rules, n_permutations=n_permutations,
                             n_null=n_null, max_controls=max_controls, max_replicates=max_replicates)
             kind = "COMPOUND" if task == "compound" else "CRISPR" if task != "activity" else None
@@ -331,12 +344,14 @@ def evaluate_embeddings(
             result["summary"]["n_requested_groups_total"] = len(labels)
             result["summary"]["overall_group_coverage"] = result["summary"].get("n_groups", 0) / len(labels) if labels else 0.0
             results[name][task] = result
+            progress(f"{name}: completed task {task}; evaluable groups={result['summary'].get('n_groups', 0)}")
     for task in tasks:
         signatures = [sorted((row["well_id"], row.get("candidate_experiment", ""), row.get("reason") or "",
                               row.get("n_candidates", 0), row.get("n_positives", 0)) for row in model[task]["queries"])
                       for model in results.values()]
         if any(item != signatures[0] for item in signatures[1:]):
             raise ValueError(f"{task}: candidate eligibility differs between models")
+    progress("Computing paired differences and preparing result files")
     paired = paired_differences(results, seed=seed, n_bootstrap=n_bootstrap)
     protocol = {"format": "phenostate-well-evaluation-v2", "query_split": query_split, "gallery_split": "train",
                 "query_unit": "single well", "tasks": list(tasks), "metric": metric, "preprocessing": preprocessing,
@@ -352,6 +367,7 @@ def evaluate_embeddings(
                 "uncertainty": "perturbation bootstrap conditional on supplied embeddings; not training-seed uncertainty",
                 "external_functional_truth": "not used",
                 "software": {"python": platform.python_version(), "numpy": np.__version__, "pyarrow": pa.__version__}}
+    progress(f"Writing results: {destination}")
     stage.mkdir(parents=True)
     _dump(stage / "protocol.json", protocol)
     _dump(stage / "coverage.json", coverage)
@@ -363,6 +379,7 @@ def evaluate_embeddings(
                                        "role": "gallery" if row["well_id"] in train_set else "query"} for row in rows],
          ("well_id", "experiment_name", "plate", "gene", "treatment", "split", "role"))
     stage.rename(destination)
+    progress(f"Evaluation complete: {destination}")
     return {"output_dir": str(destination), "summary": summaries, "coverage": coverage}
 
 
@@ -382,6 +399,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     parser.add_argument("--preprocessing", choices=("raw", "standardize"), default="raw")
     parser.add_argument("--ks", nargs="+", type=int, default=[1, 5, 10])
     parser.add_argument("--block-size", type=int, default=64)
+    parser.add_argument("--log-every", type=int, default=50, help="Progress interval in task groups/blocks; 0 disables logs")
     parser.add_argument("--n-bootstrap", type=int, default=1000)
     parser.add_argument("--n-permutations", type=int, default=1000)
     parser.add_argument("--n-null", type=int, default=500)
@@ -398,7 +416,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             tasks=args.tasks, control_rules=json.loads(args.control_rules.read_text(encoding="utf-8")) if args.control_rules else None,
             metric=args.metric, preprocessing=args.preprocessing, ks=args.ks, block_size=args.block_size,
             n_bootstrap=args.n_bootstrap, n_permutations=args.n_permutations, n_null=args.n_null,
-            max_controls=args.max_controls, max_replicates=args.max_replicates, seed=args.seed,
+            max_controls=args.max_controls, max_replicates=args.max_replicates, log_every=args.log_every, seed=args.seed,
             drop_nonfinite=args.drop_nonfinite, allow_partial=args.allow_partial)
     except (ValueError, OSError, KeyError) as error:
         parser.exit(2, f"Evaluation failed: {error}\n")

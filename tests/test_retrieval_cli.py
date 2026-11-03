@@ -300,7 +300,7 @@ def test_well_split_file_cannot_split_a_plate(tmp_path):
                             output_dir=tmp_path / "bad", tasks=["cross-guide"])
 
 
-def test_all_tasks_on_independent_embeddings_with_controls_and_different_dimensions(tmp_path):
+def test_all_tasks_on_independent_embeddings_with_controls_and_different_dimensions(tmp_path, capsys):
     metadata, _, _ = dataset(tmp_path)
     with metadata.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
@@ -356,3 +356,21 @@ def test_all_tasks_on_independent_embeddings_with_controls_and_different_dimensi
         assert (output / name / "compound" / "replicates.csv").exists()
         assert (output / name / "activity" / "blocks.csv").exists()
     assert (output / "paired_differences.csv").exists()
+    logs = capsys.readouterr().err
+    assert "Activity perturbations:" in logs
+    assert "replication groups:" in logs
+    assert "Cross-guide experiment/guide groups:" in logs
+    assert "Evaluation complete:" in logs
+
+
+def test_progress_can_be_disabled_without_changing_scores(tmp_path, capsys):
+    data = dataset(tmp_path)
+    quiet = run(data, tmp_path / "quiet", log_every=0)
+    assert capsys.readouterr().err == ""
+    logged = run(data, tmp_path / "logged", log_every=1)
+    logs = capsys.readouterr().err
+    assert "Starting CPU evaluation" in logs
+    assert "hashing" in logs
+    assert "Common valid wells:" in logs
+    assert "completed task cross-guide" in logs
+    assert logged["summary"] == quiet["summary"]

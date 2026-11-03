@@ -353,7 +353,7 @@ def retrieval_metrics(
     ks: Sequence[int] = (1, 5, 10), protocol: str = "compound",
     query_well_ids: Iterable[str] | None = None,
     candidate_well_ids: Iterable[str] | None = None, block_size: int = 64,
-    seed: int = 2026, n_bootstrap: int = 1000, aggregation: str = "label",
+    seed: int = 2026, n_bootstrap: int = 1000, aggregation: str = "label", progress=None,
 ) -> dict:
     """Same-experiment/same-dose, cross-plate compound retrieval (Project §6.1).
 
@@ -393,7 +393,10 @@ def retrieval_metrics(
         context_vectors = vectors[gallery_indices]
         context_ids, context_batches = ids[gallery_indices], batches[gallery_indices]
         context_guides, context_labels = guides[gallery_indices], labels[gallery_indices]
-        for start in range(0, len(context_queries), block_size):
+        blocks = range(0, len(context_queries), block_size)
+        if progress is not None:
+            blocks = progress.track(blocks, f"{protocol} {context} query blocks")
+        for start in blocks:
             selected = context_queries[start:start + block_size]
             similarities = vectors[selected] @ context_vectors.T
             for qi, scores in zip(selected, similarities):
@@ -428,7 +431,7 @@ def gene_retrieval_metrics(
     ks: Sequence[int] = (1, 5), query_well_ids: Iterable[str] | None = None,
     candidate_well_ids: Iterable[str] | None = None, block_size: int = 64,
     seed: int = 2026, n_bootstrap: int = 1000, aggregation: str = "label",
-    prototype_weighting: str = "well", strict_prototypes: bool = False,
+    prototype_weighting: str = "well", strict_prototypes: bool = False, progress=None,
 ) -> dict:
     """Cross-experiment, cross-guide gene prototype retrieval (Project §6.1).
 
@@ -498,7 +501,10 @@ def gene_retrieval_metrics(
             records.append({**record, "reason": "no_cross_experiment_positives"})
         for experiment in sorted(experiments):
             task_groups[experiment, row["guide"]].append(qi)
-    for (experiment, guide), indices in sorted(task_groups.items()):
+    groups = sorted(task_groups.items())
+    if progress is not None:
+        groups = progress.track(groups, "Cross-guide experiment/guide groups")
+    for (experiment, guide), indices in groups:
         genes, base_sums, base_counts, guide_sums = pools[experiment]
         sums, counts = base_sums.copy(), base_counts.copy()
         if guide in guide_sums:
