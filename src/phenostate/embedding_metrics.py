@@ -546,7 +546,7 @@ def percent_replicating(
     """Legacy all-pairs replicate protocol used by the exploratory notebook.
 
     Formal query-gallery same-guide/compound evaluation uses
-    ``cellvit.replicate_metrics.replicate_metrics`` instead.
+    ``phenostate.replicate_metrics.replicate_metrics`` instead.
 
     Groups are (perturbation label, experiment). Each null group uses the same
     number of wells and the identical plate/type/dose pattern, drawn from

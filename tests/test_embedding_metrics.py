@@ -5,7 +5,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from cellvit.embedding_metrics import (
+from phenostate.embedding_metrics import (
     EmbeddingTable, align_embedding_tables, evaluation_metadata,
     gene_retrieval_metrics, load_embedding_parquet, percent_replicating,
     retrieval_metrics, unit_vectors,

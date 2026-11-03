@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from cellvit.embedding_metrics import _rank_record, _summarize, gene_retrieval_metrics, retrieval_metrics
+from phenostate.embedding_metrics import _rank_record, _summarize, gene_retrieval_metrics, retrieval_metrics
 
 
 def gene(key, target, guide, experiment="A", plate=1):

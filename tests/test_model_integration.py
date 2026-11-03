@@ -3,8 +3,8 @@
 import pytest
 import torch
 
-from cellvit.evaluate import ReconstructionMetrics, evaluate_reconstruction
-from cellvit.models import MAEConfig, build_model, model_from_checkpoint
+from phenostate.evaluate import ReconstructionMetrics, evaluate_reconstruction
+from phenostate.models import MAEConfig, build_model, model_from_checkpoint
 
 
 def config(kind):

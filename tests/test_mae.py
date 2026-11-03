@@ -3,8 +3,8 @@
 import pytest
 import torch
 
-from cellvit.models import MAEConfig, MaskedAutoencoder
-from cellvit.train.mae import learning_rate
+from phenostate.models import MAEConfig, MaskedAutoencoder
+from phenostate.train.mae import learning_rate
 
 
 def tiny_model() -> MaskedAutoencoder:

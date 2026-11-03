@@ -8,8 +8,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from cellvit.data.source import make_plate_splits
-from cellvit.retrieval import evaluate_embeddings, main
+from phenostate.data.source import make_plate_splits
+from phenostate.retrieval import evaluate_embeddings, main
 
 
 def dataset(tmp_path):

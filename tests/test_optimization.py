@@ -3,7 +3,7 @@
 import pytest
 import torch
 
-from cellvit.train.optimization import optimizer_step
+from phenostate.train.optimization import optimizer_step
 
 
 @pytest.mark.parametrize("bad_value", [float("inf"), float("nan")])

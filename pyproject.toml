@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cellvit"
+name = "phenostate"
 version = "0.1.0"
-description = "CellViT foundation model for six-channel Cell Painting images"
+description = "PhenoState foundation model for six-channel Cell Painting images"
 requires-python = ">=3.10"
 dependencies = [
     "torch>=2.5,<2.6",
@@ -26,12 +26,12 @@ analysis = [
 ]
 
 [project.scripts]
-cellvit-convert = "cellvit.data.convert:main"
-cellvit-check-loader = "cellvit.data.check_loader:main"
-cellvit-train = "cellvit.train.mae:main"
-cellvit-embed = "cellvit.infer:main"
-cellvit-evaluate = "cellvit.evaluate:main"
-cellvit-retrieval = "cellvit.retrieval:main"
+phenostate-convert = "phenostate.data.convert:main"
+phenostate-check-loader = "phenostate.data.check_loader:main"
+phenostate-train = "phenostate.train.mae:main"
+phenostate-embed = "phenostate.infer:main"
+phenostate-evaluate = "phenostate.evaluate:main"
+phenostate-retrieval = "phenostate.retrieval:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

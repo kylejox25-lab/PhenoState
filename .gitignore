@@ -17,6 +17,7 @@ outputs/
 /try/
 /scripts/*
 !/scripts/train_comparison.sh
+!/scripts/export_embeddings.sh
 /configs/*
 !/configs/mae_comparison.json
 !/configs/ca_mae.json

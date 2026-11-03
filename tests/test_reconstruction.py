@@ -3,8 +3,8 @@
 import pytest
 import torch
 
-from cellvit.evaluate import ReconstructionMetrics, evaluate_reconstruction
-from cellvit.models import MAEConfig, MaskedAutoencoder
+from phenostate.evaluate import ReconstructionMetrics, evaluate_reconstruction
+from phenostate.models import MAEConfig, MaskedAutoencoder
 
 
 def score(prediction, target, mask):

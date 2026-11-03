@@ -8,7 +8,7 @@ import torch
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-from cellvit.image_config import IMAGE_CHANNELS, IMAGE_SIZE, PATCH_SIZE
+from phenostate.image_config import IMAGE_CHANNELS, IMAGE_SIZE, PATCH_SIZE
 
 
 @dataclass(frozen=True)

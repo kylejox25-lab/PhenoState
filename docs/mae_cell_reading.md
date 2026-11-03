@@ -64,7 +64,7 @@ AdaBN / Ghost BatchNorm 出现在 DenseNet 弱监督对照模型中（第 3、13
 | 编码器内部 | LayerNorm、QK-Norm、parallel scaling 等 | 共享 TransformerBlock 有 pre-LayerNorm，尚无投影后的 QK-Norm |
 | 下游校正 | TVN，关系评估另作染色体臂偏差校正 | 正式 CLI 提供 raw 与 train-only standardize；尚未实现 TVN |
 
-本项目定位依据：`src/cellvit/data/decode.py`、`src/cellvit/models/mae.py`、`src/cellvit/models/CA-MAE.py`、`src/cellvit/models/DiffMAE.py`、`src/cellvit/retrieval.py`。模型的 `reconstruction_target` 归一化作用于损失目标，不会自动改变 encoder 看到的图像。
+本项目定位依据：`src/phenostate/data/decode.py`、`src/phenostate/models/mae.py`、`src/phenostate/models/CA-MAE.py`、`src/phenostate/models/DiffMAE.py`、`src/phenostate/retrieval.py`。模型的 `reconstruction_target` 归一化作用于损失目标，不会自动改变 encoder 看到的图像。
 
 论文的“+”是额外的 Fourier 幅度重建损失，不是一种归一化。它将像素 MSE 与频域 L1 组合：`L=(1−α)L_pixel+αL_FT`，论文采用 α=0.01，两个分量按论文公式在隐藏 patch 上计算（第 4 页，Eq. 1–3）。若未来实现，需明确 FFT 的空间轴、patch/通道布局、FFT 缩放和隐藏位置处理；当前项目不同目标空间上的 loss 数值不能与论文直接比较。
 

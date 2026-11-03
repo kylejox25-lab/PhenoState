@@ -53,7 +53,7 @@ CRISPR 检索先平均同 well 的任务，再平均同 guide 的 well、同基�
 ~~~bash
 python -m pip install -e . --no-deps
 
-cellvit-retrieval \
+phenostate-retrieval \
   --embedding encoder_A /srv/features/A.parquet \
   --embedding encoder_B /srv/features/B.parquet \
   --metadata /srv/data/metadata_rxrx3_core.csv \
@@ -67,7 +67,7 @@ cellvit-retrieval \
 分开导出的 train/query 文件继续用 --model，可重复指定不同来源：
 
 ~~~bash
-cellvit-retrieval \
+phenostate-retrieval \
   --model mae /srv/mae/embedding_train.parquet /srv/mae/embedding_val.parquet \
   --model ca_mae /srv/ca_mae/embedding_train.parquet /srv/ca_mae/embedding_val.parquet \
   --model diffmae /srv/diffmae/embedding_train.parquet /srv/diffmae/embedding_val.parquet \
@@ -77,7 +77,7 @@ cellvit-retrieval \
   --query-split val --output-dir /srv/results/three_models_val
 ~~~
 
-原训练脚本只导出了 val/test，需用同一份冻结 checkpoint 补导 train。native 文件核验已有来源声明；外部 embedding 不要求 native 标签，记录其来源验证状态。也可运行 python -m cellvit.retrieval，参数相同。
+原训练脚本只导出了 val/test，需用同一份冻结 checkpoint 补导 train。native 文件核验已有来源声明；外部 embedding 不要求 native 标签，记录其来源验证状态。也可运行 python -m phenostate.retrieval，参数相同。
 
 默认 CLI 执行全部四项；--tasks cross-guide same-guide compound 可只运行不需要阴性对照配置的任务。--tasks activity 可单独检测活性。
 
@@ -102,3 +102,27 @@ summary.csv / summary.md 汇总主辅指标；summary_by_type.csv 单列 CRISPR�
 无需重训的消融先比较 raw/训练标准化，再补相同候选规模的同实验／跨实验跨 guide 检索。当前不修改训练架构。
 
 方法依据：[mAP 框架](https://www.nature.com/articles/s41467-025-60306-2)、[RxRx3-core](https://arxiv.org/html/2503.20158v1)。本项目使用明确的 train-gallery 分层协议，不将其分数直接当作官方基准分数。
+
+## 从冻结权重导出 embedding
+
+`phenostate-embed` 与 `python -m phenostate.infer` 使用相同入口。输入是已有 checkpoint 和训练时的完整 MDS 目录；`--split` 选择原有 train、val 或 test，不重新划分，也不更新权重。同一模型的各 split 使用同一份冻结 checkpoint。
+
+导出现在通过 `LocalDataset` 直接读取已有 MDS 分片，使用有界线程预取；`--num-workers 4` 表示 4 个读取／解码线程，`0` 表示同步读取。它不启动 DataLoader 子进程，不依赖 Streaming 的 `/tmp` 锁或多进程 IPC 临时目录，避开 NFS `.nfs*` 清理异常。训练继续使用原 Streaming 加载器。解码、归一化、模型前向及 Parquet 向量格式保持一致；输出行顺序可能变化，下游按 well_id 对齐。
+
+从项目根目录运行四模型导出脚本：
+
+~~~bash
+export RXRX3_MDS_ROOT="/path/rxrx3_mds"
+export PHENOSTATE_COMPARISON_ROOT="/path/runs/comparison_patch8_50epochs"
+export PHENOSTATE_EMBEDDING_ROOT="/path/embeddings"
+export PHENOSTATE_MODELS="mae_patch8_head8 ca_mae diffmae cnn_mae"
+bash scripts/export_embeddings.sh
+~~~
+
+模型列表对应训练目录名称，默认 `mae ca_mae diffmae cnn_mae`；CNN 没有权重时移出列表。脚本先检查全部模型的权重，每个模型优先使用 best_reconstruction.pt，缺少时回退 latest.pt。相对路径以项目根目录为基准。MDS 和输出目录必须显式设置；训练总目录默认 runs/comparison_patch8_50epochs。`PHENOSTATE_SPLITS` 默认 `train val test`，可改为 `train val`；`PHENOSTATE_BATCH_SIZE` 默认 1，`PHENOSTATE_NUM_WORKERS` 默认 4，`PHENOSTATE_PYTHON` 可指定 Python 可执行文件。
+
+脚本启用 `--skip-existing`：已有正式 Parquet 仅在 manifest SHA、checkpoint SHA、split、pooling、固定长度 float32 schema、非空唯一 well_id、有限值及完整数量均通过检查后复用。原生成功文件无需新的 loader 标签；来源不完整或不同的文件会报错，不覆盖。复用检查信任原生来源标签，不重新解码全部 MDS 孔位来逐项核对 ID，也不加载模型权重检查向量宽度。
+
+残留 `.incomplete` 仍会阻止导出。需确认旧进程退出后，人工保留或处理失败文件；脚本不删除 NFS 残留或临时目录。把本地改动同步到服务器后再启动新进程，旧进程仍运行旧代码。已完成的 embedding 可以保留并校验复用。
+
+这项修复限于 embedding 导出。即使 `TMPDIR` 位于 NFS，新的读取链路也不使用上述进程临时文件；训练及重建评价仍沿用原加载器。

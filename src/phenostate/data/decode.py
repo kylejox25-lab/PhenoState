@@ -8,7 +8,7 @@ from typing import Mapping
 import numpy as np
 from PIL import Image
 
-from cellvit.image_config import IMAGE_CHANNELS, IMAGE_SIZE
+from phenostate.image_config import IMAGE_CHANNELS, IMAGE_SIZE
 
 
 def decode_well(sample: Mapping[str, object]) -> np.ndarray:

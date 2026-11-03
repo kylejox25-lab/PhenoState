@@ -21,8 +21,8 @@ import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from cellvit.data.source import load_metadata, make_plate_splits
-from cellvit.embedding_metrics import (
+from phenostate.data.source import load_metadata, make_plate_splits
+from phenostate.embedding_metrics import (
     EmbeddingTable, align_embedding_tables, evaluation_metadata,
     gene_retrieval_metrics, load_embedding_parquet, retrieval_metrics, unit_vectors,
 )
@@ -182,7 +182,7 @@ def paired_differences(results: Mapping[str, Mapping], *, seed: int, n_bootstrap
 
 def _score(values, rows, task, options, *, control_rules, n_permutations, n_null, max_controls, max_replicates):
     if task == "activity":
-        from cellvit.activity_metrics import activity_metrics
+        from phenostate.activity_metrics import activity_metrics
         activity_options = {key: value for key, value in options.items() if key not in {"ks", "block_size"}}
         return activity_metrics(values, rows, control_rules=control_rules, n_permutations=n_permutations,
                                 max_controls_per_plate=max_controls, **activity_options)
@@ -191,7 +191,7 @@ def _score(values, rows, task, options, *, control_rules, n_permutations, n_null
                                         aggregation="gene_guide", **options)
         result["summary"]["random_mrr"] = result["summary"]["random_ap"]
         return result
-    from cellvit.replicate_metrics import replicate_metrics
+    from phenostate.replicate_metrics import replicate_metrics
     protocol = "same_guide" if task == "same-guide" else "compound"
     result = retrieval_metrics(values, rows, protocol=protocol,
                                aggregation="gene_guide" if task == "same-guide" else "label", **options)

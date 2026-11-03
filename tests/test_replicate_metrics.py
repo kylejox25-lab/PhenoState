@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from cellvit.replicate_metrics import replicate_metrics
+from phenostate.replicate_metrics import replicate_metrics
 
 
 def data(kind="compound", n_labels=6, n_gallery=1):

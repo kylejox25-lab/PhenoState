@@ -16,10 +16,10 @@ import numpy as np
 import torch
 from streaming import StreamingDataLoader
 
-from cellvit.data.streaming_dataset import make_dataloader
-from cellvit.evaluate import evaluate_reconstruction
-from cellvit.models import CHECKPOINT_FORMATS, MAEConfig, MaskedAutoencoder, build_model
-from cellvit.train.optimization import optimizer_step
+from phenostate.data.streaming_dataset import make_dataloader
+from phenostate.evaluate import evaluate_reconstruction
+from phenostate.models import CHECKPOINT_FORMATS, MAEConfig, MaskedAutoencoder, build_model
+from phenostate.train.optimization import optimizer_step
 
 
 @dataclass(frozen=True)
@@ -204,7 +204,7 @@ def train(
     if resume is not None:
         state = torch.load(resume, map_location="cpu", weights_only=False)
         if state.get("format") not in CHECKPOINT_FORMATS:
-            raise ValueError("Not a supported CellViT masked autoencoder checkpoint")
+            raise ValueError("Not a supported PhenoState masked autoencoder checkpoint")
         saved_config = MAEConfig(**state["model_config"])
         if state["format"] == "cellvit-spatial-mae-v1" and saved_config.model_type != "mae":
             raise ValueError("Legacy spatial checkpoints must contain a spatial MAE")

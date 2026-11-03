@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from cellvit.data.decode import decode_well
+from phenostate.data.decode import decode_well
 
 
 def test_decode_preserves_full_image_and_channel_order() -> None:

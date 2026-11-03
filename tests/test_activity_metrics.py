@@ -3,7 +3,7 @@ from itertools import permutations
 import numpy as np
 import pytest
 
-from cellvit.activity_metrics import _expected_ap, activity_metrics
+from phenostate.activity_metrics import _expected_ap, activity_metrics
 
 
 RULES = {"CRISPR": {"where": {"well_type_label": ["Negative controls"]}, "match_fields": ["cell_type"]}}

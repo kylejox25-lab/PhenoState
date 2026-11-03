@@ -5,7 +5,7 @@ import shutil
 import pytest
 from streaming import MDSWriter, StreamingDataLoader, StreamingDataset
 
-from cellvit.train.mae import _loader_progress
+from phenostate.train.mae import _loader_progress
 
 
 def make_loader(path):

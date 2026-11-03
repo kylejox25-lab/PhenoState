@@ -3,7 +3,7 @@
 import pytest
 import torch
 
-from cellvit.models import ChannelAgnosticMAE, DiffMAE, MAEConfig
+from phenostate.models import ChannelAgnosticMAE, DiffMAE, MAEConfig
 
 
 def tiny_config(model_type: str, **kwargs) -> MAEConfig:

@@ -1,4 +1,4 @@
-name: cellvit
+name: phenostate
 channels:
   - pytorch
   - nvidia

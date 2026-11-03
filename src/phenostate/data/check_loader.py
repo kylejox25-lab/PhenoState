@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from cellvit.image_config import IMAGE_CHANNELS, IMAGE_SIZE
+from phenostate.image_config import IMAGE_CHANNELS, IMAGE_SIZE
 
 from .streaming_dataset import make_dataloader
 

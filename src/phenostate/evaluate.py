@@ -14,7 +14,7 @@ from pathlib import Path
 
 import torch
 
-from cellvit.models import MaskedAutoencoder, model_from_checkpoint
+from phenostate.models import MaskedAutoencoder, model_from_checkpoint
 
 
 class ReconstructionMetrics:
@@ -187,7 +187,7 @@ def evaluate_reconstruction(
 
 
 def main() -> None:
-    from cellvit.data.streaming_dataset import make_dataloader
+    from phenostate.data.streaming_dataset import make_dataloader
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)

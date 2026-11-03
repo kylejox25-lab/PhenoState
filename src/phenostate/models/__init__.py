@@ -9,6 +9,7 @@ from .cnn_mae import CNNMaskedAutoencoder
 ChannelAgnosticMAE = import_module(".CA-MAE", __name__).ChannelAgnosticMAE
 DiffMAE = import_module(".DiffMAE", __name__).DiffMAE
 
+# Stable on-disk identifiers keep previously trained checkpoints compatible.
 CHECKPOINT_FORMATS = {"cellvit-spatial-mae-v1", "cellvit-masked-autoencoder-v2"}
 
 
@@ -25,7 +26,7 @@ def build_model(config: MAEConfig | None = None) -> MaskedAutoencoder:
 def model_from_checkpoint(state: dict) -> MaskedAutoencoder:
     """Load legacy spatial MAEs and new architecture-tagged checkpoints."""
     if state.get("format") not in CHECKPOINT_FORMATS:
-        raise ValueError("Not a supported CellViT masked autoencoder checkpoint")
+        raise ValueError("Not a supported PhenoState masked autoencoder checkpoint")
     config = MAEConfig(**state["model_config"])
     if state["format"] == "cellvit-spatial-mae-v1" and config.model_type != "mae":
         raise ValueError("Legacy spatial checkpoints must contain a spatial MAE")

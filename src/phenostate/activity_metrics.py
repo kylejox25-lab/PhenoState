@@ -15,7 +15,7 @@ import json
 
 import numpy as np
 
-from cellvit.embedding_metrics import _inputs, _ks, _rank_record, _selection
+from phenostate.embedding_metrics import _inputs, _ks, _rank_record, _selection
 
 
 def _text(value) -> str:
