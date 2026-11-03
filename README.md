@@ -10,15 +10,6 @@ conda activate phenostate
 python -m pip install -e . --no-deps --no-build-isolation
 ```
 
-已有环境只需补充工具并更新入口：
-
-```bash
-python -m pip install 'lightning>=2.5.6,<2.6' 'torchsummary==1.5.1' 'torchinfo>=1.8,<2'
-python -m pip install -e . --no-deps --no-build-isolation
-```
-
-使用 `lightning.pytorch`，模型摘要使用 Lightning 自带 ModelSummary 或 `torchinfo.summary(model, depth=2)`。不提供输入时，torchinfo 只列结构与参数，避免 CA-MAE 完整前向的显存开销。环境同时包含 torchsummary。
-
 ## 代码
 
 ```text
