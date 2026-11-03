@@ -90,12 +90,11 @@ def export_embeddings(
         raise ValueError(f"No wells in split {split}")
     manifest_hash = hashlib.sha256(manifest_bytes).hexdigest()
     checkpoint_hash = _checkpoint_sha256(checkpoint)
-    # Keep serialized field names stable so existing embeddings remain reusable.
     provenance = {
-        b"cellvit_manifest_sha256": manifest_hash.encode(),
-        b"cellvit_checkpoint_sha256": checkpoint_hash.encode(),
-        b"cellvit_split": split.encode(),
-        b"cellvit_pooling": b"mean",
+        b"phenostate_manifest_sha256": manifest_hash.encode(),
+        b"phenostate_checkpoint_sha256": checkpoint_hash.encode(),
+        b"phenostate_split": split.encode(),
+        b"phenostate_pooling": b"mean",
     }
     if output.exists():
         count = _validate_existing_export(output, expected=expected, tags=provenance)
@@ -103,21 +102,21 @@ def export_embeddings(
         return count
 
     state = torch.load(checkpoint, map_location="cpu", weights_only=False)
-    if state["manifest_sha256"] != manifest_hash:
-        raise ValueError("Checkpoint and MDS manifest do not match")
     model = model_from_checkpoint(state)
+    if state["hyper_parameters"]["manifest_sha256"] != manifest_hash:
+        raise ValueError("Checkpoint and MDS manifest do not match")
     config = model.config
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    use_amp = state["run_config"]["amp"] and device.type == "cuda"
+    use_amp = state["phenostate_precision"] == "16-mixed" and device.type == "cuda"
     model = model.to(device).eval()
     schema = pa.schema([
         ("well_id", pa.string()),
         ("embedding", pa.list_(pa.float32(), config.encoder_dim)),
     ], metadata={
-        b"cellvit_model_type": config.model_type.encode(),
+        b"phenostate_model_type": config.model_type.encode(),
         **provenance,
-        b"cellvit_checkpoint": str(checkpoint.resolve()).encode(),
-        b"cellvit_loader": b"local-threaded",
+        b"phenostate_checkpoint": str(checkpoint.resolve()).encode(),
+        b"phenostate_loader": b"local-threaded",
     })
     del state  # Export does not need the optimizer/loader/RNG training state.
     output.parent.mkdir(parents=True, exist_ok=True)

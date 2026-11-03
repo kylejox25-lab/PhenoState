@@ -7,7 +7,7 @@ RUN_DIR="/NFS2_home/NFS2_home_3/xkj2006/cell_painting/project/runs/mae_batch2_te
 
 # 1. 用 16 个 batch 测试当前模型。
 phenostate-evaluate \
-  --checkpoint "$RUN_DIR/latest.pt" \
+  --checkpoint "$RUN_DIR/checkpoints/last.ckpt" \
   --mds-root "$MDS_ROOT" \
   --split val \
   --max-batches 16 \
@@ -25,6 +25,6 @@ phenostate-train \
   --accumulation-steps 32 \
   --checkpoint-every 5 \
   --log-every 1 \
-  --resume "$RUN_DIR/latest.pt"
+  --resume "$RUN_DIR/checkpoints/last.ckpt"
 
-# 完整验证结果在 metrics.jsonl；绘图使用 02 Notebook。
+# 完整验证结果在 logs/metrics.csv；绘图使用 02 Notebook。

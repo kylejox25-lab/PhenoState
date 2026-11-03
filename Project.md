@@ -10,7 +10,7 @@
 
 2026-10-20 实验更新：按确认方案新增通道无关 CA-MAE、DiffMAE 与 CNN 掩码自编码器，普通 MAE 作为参考。新的对照配置为六通道 512×512 完整输入、8×8 patch、0.75 掩码率、512/256 编码/解码维度、Transformer 两端各 8 heads、50 epochs；其它训练参数沿用现有实现。原 16×16 基线配置保留供旧检查点使用。评价实现与原理见 [03 表征比较 Notebook](notebooks/03_representation_comparison.ipynb)，训练入口见 [README](README.md)。以下早期研究设计中的 16×16/ViT-S 配置为历史起点；不同模型预算与掩码任务差异须分别报告。新增模型的真实训练效果需在服务器运行后测定。
 
-实施进度：已实现 Parquet→孔位级 MDS 转换、Streaming 读取、多种掩码模型训练和 embedding 导出。训练包含 AMP 溢出恢复、遮挡重建指标及 `best_reconstruction.pt` 保存；[02 重建评估 Notebook](notebooks/02_mae_training_and_reconstruction.ipynb) 负责原基线曲线和六通道重建可视化。[03 表征比较 Notebook](notebooks/03_representation_comparison.ipynb) 与 `embedding_metrics.py` 新增跨 guide 基因、跨板化合物检索及重复一致性评价。重建检查点按各自的重建目标选择，不表示生物学表征最佳。真实模型训练与显存测试仍需在服务器执行。使用方法见 [README.md](README.md)。
+实施进度：已实现 Parquet→孔位级 MDS 转换、Streaming 读取、多种掩码模型训练和 embedding 导出。训练已统一为 LightningModule、LightningDataModule 与 Trainer，使用原生 `.ckpt`、CSV 日志、AMP、梯度累积和遮挡重建验证；[02 重建评估 Notebook](notebooks/02_mae_training_and_reconstruction.ipynb) 读取 Lightning CSV 日志并展示四模型结构、重建指标和六通道预览。`retrieval.py` 统一评价活性、重复与跨 guide 检索；[03 下游可视化 Notebook](notebooks/03_representation_comparison.ipynb) 只读取正式评价结果，展示指标、CI、覆盖率和配对差值。公开 OpenPhenom、MAE-L/8、MAE-G/8 可与自训练特征联合评价，`phenostate-split` 支持不转换图像独立生成同一整板划分。重建检查点按各自的重建目标选择，不表示生物学表征最佳。真实模型训练与显存测试仍需在服务器执行。使用方法见 [README.md](README.md)。
 
 ## 1. 研究目标与问题
 

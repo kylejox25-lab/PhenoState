@@ -19,18 +19,14 @@ def config(kind):
 def test_factory_and_checkpoint_round_trip(kind):
     model = build_model(config(kind)).eval()
     state = {
-        "format": "cellvit-masked-autoencoder-v2",
-        "model_config": model.config.to_dict(), "model": model.state_dict(),
+        "pytorch-lightning_version": "2.5.6",
+        "hyper_parameters": {"model_config": model.config.to_dict()},
+        "state_dict": {"model." + key: value for key, value in model.state_dict().items()},
     }
     restored = model_from_checkpoint(state).eval()
     image = torch.rand(1, 2, 16, 16)
     with torch.no_grad():
         assert torch.equal(model.encode(image), restored.encode(image))
-    if kind == "mae":
-        state["format"] = "cellvit-spatial-mae-v1"
-        del state["model_config"]["model_type"]
-        del state["model_config"]["diffusion_steps"]
-        assert model_from_checkpoint(state).config.model_type == "mae"
 
 
 def test_cnn_hidden_pixels_never_enter_prediction_and_gradients_flow():

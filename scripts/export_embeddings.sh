@@ -29,9 +29,9 @@ done
 # Check every checkpoint before starting expensive exports.
 CHECKPOINTS=()
 for MODEL in "${MODELS[@]}"; do
-  CHECKPOINT="$RUN_ROOT/$MODEL/best_reconstruction.pt"
+  CHECKPOINT="$RUN_ROOT/$MODEL/checkpoints/best.ckpt"
   if [[ ! -f "$CHECKPOINT" ]]; then
-    CHECKPOINT="$RUN_ROOT/$MODEL/latest.pt"
+    CHECKPOINT="$RUN_ROOT/$MODEL/checkpoints/last.ckpt"
   fi
   if [[ ! -f "$CHECKPOINT" ]]; then
     echo "Missing checkpoint for $MODEL under $RUN_ROOT/$MODEL" >&2

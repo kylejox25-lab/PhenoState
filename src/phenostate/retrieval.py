@@ -1,6 +1,6 @@
 """Evaluate well embeddings without loading an encoder or image dataset.
 
-Use --embedding NAME ALL_WELLS.parquet for arbitrary representations, or repeat
+Use --embedding NAME ALL_WELLS.parquet for arbitrary representations, and/or
 --model NAME TRAIN.parquet QUERY.parquet for split exports. Only NumPy and
 PyArrow are required. Labels define evaluation groups, never encoder inputs.
 """
@@ -115,10 +115,10 @@ def _read_model(spec, train_path, query_path, *, metadata, split_by_id, query_sp
         if "well_id" not in parquet.schema_arrow.names:
             raise ValueError(f"{path}: missing well_id column")
         tags = {key.decode(): value.decode() for key, value in (parquet.schema_arrow.metadata or {}).items()
-                if key.startswith(b"cellvit_")}
-        checks = {"cellvit_model_type": algorithm, "cellvit_manifest_sha256": manifest_hash}
+                if key.startswith(b"phenostate_")}
+        checks = {"phenostate_model_type": algorithm, "phenostate_manifest_sha256": manifest_hash}
         if len(roles) == 1:
-            checks["cellvit_split"] = next(iter(roles))
+            checks["phenostate_split"] = next(iter(roles))
         for key, expected in checks.items():
             if expected is not None and key in tags and tags[key] != expected:
                 raise ValueError(f"{path}: {key} is {tags[key]!r}, expected {expected!r}")
@@ -132,7 +132,7 @@ def _read_model(spec, train_path, query_path, *, metadata, split_by_id, query_sp
         if len(roles) == 1 and any(split_by_id[key] not in roles for key in ids):
             wrong = next(key for key in ids if split_by_id[key] not in roles)
             raise ValueError(f"{path}: {wrong} belongs to {split_by_id[wrong]}, not {next(iter(roles))}")
-        if "cellvit_split" in tags and any(split_by_id[key] != tags["cellvit_split"] for key in ids):
+        if "phenostate_split" in tags and any(split_by_id[key] != tags["phenostate_split"] for key in ids):
             raise ValueError(f"{path}: actual wells disagree with the declared split")
         expected_ids = {key for key in selected if split_by_id[key] in roles}
         if not allow_partial and not expected_ids <= set(ids):
@@ -143,19 +143,17 @@ def _read_model(spec, train_path, query_path, *, metadata, split_by_id, query_sp
     if any(table.values.shape[1] != first.values.shape[1] or table.feature_names != first.feature_names for table in tables):
         raise ValueError(f"{name}: train and query embedding schemas differ")
     tags = [item["schema_metadata"] for item in provenance]
-    hashes_available = all("cellvit_checkpoint_sha256" in item for item in tags)
-    checks = ["cellvit_checkpoint_sha256", "cellvit_pooling", "cellvit_model_type"]
-    if not hashes_available:
-        checks.append("cellvit_checkpoint")
+    checks = ["phenostate_checkpoint_sha256", "phenostate_pooling", "phenostate_model_type"]
     for key in checks:
         if len({item[key] for item in tags if key in item}) > 1:
             raise ValueError(f"{name}: different checkpoint hashes or export provenance ({key})")
-    verification = ("sha256_verified" if all("cellvit_checkpoint_sha256" in item for item in tags)
-                    else "legacy_path_only; checkpoint contents unverified" if all("cellvit_checkpoint" in item for item in tags)
+    verification = ("sha256_verified" if all("phenostate_checkpoint_sha256" in item for item in tags)
                     else "unverified; arbitrary embedding source")
     table = EmbeddingTable(tuple(key for item in tables for key in item.well_ids),
                            np.concatenate([item.values for item in tables]), first.feature_names)
-    return name, table, {"files": provenance, "checkpoint_verification": verification}
+    return name, table, {"files": provenance, "checkpoint_verification": verification,
+                         "embedding_dimension": table.values.shape[1],
+                         "source_kind": "whole embedding table" if generic else "split exports"}
 
 
 def paired_differences(results: Mapping[str, Mapping], *, seed: int, n_bootstrap: int) -> list[dict]:
@@ -260,8 +258,8 @@ def evaluate_embeddings(
     tasks = tuple(dict.fromkeys(tasks))
     if not tasks or set(tasks) - set(TASKS) or query_split not in {"val", "test"}:
         raise ValueError("Invalid tasks or query split")
-    if bool(models) == bool(embeddings):
-        raise ValueError("Provide either split model exports or whole embedding files")
+    if not models and not embeddings:
+        raise ValueError("Provide split model exports and/or whole embedding files")
     if "activity" in tasks and not control_rules:
         raise ValueError("Activity requires explicit --control-rules; controls are never inferred")
     if preprocessing not in {"raw", "standardize"} or metric not in {"cosine", "pearson"}:
@@ -277,11 +275,12 @@ def evaluate_embeddings(
     metadata, split_by_id, manifest_hash = _saved_splits(metadata_path, mds_root, splits_path)
     wanted = {key for key, split in split_by_id.items() if split in {"train", query_split}}
     tables, provenance = {}, {}
-    sources = [(name, path, path) for name, path in embeddings] if embeddings else models
-    for spec, train, query in sources:
+    sources = [(name, train, query, False) for name, train, query in models]
+    sources += [(name, path, path, True) for name, path in embeddings]
+    for spec, train, query, generic in sources:
         name, table, info = _read_model(spec, train, query, metadata=metadata, split_by_id=split_by_id,
                                         query_split=query_split, manifest_hash=manifest_hash,
-                                        allow_partial=allow_partial, generic=bool(embeddings))
+                                        allow_partial=allow_partial, generic=generic)
         if name in tables:
             raise ValueError(f"Duplicate embedding name: {name}")
         tables[name], provenance[name] = table, info
@@ -339,11 +338,12 @@ def evaluate_embeddings(
         if any(item != signatures[0] for item in signatures[1:]):
             raise ValueError(f"{task}: candidate eligibility differs between models")
     paired = paired_differences(results, seed=seed, n_bootstrap=n_bootstrap)
-    protocol = {"format": "cellvit-well-evaluation-v2", "query_split": query_split, "gallery_split": "train",
+    protocol = {"format": "phenostate-well-evaluation-v2", "query_split": query_split, "gallery_split": "train",
                 "query_unit": "single well", "tasks": list(tasks), "metric": metric, "preprocessing": preprocessing,
                 "ks": list(ks), "seed": seed, "n_bootstrap": n_bootstrap, "n_null": n_null,
                 "n_permutations": n_permutations, "max_controls_per_plate": max_controls, "max_replicates": max_replicates,
                 "control_rules": control_rules, "encoder_input": "image only; perturbation metadata is used for evaluation",
+                "split_scope": "evaluation wells only; upstream pretraining overlap is not audited",
                 "metadata_sha256": _sha256(metadata_path), "manifest_sha256": manifest_hash,
                 "split_source": str(mds_root or splits_path or "metadata split column"),
                 "split_sha256": _sha256(mds_root / "plate_splits.json" if mds_root is not None else splits_path or metadata_path),
@@ -368,9 +368,8 @@ def evaluate_embeddings(
 
 def main(argv: Sequence[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    source = parser.add_mutually_exclusive_group(required=True)
-    source.add_argument("--model", action="append", nargs=3, metavar=("NAME", "TRAIN_PARQUET", "QUERY_PARQUET"))
-    source.add_argument("--embedding", action="append", nargs=2, metavar=("NAME", "PARQUET"))
+    parser.add_argument("--model", action="append", nargs=3, metavar=("NAME", "TRAIN_PARQUET", "QUERY_PARQUET"))
+    parser.add_argument("--embedding", action="append", nargs=2, metavar=("NAME", "PARQUET"))
     parser.add_argument("--metadata", type=Path, required=True)
     split = parser.add_mutually_exclusive_group()
     split.add_argument("--mds-root", type=Path, help="Optional native manifest verification")

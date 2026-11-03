@@ -9,10 +9,6 @@ from .cnn_mae import CNNMaskedAutoencoder
 ChannelAgnosticMAE = import_module(".CA-MAE", __name__).ChannelAgnosticMAE
 DiffMAE = import_module(".DiffMAE", __name__).DiffMAE
 
-# Stable on-disk identifiers keep previously trained checkpoints compatible.
-CHECKPOINT_FORMATS = {"cellvit-spatial-mae-v1", "cellvit-masked-autoencoder-v2"}
-
-
 def build_model(config: MAEConfig | None = None) -> MaskedAutoencoder:
     """Shared dispatch for training, reconstruction, and embedding export."""
     config = config or MAEConfig()
@@ -24,17 +20,15 @@ def build_model(config: MAEConfig | None = None) -> MaskedAutoencoder:
 
 
 def model_from_checkpoint(state: dict) -> MaskedAutoencoder:
-    """Load legacy spatial MAEs and new architecture-tagged checkpoints."""
-    if state.get("format") not in CHECKPOINT_FORMATS:
-        raise ValueError("Not a supported PhenoState masked autoencoder checkpoint")
-    config = MAEConfig(**state["model_config"])
-    if state["format"] == "cellvit-spatial-mae-v1" and config.model_type != "mae":
-        raise ValueError("Legacy spatial checkpoints must contain a spatial MAE")
-    model = build_model(config)
-    model.load_state_dict(state["model"])
+    """Restore the encoder/decoder from a PhenoState Lightning checkpoint."""
+    if "pytorch-lightning_version" not in state or "model_config" not in state.get("hyper_parameters", {}):
+        raise ValueError("Expected a PhenoState Lightning checkpoint (.ckpt)")
+    model = build_model(MAEConfig(**state["hyper_parameters"]["model_config"]))
+    model.load_state_dict({key.removeprefix("model."): value
+                           for key, value in state["state_dict"].items() if key.startswith("model.")})
     return model
 
 __all__ = [
     "MAEConfig", "MaskedAutoencoder", "ChannelAgnosticMAE", "DiffMAE",
-    "CNNMaskedAutoencoder", "build_model", "model_from_checkpoint", "CHECKPOINT_FORMATS",
+    "CNNMaskedAutoencoder", "build_model", "model_from_checkpoint",
 ]

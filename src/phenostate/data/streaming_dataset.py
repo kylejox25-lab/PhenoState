@@ -64,12 +64,36 @@ class RxRx3StreamingDataset(StreamingDataset):
         }
 
 
+class WellDataLoader(StreamingDataLoader):
+    """Expose a complete-epoch cursor to Lightning's stateful-loader protocol."""
+
+    def load_state_dict(self, state):
+        self._start_offset = state["sample_in_epoch"]
+        super().load_state_dict(state)
+
+    def state_dict(self):
+        state = dict(super().state_dict())
+        if state["sample_in_epoch"] >= len(self.dataset):
+            state.update(epoch=state["epoch"] + 1, sample_in_epoch=0)
+        return state
+
+    def __iter__(self):
+        expected = len(self.dataset) - getattr(self, "_start_offset", 0)
+        self._start_offset = 0
+        count = 0
+        for batch in super().__iter__():
+            count += len(batch["well_id"])
+            yield batch
+        if count != expected:
+            raise RuntimeError(f"Data loader returned {count} wells; expected {expected}")
+
+
 def make_dataloader(
     *,
     mds_root: str | Path,
     split: str,
     batch_size: int,
-    num_workers: int = 4,
+    num_workers: int = 0,
     shuffle_seed: int = 2026,
     allow_incomplete: bool = False,
 ) -> StreamingDataLoader:
@@ -81,7 +105,7 @@ def make_dataloader(
         shuffle_seed=shuffle_seed,
         allow_incomplete=allow_incomplete,
     )
-    return StreamingDataLoader(
+    return WellDataLoader(
         dataset,
         batch_size=batch_size,
         num_workers=num_workers,

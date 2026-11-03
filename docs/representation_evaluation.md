@@ -50,6 +50,8 @@ CRISPR 检索先平均同 well 的任务，再平均同 guide 的 well、同基�
 
 无需 checkpoint、GPU、原始图像或固定模型架构。运行依赖 NumPy、PyArrow 及本项目 src 包。支持唯一 well_id 加 embedding 向量列，或 well_id 加宽表数值特征列；不同来源可有不同维度。
 
+`--embedding` 整表与 `--model` train/query 分文件可以混合使用；同一次运行统一共同孔位和协议。没有 MDS 时，可通过 `phenostate-split --metadata ... --output /path/plate_splits.json` 独立生成划分。已有训练划分应直接复用。三个数据集自带特征的介绍及完整命令见 [public_embeddings.md](public_embeddings.md)。
+
 ~~~bash
 python -m pip install -e . --no-deps
 
@@ -119,10 +121,10 @@ export PHENOSTATE_MODELS="mae_patch8_head8 ca_mae diffmae cnn_mae"
 bash scripts/export_embeddings.sh
 ~~~
 
-模型列表对应训练目录名称，默认 `mae ca_mae diffmae cnn_mae`；CNN 没有权重时移出列表。脚本先检查全部模型的权重，每个模型优先使用 best_reconstruction.pt，缺少时回退 latest.pt。相对路径以项目根目录为基准。MDS 和输出目录必须显式设置；训练总目录默认 runs/comparison_patch8_50epochs。`PHENOSTATE_SPLITS` 默认 `train val test`，可改为 `train val`；`PHENOSTATE_BATCH_SIZE` 默认 1，`PHENOSTATE_NUM_WORKERS` 默认 4，`PHENOSTATE_PYTHON` 可指定 Python 可执行文件。
+模型列表对应训练目录名称，默认 `mae ca_mae diffmae cnn_mae`；CNN 没有权重时移出列表。脚本先检查全部模型的权重，每个模型优先使用 checkpoints/best.ckpt，缺少时回退 checkpoints/last.ckpt。相对路径以项目根目录为基准。MDS 和输出目录必须显式设置；训练总目录默认 runs/comparison_patch8_50epochs。`PHENOSTATE_SPLITS` 默认 `train val test`，可改为 `train val`；`PHENOSTATE_BATCH_SIZE` 默认 1，`PHENOSTATE_NUM_WORKERS` 默认 4，`PHENOSTATE_PYTHON` 可指定 Python 可执行文件。
 
-脚本启用 `--skip-existing`：已有正式 Parquet 仅在 manifest SHA、checkpoint SHA、split、pooling、固定长度 float32 schema、非空唯一 well_id、有限值及完整数量均通过检查后复用。原生成功文件无需新的 loader 标签；来源不完整或不同的文件会报错，不覆盖。复用检查信任原生来源标签，不重新解码全部 MDS 孔位来逐项核对 ID，也不加载模型权重检查向量宽度。
+脚本启用 `--skip-existing`：已有正式 Parquet 仅在 manifest SHA、checkpoint SHA、split、pooling、固定长度 float32 schema、非空唯一 well_id、有限值及完整数量均通过检查后复用。仅复用带完整 phenostate 来源标签的新格式文件；来源不完整或不同的文件会报错，不覆盖。复用检查信任原生来源标签，不重新解码全部 MDS 孔位来逐项核对 ID，也不加载模型权重检查向量宽度。
 
-残留 `.incomplete` 仍会阻止导出。需确认旧进程退出后，人工保留或处理失败文件；脚本不删除 NFS 残留或临时目录。把本地改动同步到服务器后再启动新进程，旧进程仍运行旧代码。已完成的 embedding 可以保留并校验复用。
+残留 `.incomplete` 仍会阻止导出。需确认旧进程退出后，人工保留或处理失败文件；脚本不删除 NFS 残留或临时目录。把本地改动同步到服务器后再启动新进程，旧进程仍运行旧代码。已有 embedding 可以保留，直接作为通用特征参加下游评价；旧来源标签不用于新格式复用校验，报告记为来源未验证。
 
-这项修复限于 embedding 导出。即使 `TMPDIR` 位于 NFS，新的读取链路也不使用上述进程临时文件；训练及重建评价仍沿用原加载器。
+embedding 导出和冻结重建评价均使用本地 MDS 有界线程读取。训练使用 LightningDataModule 与 StreamingDataLoader，默认 num_workers=0。新训练与导出使用原生 Lightning .ckpt，不加载旧自定义 .pt；已有特征仍可独立评价。

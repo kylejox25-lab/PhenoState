@@ -4,7 +4,7 @@ import pytest
 import torch
 
 from phenostate.models import MAEConfig, MaskedAutoencoder
-from phenostate.train.mae import learning_rate
+from phenostate.train.module import learning_rate
 
 
 def tiny_model() -> MaskedAutoencoder:

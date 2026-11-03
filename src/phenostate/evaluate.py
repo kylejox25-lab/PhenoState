@@ -187,7 +187,7 @@ def evaluate_reconstruction(
 
 
 def main() -> None:
-    from phenostate.data.streaming_dataset import make_dataloader
+    from phenostate.data.inference_loader import local_well_batches
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, required=True)
@@ -195,7 +195,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--split", choices=("val", "test"), default="val")
     parser.add_argument("--batch-size", type=int, help="Default: checkpoint training batch size")
-    parser.add_argument("--num-workers", type=int, default=4)
+    parser.add_argument("--num-workers", type=int, default=4, help="Local MDS reading/decoding threads")
     parser.add_argument("--seed", type=int, help="Default: training seed + 10000")
     parser.add_argument("--max-batches", type=int, help="Optional partial evaluation")
     parser.add_argument("--log-every", type=int, default=50, help="Progress interval; 0 disables progress")
@@ -219,26 +219,27 @@ def main() -> None:
         print(f"Loading checkpoint: {args.checkpoint}", file=sys.stderr, flush=True)
     # Load only trusted checkpoints produced by this project.
     state = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
-    if state["manifest_sha256"] != hashlib.sha256(manifest_bytes).hexdigest():
+    model = model_from_checkpoint(state)
+    if state["hyper_parameters"]["manifest_sha256"] != hashlib.sha256(manifest_bytes).hexdigest():
         raise ValueError("Dataset manifest differs from the training checkpoint")
-    batch_size = args.batch_size if args.batch_size is not None else state["run_config"]["batch_size"]
-    seed = args.seed if args.seed is not None else state["run_config"]["seed"] + 10_000
+    batch_size = args.batch_size if args.batch_size is not None else state["datamodule_hyper_parameters"]["batch_size"]
+    seed = args.seed if args.seed is not None else state["hyper_parameters"]["seed"] + 10_000
     if batch_size < 1 or args.num_workers < 0:
         raise ValueError("Invalid batch size or worker count")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = model_from_checkpoint(state)
     model.to(device)
     if args.log_every:
-        print(f"Preparing {args.split} loader with {args.num_workers} workers", file=sys.stderr, flush=True)
-    loader = make_dataloader(
-        mds_root=args.mds_root, split=args.split, batch_size=batch_size,
-        num_workers=args.num_workers, shuffle_seed=state["run_config"]["seed"],
-    )
-    report = evaluate_reconstruction(
-        model, loader, device, seed=seed, amp=state["run_config"]["amp"] and not args.no_amp,
-        max_batches=args.max_batches, log_every=args.log_every,
-        diffusion_sampling_steps=args.diffusion_sampling_steps,
-    )
+        print(f"Preparing {args.split} loader with {args.num_workers} threads", file=sys.stderr, flush=True)
+    with local_well_batches(
+        args.mds_root, args.split, batch_size=batch_size, num_workers=args.num_workers,
+        expected_wells=manifest["counts"][args.split], pin_memory=device.type == "cuda",
+    ) as loader:
+        report = evaluate_reconstruction(
+            model, loader, device, seed=seed,
+            amp=state["phenostate_precision"] == "16-mixed" and not args.no_amp,
+            max_batches=args.max_batches, log_every=args.log_every,
+            diffusion_sampling_steps=args.diffusion_sampling_steps,
+        )
     expected = manifest["counts"][args.split]
     if args.max_batches is None and report["wells"] != expected:
         raise RuntimeError(f"Expected {expected} wells, evaluated {report['wells']}")
@@ -246,7 +247,7 @@ def main() -> None:
         "checkpoint": str(args.checkpoint.resolve()), "split": args.split,
         "step": state["global_step"], "batch_size": batch_size,
         "expected_wells": expected, "complete_split": report["wells"] == expected,
-        "manifest_sha256": state["manifest_sha256"],
+        "manifest_sha256": state["hyper_parameters"]["manifest_sha256"],
     })
     args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary.write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")

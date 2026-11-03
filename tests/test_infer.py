@@ -24,10 +24,10 @@ def export_case(tmp_path, monkeypatch):
         "counts": {"train": 3, "val": 1, "test": 1},
     }).encode()
     (root / "manifest.json").write_bytes(manifest_bytes)
-    checkpoint = tmp_path / "weights.pt"
+    checkpoint = tmp_path / "weights.ckpt"
     torch.save({
-        "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
-        "run_config": {"amp": False},
+        "hyper_parameters": {"manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest()},
+        "phenostate_precision": "32-true",
     }, checkpoint)
 
     class Model:
@@ -68,9 +68,9 @@ def test_export_commits_only_complete_finite_unique_wells(export_case):
     np.testing.assert_array_equal(table["embedding"].to_pylist(), case.images.numpy())
     assert not case.output.with_suffix(".parquet.incomplete").exists()
     tags = table.schema.metadata
-    assert tags[b"cellvit_split"] == b"train"
-    assert tags[b"cellvit_loader"] == b"local-threaded"
-    assert tags[b"cellvit_checkpoint_sha256"].decode() == hashlib.sha256(case.checkpoint.read_bytes()).hexdigest()
+    assert tags[b"phenostate_split"] == b"train"
+    assert tags[b"phenostate_loader"] == b"local-threaded"
+    assert tags[b"phenostate_checkpoint_sha256"].decode() == hashlib.sha256(case.checkpoint.read_bytes()).hexdigest()
 
 
 @pytest.mark.parametrize("problem", ["missing", "duplicate", "nonfinite", "empty", "nonstring"])
@@ -151,7 +151,7 @@ def test_skip_closes_reader_on_success_and_error(export_case, monkeypatch, valid
     assert closed
 
 
-@pytest.mark.parametrize("problem", ["duplicate", "empty", "nonfinite", "missing", "legacy"])
+@pytest.mark.parametrize("problem", ["duplicate", "empty", "nonfinite", "missing", "missing_provenance"])
 def test_skip_rejects_invalid_existing_content(export_case, problem):
     case = export_case
     run_export(case)
@@ -169,7 +169,7 @@ def test_skip_rejects_invalid_existing_content(export_case, problem):
         ids = ids[:2]
         values = values[:2]
     else:
-        metadata.pop(b"cellvit_checkpoint_sha256")
+        metadata.pop(b"phenostate_checkpoint_sha256")
     replacement = pa.Table.from_arrays([
         pa.array(ids, type=pa.string()),
         pa.array(values.tolist(), type=table.schema.field("embedding").type),
@@ -196,10 +196,11 @@ def test_export_matches_frozen_encoder_for_all_architectures(tmp_path, monkeypat
     manifest = json.dumps({"format": "rxrx3-core-well-mds-v1", "complete": True,
                            "counts": {"train": 3}}).encode()
     (root / "manifest.json").write_bytes(manifest)
-    checkpoint = tmp_path / "weights.pt"
-    torch.save({"format": "cellvit-masked-autoencoder-v2", "model_config": config.to_dict(),
-                "model": before, "manifest_sha256": hashlib.sha256(manifest).hexdigest(),
-                "run_config": {"amp": False}}, checkpoint)
+    checkpoint = tmp_path / "weights.ckpt"
+    torch.save({"pytorch-lightning_version": "2.5.6",
+                "hyper_parameters": {"model_config": config.to_dict(), "manifest_sha256": hashlib.sha256(manifest).hexdigest()},
+                "state_dict": {"model." + key: value for key, value in before.items()},
+                "phenostate_precision": "32-true"}, checkpoint)
 
     @contextmanager
     def batches(*args, **kwargs):
@@ -212,4 +213,4 @@ def test_export_matches_frozen_encoder_for_all_architectures(tmp_path, monkeypat
     actual = np.asarray(pq.read_table(output)["embedding"].to_pylist())
     np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=1e-6)
     restored = torch.load(checkpoint, map_location="cpu", weights_only=False)
-    assert all(torch.equal(value, restored["model"][key]) for key, value in before.items())
+    assert all(torch.equal(value, restored["state_dict"]["model." + key]) for key, value in before.items())

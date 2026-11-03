@@ -9,6 +9,7 @@ import pyarrow.parquet as pq
 import pytest
 
 from phenostate.data.source import make_plate_splits
+from phenostate.data.splits import export_plate_splits
 from phenostate.retrieval import evaluate_embeddings, main
 
 
@@ -52,10 +53,10 @@ def dataset(tmp_path):
             table = pa.table({"well_id": [row["well_id"] for row in by_split[split]],
                               "embedding": pa.array(vectors, type=pa.list_(pa.float32(), 2))})
             table = table.replace_schema_metadata({
-                b"cellvit_model_type": algorithm.encode(), b"cellvit_pooling": b"mean",
-                b"cellvit_manifest_sha256": manifest_hash.encode(), b"cellvit_split": split.encode(),
-                b"cellvit_checkpoint": f"/old-server/{algorithm}.pt".encode(),
-                b"cellvit_checkpoint_sha256": hashlib.sha256(algorithm.encode()).hexdigest().encode()})
+                b"phenostate_model_type": algorithm.encode(), b"phenostate_pooling": b"mean",
+                b"phenostate_manifest_sha256": manifest_hash.encode(), b"phenostate_split": split.encode(),
+                b"phenostate_checkpoint": f"/old-server/{algorithm}.pt".encode(),
+                b"phenostate_checkpoint_sha256": hashlib.sha256(algorithm.encode()).hexdigest().encode()})
             pq.write_table(table, path)
             paths.append(path)
         models.append((algorithm, *paths))
@@ -108,6 +109,41 @@ def test_end_to_end_two_models_share_train_gallery_and_paired_genes(tmp_path):
     assert not output.with_name("results.incomplete").exists()
     with pytest.raises(FileExistsError):
         run(data, output)
+
+
+def test_public_wide_features_and_native_split_exports_can_be_compared(tmp_path, capsys):
+    metadata, root, models = dataset(tmp_path)
+    with metadata.open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    public = tmp_path / "public.parquet"
+    pq.write_table(pa.table({"well_id": [row["well_id"] for row in rows],
+                            "feature_0": [float(row["gene"] == "G") for row in rows],
+                            "feature_1": [float(row["gene"] == "H") for row in rows],
+                            "feature_2": [0.] * len(rows)}), public)
+    output = tmp_path / "mixed"
+    main(["--embedding", "OpenPhenom", str(public), "--model", *map(str, models[0]),
+          "--metadata", str(metadata), "--mds-root", str(root), "--tasks", "cross-guide",
+          "--output-dir", str(output), "--n-bootstrap", "0"])
+    report = json.loads(capsys.readouterr().out)
+    assert {row["model"] for row in report["summary"]} == {"OpenPhenom", "mae"}
+    assert {row["score"] for row in report["summary"]} == {1.}
+    protocol = json.loads((output / "protocol.json").read_text())
+    assert protocol["models"]["OpenPhenom"]["embedding_dimension"] == 3
+    assert protocol["models"]["mae"]["embedding_dimension"] == 2
+    assert protocol["models"]["mae"]["checkpoint_verification"] == "sha256_verified"
+    with pytest.raises(ValueError, match="phenostate_model_type"):
+        evaluate_embeddings([("ca_mae", *models[0][1:])], embeddings=[("OpenPhenom", public)],
+                            metadata_path=metadata, mds_root=root, output_dir=tmp_path / "wrong")
+
+
+def test_standalone_plate_split_matches_conversion_and_preserves_existing_file(tmp_path):
+    metadata, root, _ = dataset(tmp_path)
+    path = tmp_path / "standalone/plate_splits.json"
+    report = export_plate_splits(metadata, path)
+    assert json.loads(path.read_text()) == json.loads((root / "plate_splits.json").read_text())
+    assert report["well_counts"] == {"train": 8, "val": 8, "test": 8}
+    with pytest.raises(FileExistsError):
+        export_plate_splits(metadata, path, seed=99)
 
 
 def test_actual_wrong_split_is_rejected_even_without_schema_tags(tmp_path):
@@ -171,25 +207,25 @@ def test_standardization_is_fitted_only_on_training_wells(tmp_path):
 
 def test_different_checkpoint_hashes_are_rejected(tmp_path):
     data = dataset(tmp_path)
-    rewrite(data[2][0][2], tags={b"cellvit_checkpoint_sha256": b"different"})
+    rewrite(data[2][0][2], tags={b"phenostate_checkpoint_sha256": b"different"})
     with pytest.raises(ValueError, match="different checkpoint hashes"):
         run(data, tmp_path / "bad")
 
 
-def test_legacy_checkpoint_paths_need_not_exist_and_model_labels_support_ablations(tmp_path):
+def test_unverified_features_and_model_labels_support_ablations(tmp_path):
     data = dataset(tmp_path)
     name, train, query = data[2][0]
     for path in (train, query):
         table = pq.read_table(path)
         tags = dict(table.schema.metadata)
-        del tags[b"cellvit_checkpoint_sha256"]
+        del tags[b"phenostate_checkpoint_sha256"]
         pq.write_table(table.replace_schema_metadata(tags), path)
     data = (data[0], data[1], [("mae:seed1", train, query), ("mae:seed2", train, query)])
     output = tmp_path / "aliases"
     report = run(data, output)
     assert {row["model"] for row in report["summary"]} == {"seed1", "seed2"}
     protocol = json.loads((output / "protocol.json").read_text(encoding="utf-8"))
-    assert protocol["models"]["seed1"]["checkpoint_verification"].startswith("legacy_path_only")
+    assert protocol["models"]["seed1"]["checkpoint_verification"].startswith("unverified")
 
 
 def test_cli_accepts_explicit_algorithm_embedding_paths_and_output_directory(tmp_path, capsys):

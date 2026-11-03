@@ -1,282 +1,122 @@
 # PhenoState
 
-当前已实现数据读取、空间掩码 MAE 训练、遮挡重建评估与孔位 embedding 导出。训练曲线和六通道重建图见 [02 重建评估 Notebook](notebooks/02_mae_training_and_reconstruction.ipynb)。原始 RxRx3-core 目录保持只读；转换后的 MDS、缓存与日志放在新的可写目录。模型效果需要在服务器实际运行后测定。
+RxRx3-core 六通道图像的自监督表征学习与下游评价。编码器只输入图像，基因、guide、化合物和浓度用于评价分组。
 
-新增 CA-MAE、DiffMAE 和 CNN 掩码自编码器，以及 [03 表征比较 Notebook](notebooks/03_representation_comparison.ipynb)。新对照实验使用 8×8 patch、75% 掩码、512/256 维编码器/解码器，Transformer 两端均为 8 heads，训练 50 轮；完整输入仍为六通道 512×512。原有 `mae_small.json` 保留作旧配置，新实验使用下面的四份配置。
-
-## 四种掩码表征模型对照
-
-| 方法 | 模型文件 | 新实验配置 | 干净完整输入的 embedding |
-| --- | --- | --- | --- |
-| 普通 MAE（参考） | `src/phenostate/models/mae.py` | `configs/mae_comparison.json` | 编码器 token 均值，512 维 |
-| CA-MAE | `src/phenostate/models/CA-MAE.py` | `configs/ca_mae.json` | 所有通道 token 均值，512 维 |
-| DiffMAE | `src/phenostate/models/DiffMAE.py` | `configs/diffmae.json` | 干净图像编码器 token 均值，512 维 |
-| CNN-MAE | `src/phenostate/models/cnn_mae.py` | `configs/cnn_mae.json` | 卷积特征全局平均池化，512 维 |
-
-四组均从零初始化，沿用现有板级 train/val/test、输入预处理、12/4 层深度、AdamW、学习率、种子和有效 batch。CNN 的深度指残差卷积块数，heads 对它不适用。它在首个卷积前遮住整块空间 patch，无原图跳连；稠密卷积仍处理整个网格。CA-MAE 使用共享单通道投影、共享固定空间位置编码和独立通道 decoder，不加入通道身份编码；它支持改变输入通道数进行编码。`model.encode(image, pooling="channel_concat")` 可额外返回按输入通道排序的 6×512 维表征，仅作不同聚合方式的附加比较。
-
-DiffMAE 使用带噪隐藏 patch 查询、干净可见 patch 条件和 cross-attention decoder，预测干净的 x₀。这里采用 1000 步 cosine 噪声日程，并在原项目的逐 patch、逐通道标准化目标空间中扩散；属于适配多通道项目的实现，不能宣称逐项复现论文实验。embedding 推理只运行干净图像 encoder，无需扩散采样。
-
-服务器上先激活已有环境并更新入口，然后设置路径、执行四组训练及验证/测试 embedding 导出：
-
-```bash
-python -m pip install -e . --no-deps
-export RXRX3_MDS_ROOT=/path/to/rxrx3_mds
-export PHENOSTATE_COMPARISON_ROOT=/path/to/runs/comparison_patch8_50epochs
-bash scripts/train_comparison.sh
-```
-
-脚本默认 micro-batch=1、梯度累积=64，四组都训练 50 轮。中断后设置 `PHENOSTATE_RESUME=1` 用相同配置续训。输出目录已有但没有检查点时不会覆盖；已有完整 embedding 不重复导出。旧 16×16 配置的检查点仍可加载和导出，续训需继续使用原配置，不能直接切换新结构。
-
-CA-MAE 在当前完整输入下有 24,576 个通道 token，75% 遮挡后有 6,144 个可见 token；普通 MAE/DiffMAE 为 4,096/1,024 个。使用 SDPA 注意力，仍需在服务器先用 `--max-steps 2` 实测峰值显存和速度，再启动完整 50 轮。50 轮表示相同图像遍历次数，不能等同算力或充分收敛；训练记录包含参数量、耗时、吞吐和峰值显存。
-
-### embedding 评价与重建评价
-
-当前正式评测覆盖表型活性（相对对照 mAP、分层 energy distance、显著活性比例）、重复扰动检索（同 guide／化合物＋浓度，含 mAP、Recall、percent replicating）和跨 guide 基因检索（MRR、Recall、mAP）。编码器只输入图像，train 板作参考库、val/test 板作查询。`phenostate-retrieval` 可独立评价任意来源和维度的 well embedding：`--embedding NAME ALL.parquet` 或 `--model NAME TRAIN.parquet QUERY.parquet`，不要求模型代码、checkpoint、GPU 或 MDS；可从独立文件读取划分。活性检测必须显式指定阴性对照规则。详见 [任务协议与服务器示例](docs/representation_evaluation.md)。原训练脚本只导出 val/test，使用原模型时需补导 train。
-
-下面的 03 Notebook 保留较宽范围的探索功能；本阶段的正式计分以新 CLI 的固定 train-gallery 协议为准。Notebook 的 smoke 子集结果不用于正式排名。
-
-03 Notebook 按 `well_id` 连接真实 metadata，比较三种新增方法、普通 MAE 和可选公开表征（OpenPhenom、MAE-L、MAE-G、CellProfiler）。公开表征的训练数据、维数和预算不同，仅作背景参考。现有公开 Parquet 是 `well_id` 加多个标量特征列；新模型导出为 `well_id` 加固定长度 `embedding` 列，评测读取器兼容两种格式，并排除 CellProfiler 的索引列。
-
-主评估使用跨实验、跨 guide 的基因原型检索 MRR/Recall，以及同实验、同浓度、跨板的化合物 mAP/Recall；辅助报告 cosine/Pearson 相似度、重复一致性和批次审计。Notebook 解释公式、正负样本规则、覆盖率、随机基线及高低分含义。所有模型固定相同孔位、查询与候选集合；分组 bootstrap 以基因或化合物为单位。验证集用于选择配置，测试集用于最终报告；PCA 和全局标准化只在训练参考上拟合。二维 PCA/UMAP 图只作解释，不独立决定模型优劣。当前本地没有完整外部药物—基因关联真值，不伪造 MoA、毒性或靶点指标。
-
-轮末验证和默认 `phenostate-evaluate` 对 DiffMAE 报告随机 t 的去噪目标，字段为 `reconstruction_protocol=diffmae_sampled_t_denoising`；其低噪声输入包含部分真实信号，不能和 MAE 的隐藏重建误差直接排名。实际从噪声修复需指定 DDIM 采样步数，建议先在小预览上检查：
-
-```bash
-phenostate-evaluate --checkpoint /path/to/runs/diffmae/best_reconstruction.pt \
-  --mds-root /path/to/rxrx3_mds --split val --max-batches 4 \
-  --diffusion-sampling-steps 50 --output /path/to/diffmae_ddim_preview.json
-```
-
-CA-MAE 的独立通道掩码与其它模型的整块空间掩码也有条件信息差异，因此主要结论以 embedding 检索为准。所有重建指标仅统计实际隐藏的通道像素，报告每通道数量与 `mask_unit`。各模型的 `best_reconstruction.pt` 按自身验证目标选择，不表示生物学 embedding 最佳。
-
-实现依据：[CA-MAE 原论文](https://arxiv.org/abs/2404.10242)、[作者代码](https://github.com/recursionpharma/maes_microscopy)、[DiffMAE 原论文](https://arxiv.org/abs/2304.03283)、[RxRx3-core 官方 benchmark](https://github.com/recursionpharma/EFAAR_benchmarking/tree/trunk/RxRx3-core_benchmarks)、[copairs 检索评价](https://cytomining.github.io/copairs/api/map/)。
-
-## 数据流
-
-`35 个原始 Parquet 分片 → 每孔 6 个 JP2 字节 → MDS train/val/test → StreamingDataLoader`
-
-转换器保留 JP2 压缩字节，不把图像预先展开成大数组；每个 MDS 样本对应一个孔位。读取器解码后返回完整孔位图像 `image`：`[batch, 6, 512, 512]`，数值为 `float32 [0,1]`。模型以 16×16 图像 patch 处理完整孔位，每孔对应 1024 个空间 token；尺寸定义见 `src/phenostate/image_config.py`。
-
-数据按每个实验内的整块孔板分成 train/val/test。`manifest.json` 记录数量、源分片大小、元数据哈希和转换是否完整；`plate_splits.json` 固定划分。`--max-wells` 只用于小样本冒烟测试，产生的 `complete=false` 数据不能用于正式训练。
-常规 `make_dataloader` 会拒绝读取不完整转换；检查命令仅为冒烟测试允许读取。
-
-## Conda 环境
-
-在服务器的项目目录中直接创建环境（目标为单张 RTX 3090；PyTorch 2.5.1 + CUDA 12.1；MKL 固定为兼容版本）：
+## 环境
 
 ```bash
 conda env create -f environment.yml
 conda activate phenostate
-python -m pip install -e . --no-deps
-pip install torchinfo
-python -c "import torch, torchvision, streaming; print(torch.__version__, torchvision.__version__, torch.version.cuda, torch.cuda.is_available(), streaming.__version__)"
-python -m pytest -q
-```
-
-要在 Jupyter 中使用该环境：
-
-```bash
-python -m ipykernel install --user --name phenostate --display-name "Python (PhenoState)"
-jupyter lab
-```
-
-打开 [数据检查 notebook](notebooks/01_explore_rxrx3_core.ipynb)，选择 `Python (PhenoState)` 内核。在服务器上设置 `RXRX3_CORE_ROOT` 环境变量，或直接修改 notebook 第一段配置中的路径。
-
-Linux 服务器示例：
-
-```bash
-export RXRX3_CORE_ROOT=/path/to/rxrx3_core
-jupyter lab notebooks/01_explore_rxrx3_core.ipynb
-```
-
-如需查看已转换的 MDS，再设置 `RXRX3_MDS_ROOT=/path/to/rxrx3_mds` 并重新运行 notebook。准备提交 GitHub 时清空 notebook 的运行输出，避免把数据集图像预览嵌入提交。
-
-## 从旧名称迁移
-
-项目展示名为 **PhenoState**，Python 包为 `phenostate`，命令前缀为 `phenostate-`，项目环境变量前缀为 `PHENOSTATE_`。现有 Conda 环境可以继续叫 `cellvit`；`environment.yml` 的新环境名 `phenostate` 只影响以后创建的环境。
-
-同步完整源码后，在新的项目根目录、现有环境中更新安装：
-
-```bash
-conda activate cellvit  # 使用你已经配置好的环境
-python -m pip show cellvit  # 确认旧安装属于本项目
-python -m pip uninstall -y cellvit
 python -m pip install -e . --no-deps --no-build-isolation
-hash -r
-phenostate-embed --help
-phenostate-retrieval --help
 ```
 
-已有 checkpoint、MDS、embedding 和结果目录继续保留，不需要重训或重导。`cellvit-spatial-mae-v1`、`cellvit-masked-autoencoder-v2`、`cellvit_*` Parquet 字段以及评价协议格式标识是稳定的数据协议，故意保留；它们与 Python 包名无关。不要批量修改已有 `.pt`、Parquet 或 `manifest.json` 内容，清单任意字节变化都会影响 SHA 校验。
-
-若服务器项目目录也改名，更新作业脚本、IDE、Jupyter 和数据路径，并重新执行 editable 安装；正在运行的任务应先完成再移动其依赖目录。使用 notebook 时可在现有环境登记新内核：`python -m ipykernel install --user --name phenostate --display-name "Python (PhenoState)"`。原 `CELLVIT_*` 脚本变量需改成 `PHENOSTATE_*`，数据集变量 `RXRX3_*` 保持原名。
-
-## 数据转换与读取
-
-先做小样本转换（源目录和输出目录替换为服务器实际路径）：
+已有环境只需补充工具并更新入口：
 
 ```bash
-phenostate-convert --source /path/to/rxrx3_core --output /path/to/rxrx3_smoke --max-wells 12
+python -m pip install 'lightning>=2.5.6,<2.6' 'torchsummary==1.5.1' 'torchinfo>=1.8,<2'
+python -m pip install -e . --no-deps --no-build-isolation
 ```
 
-检查冒烟结果后，转换全部数据至另一个**不存在**的输出目录：
+使用 `lightning.pytorch`，模型摘要使用 Lightning 自带 ModelSummary 或 `torchinfo.summary(model, depth=2)`。不提供输入时，torchinfo 只列结构与参数，避免 CA-MAE 完整前向的显存开销。环境同时包含 torchsummary。
+
+## 代码
+
+```text
+src/phenostate/
+  models/             MAE、CA-MAE、DiffMAE、CNN-MAE 与模型工厂
+  data/module.py      LightningDataModule，固定 MDS 划分
+  train/module.py     LightningModule，loss、日志、优化器及调度
+  train/mae.py        Trainer 命令入口
+  data/source.py      原始数据读取与按实验内整板划分
+  data/convert.py     Parquet → MDS
+  data/inference_loader.py  本地 MDS 有界线程读取
+  infer.py            流式导出 well embedding
+  evaluate.py         遮挡重建指标
+  retrieval.py        独立 embedding 下游评价
+```
+
+| 模型配置 | 输入 | 编码器 | Decoder | embedding |
+| --- | --- | --- | --- | --- |
+| mae_comparison.json | 6×512×512，patch8 | 512维／12层／8 heads | 256维／4层 | 512维 |
+| ca_mae.json | 通道 patch token | 共享编码器，无 channel ID | 六个通道 decoder | 512维 |
+| diffmae.json | 干净可见 patch | 512维／12层／8 heads | 带噪隐藏 query，预测 x0 | 512维 |
+| cnn_mae.json | 空间 patch 遮挡 | 12个残差卷积块 | 4个残差块及转置卷积 | 512维 |
+
+`mae_small.json` 是 patch16、384维配置。模型实际结构以 checkpoint 的 `hyper_parameters.model_config` 为准。四模型均以隐藏像素重建 MSE 训练；`norm_pix_loss=true` 按 patch、按通道标准化目标，编码器图像输入为 float32 `[0,1]`。DiffMAE 的随机时间步去噪 loss 与普通 MAE 的重建难度不同，正式模型比较使用共同下游协议。
+
+## 数据
 
 ```bash
-phenostate-convert --source /path/to/rxrx3_core --output /path/to/rxrx3_mds
+phenostate-convert --source /path/rxrx3_core --output /path/rxrx3_mds
+phenostate-check-loader --mds-root /path/rxrx3_mds --split val --batch-size 1
 ```
 
-先查看小样本 `manifest.json` 中哪个 split 有样本，再对该 split 运行真实 MDS 读取检查：
+每个样本是一个 well 的六通道 s1 中心裁剪，没有单细胞分割。转换保留 JP2 字节，写入未额外压缩的 MDS 分片。每个 experiment 内整块 plate 划分：val、test 各 `max(1, round(板数×0.1))`，其余 train，默认 seed=2026。具体归属保存为 plate_splits.json，数量与元数据哈希保存为 manifest.json。不要修改已有清单内容。
+
+## Lightning 训练
 
 ```bash
-phenostate-check-loader --mds-root /path/to/rxrx3_smoke --split test --batch-size 2
+phenostate-train \
+  --mds-root /path/rxrx3_mds --output /path/runs/mae \
+  --model-config configs/mae_comparison.json \
+  --epochs 50 --batch-size 1 --accumulation-steps 64 \
+  --precision 16-mixed --checkpoint-every 500
 ```
 
-上面的 `test` 只是示例；小样本的前几个孔位可能属于任意一个 split。
+Trainer 负责 AMP、反向传播、梯度累积和范数1裁剪；LightningModule 配置 AdamW、5% warmup＋cosine 调度。默认单 GPU，`--accelerator cpu --precision 32-true` 可做小样本验证。训练 DataLoader 默认 `--num-workers 0`，避免在 NFS 临时目录创建多进程 IPC 文件；增加进程数前确认节点临时目录合适。
 
-正式转换会再占用接近原始图像数据体量的磁盘空间。转换中断时保留 `<output>.incomplete` 供检查；转换器不会删除或覆盖已有目录。
-
-读取示例：
-
-```python
-from phenostate.data.streaming_dataset import make_dataloader
-
-loader = make_dataloader(mds_root="/path/to/rxrx3_mds", split="train", batch_size=8)
-batch = next(iter(loader))
-print(batch["image"].shape, batch["well_id"][:2])
-# torch.Size([8, 6, 512, 512])
+```text
+RUN_DIR/
+  checkpoints/best.ckpt       验证 val_loss 最低
+  checkpoints/last.ckpt       最近验证结束的状态
+  checkpoints/step-*.ckpt     最近的周期保存点
+  logs/metrics.csv            train_loss_step、train_loss_epoch、val_loss、学习率
+  logs/hparams.yaml           模型、数据和训练超参数
 ```
 
-`make_dataloader` 使用 MosaicML 的 `StreamingDataLoader`，训练检查点应同时保存其 `state_dict()`；恢复时调用 `load_state_dict()`。DataLoader 与 StreamingDataset 使用相同的每卡 batch size。
+续训使用相同模型、数据与训练设置，并添加 `--resume /path/runs/mae/checkpoints/last.ckpt`。优化器、scheduler、循环和有状态 loader 由 Lightning 恢复。总调度步数按完整训练孔位数、batch size、梯度累积及 epochs 预计算并保存；设置 max-steps 时以其作为训练步数上限。`best.ckpt` 只代表重建目标最佳，不代表生物学表征最佳。
 
-## 原有空间 MAE 配置与旧检查点
-
-`src/phenostate/models/mae.py` 是从零初始化的 ViT Small/16 编码器和轻量解码器。训练时随机遮住 75% 的空间 patch，编码器只处理其余 patch，解码器重建被遮住的像素。每个 patch 内按通道标准化重建目标，再对被遮住的位置求平均损失。推理时只用编码器，将所有 patch token 平均池化成一个孔位向量。默认架构见 [configs/mae_small.json](configs/mae_small.json)。
-
-在已完成的 MDS 上先运行很短的服务器冒烟训练；输出目录必须尚不存在：
+## 导出与重建评价
 
 ```bash
-phenostate-train --mds-root /path/to/rxrx3_mds --output /path/to/runs/mae_smoke \
-  --model-config configs/mae_small.json --epochs 1 --batch-size 1 \
-  --accumulation-steps 64 --checkpoint-every 5 --max-steps 10
+phenostate-embed \
+  --checkpoint /path/runs/mae/checkpoints/best.ckpt \
+  --mds-root /path/rxrx3_mds --split train \
+  --output /path/embeddings/mae/embedding_train.parquet \
+  --num-workers 4 --skip-existing
+
+phenostate-evaluate \
+  --checkpoint /path/runs/mae/checkpoints/best.ckpt \
+  --mds-root /path/rxrx3_mds --split val \
+  --output /path/results/reconstruction.json
 ```
 
-该命令处理完整孔位图像，不接受 `complete=false` 的小样本 MDS。`--max-steps` 是**累计优化器步数上限**，适合检查前向、反向、显存和恢复流程；它并不表示完成一个 epoch。接着用相同配置从 `latest.pt` 恢复，省略 `--max-steps` 可继续完成原定 epoch：
+冻结模型只做前向；导出和重建评价通过有界线程读取本地 MDS，`--num-workers` 表示线程数。导出检查 manifest/checkpoint SHA、有限值、唯一 ID 与完整数量；成功后才发布正式 Parquet。`.incomplete` 不能续接或直接用于评价。
+
+四模型批量导出不启动训练：
 
 ```bash
-phenostate-train --mds-root /path/to/rxrx3_mds --output /path/to/runs/mae_smoke \
-  --model-config configs/mae_small.json --epochs 1 --batch-size 1 \
-  --accumulation-steps 64 --checkpoint-every 5 \
-  --resume /path/to/runs/mae_smoke/latest.pt
-```
-
-正式实验改用新的输出目录和预定的 epoch 数。单张 3090 从 `batch-size 1` 起核查显存，再决定是否增大；梯度累积在优化器更新前按实际孔位数平均梯度。训练使用 FP16 自动混合精度、梯度缩放、AdamW、预热加余弦学习率；默认学习率为 `1.5e-4`。如需取消混合精度，可传 `--no-amp`。`config.json` 保存运行配置和 MDS 清单哈希，`metrics.jsonl` 记录训练损失、学习率、吞吐、峰值显存和每轮验证重建损失，`latest.pt` 保存模型、优化器、缩放器、读取进度和随机状态。恢复时需保持原训练参数与数据清单一致。
-
-验证重建损失用于评价 MAE 本身的遮挡重建任务；最低验证 MSE 对应的完整检查点另存为 `best_reconstruction.pt`。这个名字只代表重建最佳。跨 guide、同 guide 跨板检索使用独立的 `phenostate-retrieval` 入口，见上述评测方案。
-
-### AMP 溢出与训练进度
-
-梯度累积先按计划的有效 batch 大小缩小 loss，再反向传播；在更新前按实际孔位数校正，最后不足一组的数据同样得到正确平均梯度。AMP 梯度出现 Inf/NaN 时，先由 `unscale_` 记录，再让 GradScaler 跳过本次参数更新、降低缩放系数，最后清空梯度；不对这些非有限梯度做裁剪。FP32 梯度异常、非有限 loss 或有限梯度的范数计算溢出仍会明确报错。
-
-`step` 只计成功更新；`update_attempts` 包含 AMP 跳过。学习率、`--log-every` 和 `--checkpoint-every` 按更新尝试次数推进，确保每个 epoch 的计划进度不因跳过而延后；`--max-steps` 仍限制成功更新总数。日志新增 `amp_overflow`、`skipped_updates`、`grad_norm`、`loss_scale_before`、`loss_scale`。连续 20 次溢出会保存 `latest.pt` 后停止，防止长期没有实际更新。
-
-原有 checkpoint 仍可用相同命令续训，缺少的新计数字段会自动补默认值；旧 checkpoint 的“最佳重建”从恢复后的验证开始记录。已完成全部 epoch 的旧 checkpoint 可以直接用下面的评估命令，无需重新训练。
-
-轮末保存和恢复时，将 Streaming 游标显式对齐为下一轮 `epoch`、`sample_in_epoch=0`；旧 checkpoint 也会在读取时修正。中途保存的样本偏移保持原值。该处理依据 [Streaming 0.13.0 的游标实现](https://github.com/mosaicml/streaming/blob/v0.13.0/streaming/base/dataset.py)，避免训练计数与数据读取位置落在不同 epoch。
-
-## 评价 MAE 的遮挡重建质量
-
-### 多轮正式训练
-
-保留原 16×16 配置的 `scripts/train_mae.sh` 从头启动多轮训练，当前脚本为 50 个 epoch、batch size 2、梯度累积 32；新的四组 8×8 对照使用上面的 `scripts/train_comparison.sh`。修改原脚本顶部的 MDS 路径和新输出目录后，在项目根目录执行：
-
-```bash
-conda activate phenostate
-bash scripts/train_mae.sh
-```
-
-每轮自动完整验证并保存最佳重建模型。50 轮是实验预算，是否训练充分应根据验证 MSE 和表征指标的趋势判断；当前不自动早停。中断时在训练命令末尾追加 `--resume "$RUN_DIR/latest.pt"`，总轮数及其余训练参数保持不变。之前 1 轮测试任务的 checkpoint 不能直接改为 50 轮续训。
-
-### 续训和评估脚本
-
-修改 `scripts/run_mae_workflow.sh` 顶部的 `MDS_ROOT` 和 `RUN_DIR`，然后在服务器项目根目录执行：
-
-```bash
-conda activate phenostate
-bash scripts/run_mae_workflow.sh
-```
-
-脚本先用 16 个 batch 评价 `latest.pt`，再按当前 `batch-size=2`、`accumulation-steps=32` 的配置继续完成原定 1 个 epoch。参数直接写在脚本中，应与已有 checkpoint 保持一致。
-
-预览报告保存为 `RUN_DIR/preview_时间.json`。训练在轮末自动完整验证，结果写入 `metrics.jsonl`，绘图使用 `02_mae_training_and_reconstruction.ipynb`。
-
-这是连续像素回归，不报告词/token 分类准确率。训练与评估共享 `model.reconstruction_target()`，默认目标是每个 patch 内每个通道的标准化像素。所有指标只统计 **被遮挡的位置**。
-
-| 字段 | 定义与解释 |
-| --- | --- |
-| `masked_mse` | 隐藏像素的平均平方误差，越低越好；与训练目标一致 |
-| `masked_rmse` | MSE 的平方根，单位为目标空间单位 |
-| `zero_baseline_mse` | 相同隐藏位置全部预测为 0 的误差，实际计算，不假设它等于 1 |
-| `reconstruction_skill` | `1 - masked_mse / zero_baseline_mse`，1 表示完美、0 表示与基线相同、负值表示更差；0.4 表示误差降低 40%，不是准确率 40% |
-| `per_channel_*` | 分别记录六个通道的 MSE、基线及相对评分 |
-
-评分先累计所有隐藏位置的误差，再计算比值；不平均每个 batch 的百分比。基线能量接近零时，相对评分记为 `null`，MSE 仍有效。关闭 `norm_pix_loss` 时目标变为原始 `[0,1]` 像素，零基线也随之变成黑色像素基线，这两种设置不能混比。
-
-轮末验证自动将指标以 `val_` 前缀写入 `metrics.jsonl`，保留旧的 `val_reconstruction_loss` 字段。还可随时评价已有 `latest.pt` 或 `best_reconstruction.pt`：
-
-```bash
-# 更新入口命令；使用现有环境，不重装依赖。
-python -m pip install -e . --no-deps
-
-phenostate-evaluate --checkpoint /path/to/runs/mae_smoke/latest.pt \
-  --mds-root /path/to/rxrx3_mds --split val \
-  --output /path/to/runs/mae_smoke/reconstruction_val.json
-```
-
-默认遍历整个 split，沿用 checkpoint 的 batch size、训练 seed + 10000 和 AMP 配置；没有 GPU 时使用 FP32 CPU。`--max-batches 32` 可做部分评估，报告包含 `wells`、`expected_wells`、`complete_split`，不能将部分结果当作整份验证集成绩。`--no-amp` 可以辅助排查推理溢出；精度会记录在报告里。输出文件需不存在。比较模型时固定数据、目标标准化、batch size、遮挡率、种子、样本顺序和计算精度。
-
-评估现在显示 checkpoint 加载、数据准备和运行进度：默认每 50 个 batch 或完成一个 batch 后距上次报告达到 30 秒时，输出当前 MSE、孔位数、速度、耗时和 ETA。`--log-every 10` 可提高频率，`--log-every 0` 关闭进度。进度写入 stderr，最终 JSON 保留在 stdout。报告新增 `elapsed_seconds`、`wells_per_second` 和 `loader_wait_seconds`；后者是主进程等待 DataLoader 返回样本的时间，不是 worker 解码时间的总和。模型前向返回的目标直接用于评估，避免重复标准化；通道误差在设备上累计，报告时才复制到 CPU。实际提速需要服务器实测。
-
-绘图只放在 Notebook 中：
-
-```bash
-export PHENOSTATE_RUN_DIR=/path/to/runs/mae_smoke
-jupyter lab notebooks/02_mae_training_and_reconstruction.ipynb
-```
-
-Notebook 可读取旧/新日志，显示训练与验证曲线、AMP 缩放记录，直接评估 checkpoint 并绘制六通道指标与重建图。重建展示在训练目标空间中进行，不借用隐藏 patch 的真实均值/方差恢复原始强度。显示时可见区域复制真实目标，误差仍只统计隐藏区域。默认 `MAX_BATCHES=None` 为全量评估，也可改为明确标注的部分预览。
-
-## 导出孔位 embedding
-
-使用训练检查点为一个 split 中的每孔输出一个未归一化向量：
-
-```bash
-phenostate-embed --checkpoint /path/to/runs/mae_smoke/latest.pt \
-  --mds-root /path/to/rxrx3_mds --split val \
-  --output /path/to/embeddings/mae_val.parquet --batch-size 1
-```
-
-导出器检查向量有限、`well_id` 无重复、总孔数与 MDS 清单一致，并核对检查点的数据清单哈希。输出 Parquet 包含 `well_id` 和固定长度 `embedding` 列；后续评测可按 `well_id` 连接原始元数据。转换、训练和导出均不会修改原始 RxRx3-core 图像目录。
-
-导出时沿用 checkpoint 的 AMP 设置；FP32 训练的模型不会在导出阶段自动切成 FP16。输出路径不得位于 MDS 数据目录内。
-
-导出直接读取已有 MDS 分片，使用有界线程预取；`--num-workers` 在这里表示读取／解码线程数，默认 4，设为 0 时同步读取。导出不再启动 DataLoader 子进程，也不依赖 Streaming 的临时锁或多进程 IPC 目录，避开 NFS `.nfs*` 退出清理异常。训练加载器保持原有行为。
-
-使用已保存的冻结权重批量导出，不启动训练：
-
-```bash
-export RXRX3_MDS_ROOT="/path/rxrx3_mds"
-export PHENOSTATE_COMPARISON_ROOT="/path/runs/comparison_patch8_50epochs"
-export PHENOSTATE_EMBEDDING_ROOT="/path/embeddings"
-export PHENOSTATE_MODELS="mae_patch8_head8 ca_mae diffmae cnn_mae"
+export RXRX3_MDS_ROOT=/path/rxrx3_mds
+export PHENOSTATE_COMPARISON_ROOT=/path/runs
+export PHENOSTATE_EMBEDDING_ROOT=/path/embeddings
+export PHENOSTATE_MODELS="mae ca_mae diffmae cnn_mae"
 bash scripts/export_embeddings.sh
 ```
 
-模型列表对应训练目录名，默认 `mae ca_mae diffmae cnn_mae`；无权重的模型应移出列表。脚本优先使用 `best_reconstruction.pt`，缺少时使用 `latest.pt`；默认导出 train／val／test。`--skip-existing` 会核验来源哈希、数量、唯一 ID、schema 和有限值后复用已完成文件；残缺或来源不一致的文件仍会报错，脚本不会自动删除或覆盖。使用方法见[下游评价说明](docs/representation_evaluation.md)。
+默认导出 train、val、test；已有新格式文件校验通过后复用。新训练和导出只支持原生 Lightning `.ckpt`，不再加载以前的自定义 `.pt`。已有 embedding 文件不改写，仍可作为通用特征独立评价；不带新来源标签的文件记录为来源未验证。
 
-## 依据
+## 下游任务
 
-- [MosaicML Streaming 快速入门](https://docs.mosaicml.com/projects/streaming/en/stable/getting_started/quick_start.html)
-- [MDS 转换和字节列](https://docs.mosaicml.com/projects/streaming/en/stable/preparing_datasets/basic_dataset_conversion.html)
-- [StreamingDataset 与 batch_size](https://docs.mosaicml.com/projects/streaming/en/stable/api_reference/generated/streaming.StreamingDataset.html)
-- [StreamingDataLoader 的恢复接口](https://docs.mosaicml.com/projects/streaming/en/stable/api_reference/generated/streaming.StreamingDataLoader.html)
+```bash
+phenostate-retrieval \
+  --model mae /path/embeddings/mae/embedding_train.parquet /path/embeddings/mae/embedding_val.parquet \
+  --metadata /path/metadata_rxrx3_core.csv --mds-root /path/rxrx3_mds \
+  --control-rules configs/negative_controls.example.json \
+  --query-split val --output-dir /path/results/downstream_val
+```
+
+三类任务、四个计分项：activity（相对对照 mAP、energy、显著活性比例）、same-guide 和 compound（mAP、Recall、percent replicating）、cross-guide（MRR、Recall、mAP）。train 作 gallery，val/test 作 query。阴性对照配置须先核实，缺少严格匹配对照时报告不可评价。详见[任务协议](docs/representation_evaluation.md)。
+
+数据集提供的 OpenPhenom、MAE-L/8、MAE-G/8 可以直接评价；无需重新 embedding，也无需复制为三个 split 文件。`phenostate-split` 可只从 metadata 生成相同的整板划分；`--embedding` 可与 `--model` 混合比较。详见[公开特征说明与运行命令](docs/public_embeddings.md)。
+
+Notebook 01 展示可选 well 的 CRISPR、药物浓度及匹配阴性对照图像，并检查公开特征 schema；02 读取 Lightning CSV 日志及重建结果；03 只读取下游结果，展示指标、置信区间、覆盖率和诊断。设置 `PHENOSTATE_RESULTS_DIR` 指定03的结果目录。测试运行 `python -m pytest -q`；真实 MDS 测试需要安装 Streaming 依赖。
