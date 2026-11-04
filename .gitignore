@@ -16,6 +16,7 @@ outputs/
 /runs/
 /logs/
 /try/
+/results/
 /scripts/*
 !/scripts/train_comparison.sh
 !/scripts/export_embeddings.sh
