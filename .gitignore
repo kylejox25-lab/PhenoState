@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 *.egg-info/
 outputs/
+/results/downstream_val_all/paper_7_models/
 *.incomplete/
 
 # Local datasets, converted MDS shards, and training artifacts.
@@ -18,6 +19,7 @@ outputs/
 /scripts/*
 !/scripts/train_comparison.sh
 !/scripts/export_embeddings.sh
+!/scripts/evaluate_paper_seven_models.sh
 /configs/*
 !/configs/mae_comparison.json
 !/configs/ca_mae.json

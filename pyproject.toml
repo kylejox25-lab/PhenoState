@@ -36,6 +36,7 @@ phenostate-train = "phenostate.train.mae:main"
 phenostate-embed = "phenostate.infer:main"
 phenostate-evaluate = "phenostate.evaluate:main"
 phenostate-retrieval = "phenostate.retrieval:main"
+phenostate-paper-benchmarks = "phenostate.paper_benchmarks:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -111,3 +111,26 @@ phenostate-retrieval \
 数据集提供的 OpenPhenom、MAE-L/8、MAE-G/8 可以直接评价；无需重新 embedding，也无需复制为三个 split 文件。`phenostate-split` 可只从 metadata 生成相同的整板划分；`--embedding` 可与 `--model` 混合比较。详见[公开特征说明与运行命令](docs/public_embeddings.md)。
 
 Notebook 01 展示可选 well 的 CRISPR、药物浓度及匹配阴性对照图像，并检查公开特征 schema；02 读取 Lightning CSV 日志及重建结果；03 只读取下游结果，展示指标、置信区间、覆盖率和诊断。设置 `PHENOSTATE_RESULTS_DIR` 指定03的结果目录。测试运行 `python -m pytest -q`；真实 MDS 测试需要安装 Streaming 依赖。
+
+### RxRx3-core 论文评估与 Notebook 04
+
+论文的三项评估共用 PCA-CS 校正，使用输入文件中各模型共同覆盖的 well。将自训练模型已有的 train、val Parquet 连续传入即可，评估会合并这些孔位；同时传入 test 文件可扩大共同覆盖范围。全表公开特征只需传一个文件。论文评估使用共同孔位构建扰动表征，Notebook 03 的 train-gallery / val-query 协议单独报告。
+
+七模型脚本使用 `mae_patch8_head8`、`ca_mae`、`diffmae`、`cnn_mae` 的 train 和 val 文件，以及 OpenPhenom、MAE-L/8、MAE-G/8 的全表。它会先检查所有输入文件。运行环境需要 `analysis` 依赖，以及 Recursion EFAAR 仓库中的关系标签。
+
+```bash
+git clone --depth 1 https://github.com/recursionpharma/EFAAR_benchmarking.git ../data/EFAAR_benchmarking
+bash scripts/evaluate_paper_seven_models.sh
+```
+
+默认从 `../data/embeddings` 读自训练向量，从 `/home/xkj2006/CellPainting/rxrx3_core` 读元数据和公开向量。路径不同时可设置 `PHENOSTATE_EMBEDDING_ROOT`、`RXRX3_CORE_ROOT`、`PHENOSTATE_PUBLIC_EMBEDDING_ROOT` 或 `PHENOSTATE_EFAAR_ANNOTATIONS_DIR`。如已导出 test，可设置 `PHENOSTATE_PAPER_SPLITS='train val test'`。相对路径以项目根目录为基准。
+
+结果默认写入 `results/downstream_val_all/paper_7_models`，该目录在运行前需不存在。打开 [Notebook 04](notebooks/04_rxrx3_core_paper_benchmarks.ipynb) 即可读取这份结果。使用自定义目录时，设置 `PHENOSTATE_PAPER_RESULTS_DIR`，或在 Notebook 首格填写 `RESULT_DIR`。单模型或自选组合可直接调用 `python -m phenostate.paper_benchmarks --help` 查看输入参数。
+
+| 任务 | 口径 | 输出 |
+| --- | --- | --- |
+| 扰动信号 | 论文 §4.1 的有偏欧氏能量距离。沿用 EFAAR 通用函数的至少 5 个处理孔和最多 1,000 个全局对照。本实现按查询基因或药物汇总，药物合并剂量，从 `EMPTY_control` 固定抽样，报告均值、MAD 及同维度高斯随机基线。 | `energy_groups.csv`、`energy_summary.csv` |
+| 药物靶点 | 沿用 EFAAR 的已知活性阈值、候选抽样与绝对余弦相似度。按剂量和跨剂量最大相似度计算 AP、AUROC，保留逐药物指标的均值和中位数两种汇总。随机序列由本项目固定。 | `dti_seeds.csv`、`dti_summary.csv` |
+| 基因关系 | 聚合到基因后按余弦相似度两端各 5% 计算已知关系召回。分别报告 CORUM、hu.MAP、Reactome 和 STRING 的关系覆盖。 | `gene_relationships.csv` |
+
+`protocol.json` 记录模型文件、注释哈希、共同孔位数和评估参数，`well_manifest.csv` 列出实际使用的孔位。论文表格的分数还取决于所用孔位、对照和随机基线。参见 [RxRx3-core 论文 §4](https://arxiv.org/html/2503.20158v2#S4) 和 [EFAAR 官方 Notebook](https://github.com/recursionpharma/EFAAR_benchmarking/tree/trunk/RxRx3-core_benchmarks)。
