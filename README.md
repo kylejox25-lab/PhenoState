@@ -110,7 +110,7 @@ phenostate-retrieval \
 
 数据集提供的 OpenPhenom、MAE-L/8、MAE-G/8 可以直接评价；无需重新 embedding，也无需复制为三个 split 文件。`phenostate-split` 可只从 metadata 生成相同的整板划分；`--embedding` 可与 `--model` 混合比较。详见[公开特征说明与运行命令](docs/public_embeddings.md)。
 
-Notebook 01 展示可选 well 的 CRISPR、药物浓度及匹配阴性对照图像，并检查公开特征 schema；02 读取 Lightning CSV 日志及重建结果；03 只读取下游结果，展示指标、置信区间、覆盖率和诊断。设置 `PHENOSTATE_RESULTS_DIR` 指定03的结果目录。测试运行 `python -m pytest -q`；真实 MDS 测试需要安装 Streaming 依赖。
+Notebook 01 展示可选 well 的 CRISPR、药物浓度及匹配阴性对照图像，并检查公开特征 schema；02 读取 Lightning CSV 日志及重建结果；03 对七模型共同孔位进行相似度、重复性、对照偏离、PCA/可选 UMAP、批次近邻与扰动/plate 差值诊断，并在附录保留已有下游结果。设置 `PHENOSTATE_RESULTS_DIR` 指定结果目录，其他输入和抽样配置见 [七模型诊断说明](docs/embedding_diagnostics.md)。测试运行 `python -m pytest -q`；真实 MDS 测试需要安装 Streaming 依赖。
 
 ### RxRx3-core 论文评估与 Notebook 04
 

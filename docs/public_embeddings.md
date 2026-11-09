@@ -102,4 +102,4 @@ export PHENOSTATE_RESULTS_DIR=/path/results/public_val_raw
 jupyter lab
 ```
 
-打开 Notebook 03 查看协议、主指标 CI、Recall、活性/重复比例、分组 ECDF、配对差值和单组诊断。Notebook 01 负责原图探索，02 负责自训练模型的训练日志与重建；已有向量不能单独恢复重建图。
+打开 Notebook 03 对七模型共同孔位进行重复/对照相似度、表型强度与重复性、PCA/可选 UMAP、批次近邻富集及扰动/plate 差值诊断，已有主指标 CI、Recall、活性/重复比例和配对差值保留在附录。输入配置和输出见 [七模型诊断说明](embedding_diagnostics.md)。Notebook 01 负责原图探索，02 负责自训练模型的训练日志与重建；已有向量不能单独恢复重建图。
